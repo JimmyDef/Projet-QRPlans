@@ -1,0 +1,52 @@
+@import './../abstacts/variables';
+
+.hero {
+  background-color: #f7f7f7;
+  padding: 60px 20px;
+  //   text-align: center;
+}
+
+.hero__container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.hero__title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.hero__subtitle {
+  font-size: 1.25rem;
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.hero__features {
+  margin: 30px 0;
+  padding: 0;
+  text-align: left;
+  max-width: 500px;
+  color: #444;
+}
+
+.hero__features li {
+  margin-bottom: 10px;
+}
+
+.hero__button {
+  display: inline-block;
+  background-color: $color-secondary;
+  color: black;
+  padding: 15px 30px;
+  border-radius: 5px;
+  font-size: 1.3rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.hero__button:hover {
+  background-color: $color-secondary;
+}

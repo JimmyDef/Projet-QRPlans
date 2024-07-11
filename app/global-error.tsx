@@ -1,5 +1,4 @@
 'use server'
-import './../sass/global-error.scss'
 
 const GlobalError = ({ error, reset }: { error: Error; reset: () => void }) => {
   return (

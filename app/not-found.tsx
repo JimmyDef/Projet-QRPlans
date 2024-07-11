@@ -1,5 +1,5 @@
 'use client'
-import './../sass/not-found.scss'
+
 import Link from 'next/link'
 import Image from 'next/image'
 import logo404 from './../public/404-animate.svg'

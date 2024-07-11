@@ -1,0 +1,15 @@
+{
+  "LocaleSwitcher": {
+    "fr": "Français",
+    "en": "Anglais",
+    "label": "Language"
+  },
+  "homepage": {
+    "welcome": "Welcome to our application",
+    "home": "Home"
+  },
+  "header": {
+    "connexion": "Sign In",
+    "inscription": "Sign Up"
+  }
+}
