@@ -1,9 +1,10 @@
 // Typo-color
 $color-primary: #14213d;
 $color-secondary: #fca311;
+$color-secondary-darker: #ce8600;
 $color-black: #000000;
 $color-white: white;
-$color-grey: #e5e5e5;
+$color-grey: #8b8e98;
 $color-light-blue: #8ecae6;
 $color-green: #219653;
 $color-red: #e63946;
@@ -17,3 +18,7 @@ $color-bg: #ffffff;
 $tablet-width: 768px;
 $notebook-width: 1024px;
 $desktop-width: 1440px;
+
+// header
+
+$header-height: 76px;

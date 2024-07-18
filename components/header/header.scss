@@ -1,19 +1,19 @@
 @import '@/styles/abstacts/variables';
+@import '@/styles/abstacts/mixins';
 
 .header {
-  // width: 100%;
-
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   &__container {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    // flex-wrap: wrap;
     color: $color-primary;
-    padding: 10px;
+    padding: 10px 20px;
     font-size: 20px;
     font-weight: bold;
-    margin-bottom: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    margin: 0 auto 50px;
+    height: 70px;
+    margin: 0 auto 20px;
     max-width: $desktop-width;
   }
   &__title {
@@ -34,25 +34,23 @@
   }
 
   &__link {
+    text-decoration: none;
     &:hover {
       text-decoration: underline;
     }
-    &--sign-up {
-      display: flex;
-      align-items: center;
-      height: 100%;
-      background-color: $color-secondary;
-      color: $color-white;
-      padding: 10px;
-      transition: all 0.2s;
+    &--sign-in {
+      @include main-link;
+      border: 2px solid $color-secondary;
+      background-color: $color-white;
+      color: $color-primary;
+      font-weight: bold;
+      cursor: pointer;
       &:hover {
-        text-decoration: none;
-        background-color: $color-light-blue;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        @include gradient-grey-blue;
       }
-      &:focus-visible {
-        transition: none;
-      }
+    }
+    &--sign-up {
+      @include main-link;
     }
   }
 
@@ -66,5 +64,14 @@
   .logo {
     display: inline-block;
     margin-right: 10px;
+  }
+  @media (max-width: $notebook-width) {
+    &__title {
+      // width: 100%;
+      font-size: 1.6rem;
+    }
+    &__item {
+      margin-left: 20px;
+    }
   }
 }

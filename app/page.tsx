@@ -1,11 +1,12 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
-// import { signIn } from '@/lib/auth'
-// import { auth } from '@/lib/auth'
 
-const Home = async () => {
+// import React, { useEffect, useState } from 'react'
+
+const Home = () => {
   const t = useTranslations('homepage')
+
   return (
     <section className="hero">
       <div className="hero__container">

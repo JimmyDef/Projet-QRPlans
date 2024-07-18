@@ -1,0 +1,16 @@
+html {
+  // scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
+
+body {
+  margin: 0 auto;
+  position: relative;
+  min-width: 320px;
+  min-height: 100vh;
+}
+.main {
+  margin: 0 auto;
+  max-width: $desktop-width;
+  padding: 0 20px 0px;
+}

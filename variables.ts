@@ -3,5 +3,5 @@ export const colors = {
   secondary: '#FCA311',
   white: '#FFFFFF',
   black: '#000000',
-  grey: '#E5E5E5',
+  grey: '#8b8e98',
 } as const

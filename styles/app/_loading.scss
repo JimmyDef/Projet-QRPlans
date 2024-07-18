@@ -1,7 +1,11 @@
-.loader {
+@import '@/styles/abstacts/_variables.scss';
+
+.home-page-loader {
   width: 100%;
-  height: 800px;
-  background-color: black;
+  height: calc(100vh - $header-height - 150px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .boxes {
   --size: 32px;

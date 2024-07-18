@@ -6,7 +6,7 @@ import { setUserLocale } from '@/services/locale'
 import './locale-switcher.scss'
 import { useLocale } from 'next-intl'
 import { colors } from '@/variables'
-// import { StaticImageData } from 'next/image'
+
 import Image from 'next/image'
 import { StaticImport } from 'next/dist/shared/lib/get-img-props'
 type Option = {
