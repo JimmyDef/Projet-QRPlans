@@ -4,8 +4,9 @@ import LocaleSwitcher from '../localSwitcher/LocaleSwitcher'
 import './header.scss'
 import { useTranslations } from 'next-intl'
 import SignOutButton from '../buttons/SignOutButton'
-import { PropsWithChildren } from 'react'
-// import { Session } from '@/lib/auth'
+import Image from 'next/image'
+import { capitalizeFirstLetter } from '@/services/helpers'
+
 type User = {
   id?: string
   name?: string | null
@@ -18,12 +19,14 @@ type HeaderProps = {
 }
 
 const Header = ({ user }: HeaderProps) => {
+  const fistName = user?.name?.split(' ')[0]
+  const formattedFirstName = capitalizeFirstLetter(fistName ?? '')
   const t = useTranslations('header')
   const localeOptions = [
     { value: 'en', label: 'English', image: '/logos/usa-flag.svg' },
     { value: 'fr', label: 'French', image: '/logos/fr-flag.svg ' },
   ]
-  console.log('🚀 ~ session:', user)
+
   return (
     <header className="header">
       <div className="header__container">
@@ -38,8 +41,26 @@ const Header = ({ user }: HeaderProps) => {
           />
           {user ? (
             <>
-              <p>{user.name}</p>{' '}
-              <SignOutButton className="header__link header__link--sign-in" />
+              <Link
+                href="/dashboard"
+                className="header__link  header__link--user-name"
+              >
+                {formattedFirstName}
+              </Link>
+              <Link
+                href="/dashboard"
+                className="header__link header__link--user-img"
+              >
+                <Image
+                  width={50}
+                  height={50}
+                  className="user-image"
+                  src={user.image || '/logos/defaultUser.svg'}
+                  alt="user icon"
+                />
+              </Link>
+
+              <SignOutButton className="header__link header__link--sign-out" />
             </>
           ) : (
             <ul className="header__list">
@@ -48,15 +69,15 @@ const Header = ({ user }: HeaderProps) => {
                   href="signIn"
                   className="header__link header__link--sign-in"
                 >
-                  {t('connexion')}
+                  {t('logIn')}
                 </Link>
               </li>
               <li className="header__item  header__item--highlight">
                 <Link
-                  href="/signUp"
+                  href="/registration"
                   className="header__link header__link--sign-up"
                 >
-                  {t('inscription')}
+                  {t('signUp')}
                 </Link>
               </li>
             </ul>

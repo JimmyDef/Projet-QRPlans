@@ -12,6 +12,16 @@
   font-weight: 600;
   font-size: 18px;
 }
+.password-confirmation-error {
+  &::after {
+    position: absolute;
+    right: 0;
+    content: 'Passwords do not match';
+    color: red;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}
 
 .sign_form_container {
   color: $color-primary;
@@ -53,6 +63,8 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+    text-align: center;
+    margin-bottom: 10px;
   }
 
   .title {
@@ -62,10 +74,10 @@
   }
 
   .subtitle {
-    font-size: 0.725rem;
+    font-size: 1rem;
     max-width: 80%;
     text-align: center;
-    line-height: 1.1rem;
+    // line-height: 1.1rem;
     color: #8b8e98;
   }
 
@@ -150,7 +162,7 @@
     z-index: 99;
     left: 12px;
     top: 26px;
-    // background-color: white;
+
     pointer-events: none;
   }
   .icon-auth {
@@ -191,6 +203,20 @@
     font-size: 0.75rem;
     color: #8b8e98;
     text-decoration: underline;
+  }
+  .footer {
+    text-align: center;
+    margin-top: 1px;
+  }
+  .register {
+    margin-bottom: 15px;
+    color: #8b8e98;
+  }
+  .register-link {
+    color: $color-primary;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
   }
 
   @media screen and (max-width: 600px) {

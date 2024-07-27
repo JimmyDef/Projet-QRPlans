@@ -11,7 +11,8 @@
     "signIn": "Se connecter"
   },
   "header": {
-    "connexion": "Connexion",
-    "inscription": "S'inscrire"
+    "logIn": "Connexion",
+    "signUp": "S'inscrire",
+    "logOut": "Déconnexion"
   }
 }

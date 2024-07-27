@@ -1,11 +1,16 @@
 import { auth } from '@/lib/auth'
-// import React from 'react'
+import { redirect } from 'next/navigation'
 
-const Dashboard = async ({ t, session }) => {
+const Dashboard = async () => {
+  const session = await auth()
+  if (!session) {
+    redirect('/signIn')
+  }
+
   return (
     <>
       <h1>dashboard</h1>
-      <p>Session: {JSON.stringify(session)}</p>
+      <p>Session: {session?.user?.id}</p>
     </>
   )
 }

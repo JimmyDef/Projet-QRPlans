@@ -5,7 +5,7 @@ import { Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { auth } from '@/lib/auth'
-import { redirect } from 'next/navigation'
+// import { redirect } from 'next/navigation'
 // import { useRouter } from 'next/navigation'
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,10 +22,6 @@ export default async function RootLayout({
   const locale = await getLocale()
   const messages = await getMessages()
   const session = await auth()
-
-  // if (!session) {
-  //   redirect('/')
-  // }
 
   return (
     <html lang={locale}>

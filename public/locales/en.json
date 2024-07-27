@@ -9,7 +9,8 @@
     "home": "Home"
   },
   "header": {
-    "connexion": "Sign In",
-    "inscription": "Sign Up"
+    "logIn": "Log In",
+    "signUp": "Sign Up",
+    "logOut": "Log Out"
   }
 }

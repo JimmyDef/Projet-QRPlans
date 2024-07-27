@@ -1,12 +1,26 @@
 'use server'
 import { signIn } from '@/lib/auth'
 import prisma from '@/lib/prisma'
-import { saltAndHashPassword } from '@/services/helpers'
+import bcrypt from 'bcrypt'
+import { capitalizeFirstLetter } from '@/services/helpers'
+import { z } from 'zod'
+
 export const credentialsSignIn = async (formData: FormData) => {
-  console.log('formData', formData)
-  await signIn('credentials', formData)
+  const email = formData.get('email')
+  const password = formData.get('password')
+
+  if (!email || !password) {
+    throw new Error('Email or password is missing')
+  }
+
+  await signIn('credentials', {
+    email,
+    password,
+    redirectTo: '/dashboard',
+  })
 }
-export const credentialsSignUp = async (formData: FormData) => {
+
+export const registration = async (formData: FormData) => {
   console.log('formData', formData)
 
   try {
@@ -17,17 +31,22 @@ export const credentialsSignUp = async (formData: FormData) => {
     if (!email || !password || !firstName || !lastName) {
       throw new Error('Missing required fields')
     }
-    const pwHash = saltAndHashPassword(password)
+
+    const pwHash = bcrypt.hashSync(password, 10)
+
+    const cleanedFirstname = capitalizeFirstLetter(firstName)
+    const cleanedLastname = capitalizeFirstLetter(lastName)
+
     const user = await prisma.user.create({
       data: {
         email: email,
         password: pwHash,
-        name: `${firstName} ${lastName}`,
+        name: `${cleanedFirstname} ${cleanedLastname}`,
       },
     })
-    return user
+    return { message: 'success' }
   } catch (error) {
     console.error('Error:', error)
-    return
+    return { message: 'error' }
   }
 }

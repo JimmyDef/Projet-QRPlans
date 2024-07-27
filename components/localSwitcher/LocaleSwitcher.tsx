@@ -87,8 +87,24 @@ export default function LocaleSwitcherSelect({ options, id }: Props) {
       borderRadius: '5px',
     }),
     input: (styles) => ({ ...styles }),
-    placeholder: (styles) => ({ ...styles, fontSize: '14px' }),
+    placeholder: (styles) => ({
+      ...styles,
+      fontSize: '14px',
+
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginTop: '20px',
+    }),
     singleValue: (styles) => ({ ...styles, color: colors.primary }),
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      display: 'none',
+    }),
+    indicatorSeparator: (provided) => ({
+      ...provided,
+      display: 'none',
+    }),
   }
 
   return (

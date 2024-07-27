@@ -2,6 +2,7 @@
 
 .locale-switcher {
   display: flex;
+  // margin-right: 20px;
   // width: 150px;
 
   // &__trigger {
@@ -40,5 +41,10 @@
     padding: 0 35px 0 25px;
     position: relative;
     user-select: none;
+  }
+  &__flag {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }

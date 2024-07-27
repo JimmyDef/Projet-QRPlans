@@ -1,13 +1,13 @@
-import SignInForm from '@/components/form/signInForm'
+import RegistrationForm from '@/components/form/RegistrationForm'
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 
-const SignIn = async () => {
+const Registration = async () => {
   const session = await auth()
 
   if (session) {
     redirect('/dashboard')
   }
-  return <SignInForm />
+  return <RegistrationForm />
 }
-export default SignIn
+export default Registration

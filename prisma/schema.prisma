@@ -16,7 +16,7 @@ model User {
   image         String?
   Session       Session[]
   Account       Account?
-  password      String
+  password      String?
   // Optional for WebAuthn support
   Authenticator Authenticator[]
  
