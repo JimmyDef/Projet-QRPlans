@@ -30,6 +30,7 @@ export const AuthButton = ({
 
       if (result?.error) {
         setErrorAuthBtn(result.error)
+        console.log('handleSignIn relust.error:', result.error)
       } else {
         // Handle successful sign-in
       }

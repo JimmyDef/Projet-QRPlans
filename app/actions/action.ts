@@ -1,4 +1,5 @@
 'use server'
+import { revalidatePath } from 'next/cache'
 import { signIn } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import bcrypt from 'bcrypt'
@@ -44,9 +45,12 @@ export const registration = async (formData: FormData) => {
         name: `${cleanedFirstname} ${cleanedLastname}`,
       },
     })
-    return { message: 'success' }
+    revalidatePath('/')
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    console.log('formData', formData)
+    return 'success'
   } catch (error) {
     console.error('Error:', error)
-    return { message: 'error' }
+    return 'error'
   }
 }

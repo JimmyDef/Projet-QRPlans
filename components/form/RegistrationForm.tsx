@@ -1,16 +1,16 @@
 'use client'
+import Link from 'next/link'
 import Image from 'next/image'
 import { AuthButton } from '@/components/buttons/AuthButton'
-import { useState, useActionState } from 'react'
-import { registration } from '@/app/action'
+import { useState } from 'react'
 import PasswordCheckList from '@/components/passwordCheckList/PasswordCheckList'
 import { removeNonAlphabeticCharacters } from '@/services/helpers'
-import { useFormStatus } from 'react-dom'
 import './form.scss'
-import { string } from 'zod'
+
 const RegistrationForm = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [errorAuthBtn, setErrorAuthBtn] = useState<string | null>(null)
+  const [errorSignUp, setErrorSignUp] = useState(false)
   const [isFormValid, setIsFormValid] = useState(true)
   const [isPasswordsEqual, setIsPasswordsEqual] = useState(true)
 
@@ -26,13 +26,35 @@ const RegistrationForm = () => {
     return password !== passwordConfirmation
   }
 
-  const handleSubmit = (formData: FormData) => {
-    // event.preventDefault()
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
     if (comparePasswords(form.password, form.passwordConfirmation))
       return setIsPasswordsEqual(false)
     if (Object.values(form).some((value) => value.trim() === ''))
       return setIsFormValid(false)
-    registration(formData)
+
+    try {
+      setIsLoading(true)
+      const res = await fetch('/api/auth/registration', {
+        method: 'POST',
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) {
+        throw new Error(`HTTP error! Status: ${res.status}`)
+      }
+      const data = await res.json()
+      console.log(data)
+      if (data.error.status === 409) {
+        setErrorSignUp(true)
+        throw new Error(data.error)
+      }
+    } catch (error) {
+      setErrorSignUp(true)
+      console.error('Error fetch:', error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handlePasswordMismatch = () => {
@@ -43,27 +65,13 @@ const RegistrationForm = () => {
     }
     return setIsPasswordsEqual(true)
   }
-  const SubmitButton = () => {
-    const status = useFormStatus()
 
-    return (
-      <button
-        // title="Sign In"
-        type="submit"
-        className="sign_btn"
-        disabled={status.pending}
-      >
-        <span>Sign Up</span>
-      </button>
-    )
-  }
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     const formattedValue = removeNonAlphabeticCharacters(value)
     setForm({ ...form, [name]: formattedValue })
   }
 
-  // const [state, formAction] = useActionState(handleSubmit, null)
   return (
     <div className="sign_form_container sign-up_form_container">
       <div className="header-sign-up">
@@ -155,7 +163,12 @@ const RegistrationForm = () => {
         <hr className="line" />
       </div>
 
-      <form className="sign_form" action={() => {}}>
+      <form
+        className="sign_form"
+        onSubmit={(e) => {
+          handleSubmit(e)
+        }}
+      >
         <div className="input_container">
           <label className="input_label" htmlFor="email">
             Email
@@ -208,7 +221,7 @@ const RegistrationForm = () => {
         </div>
         <div className="input_container">
           <label className="input_label" htmlFor="password_confirmation_field">
-            Password confirmation{' '}
+            Password confirmation
             {!isPasswordsEqual && (
               <span className="password-confirmation-error"></span>
             )}
@@ -236,6 +249,7 @@ const RegistrationForm = () => {
                 : ''
             } `}
             id="password_confirmation_field"
+            autoComplete="new-password"
           />
         </div>
         <div className="input_container">
@@ -273,8 +287,18 @@ const RegistrationForm = () => {
           />
         </div>
         {!isFormValid && <p className="form-error">Please fill all fields.</p>}
+        {errorSignUp && (
+          <p className="form-error">
+            Email already exists.{` `}
+            <Link href="/" className="form-error--password">
+              Forgot password?
+            </Link>
+          </p>
+        )}
 
-        <SubmitButton />
+        <button type="submit" className="sign_btn" disabled={isLoading}>
+          <span>Sign Up</span>
+        </button>
       </form>
       {/* FIN DU FORM ----------------------------------------------- 
       ---------------------------------------*/}

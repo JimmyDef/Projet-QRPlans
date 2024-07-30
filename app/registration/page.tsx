@@ -1,9 +1,10 @@
 import RegistrationForm from '@/components/form/RegistrationForm'
-import { auth } from '@/lib/auth'
+import { get } from 'http'
+// import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-
+import { getSession } from '@/lib/getSession'
 const Registration = async () => {
-  const session = await auth()
+  const session = await getSession()
 
   if (session) {
     redirect('/dashboard')

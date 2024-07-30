@@ -73,6 +73,7 @@ export default function LocaleSwitcherSelect({ options, id }: Props) {
     }),
     control: (provided, state) => ({
       ...provided,
+      width: '50px',
       cursor: 'pointer',
       borderColor: state.isFocused ? colors.primary : provided.borderColor,
       boxShadow: state.isFocused ? '' : provided.boxShadow,
@@ -93,7 +94,7 @@ export default function LocaleSwitcherSelect({ options, id }: Props) {
 
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center',
+      // justifyContent: 'center',
       marginTop: '20px',
     }),
     singleValue: (styles) => ({ ...styles, color: colors.primary }),

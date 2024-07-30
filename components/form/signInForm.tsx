@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { AuthButton } from '@/components/buttons/AuthButton'
 import { useActionState, useState } from 'react'
-import { credentialsSignIn } from '@/app/action'
+import { credentialsSignIn } from '@/app/actions/action'
 import './form.scss'
 import Link from 'next/link'
 
