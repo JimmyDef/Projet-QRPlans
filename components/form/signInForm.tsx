@@ -1,34 +1,56 @@
 'use client'
 import Image from 'next/image'
 import { AuthButton } from '@/components/buttons/AuthButton'
-import { useActionState, useState } from 'react'
+import { useState } from 'react'
 import { credentialsSignIn } from '@/app/actions/action'
 import './form.scss'
 import Link from 'next/link'
 
+type Form = {
+  email: string
+  password: string
+}
+
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isFormValid, setIsFormValid] = useState(true)
-  const [error, setErrorAuthBtn] = useState<string | null>(null)
-  const [form, setForm] = useState({
+  const [_error, setErrorAuthBtn] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [form, setForm] = useState<Form>({
     email: '',
     password: '',
   })
 
-  const handleSubmit = (formData: FormData) => {
-    console.log('🚀 ~ form:', formData)
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>,
+    form: Form
+  ) => {
+    event.preventDefault()
+    setIsFormValid(true)
+    setErrorAuthBtn(null)
 
-    // event.preventDefault()
+    if (Object.values(form).some((value) => value.trim() === '')) {
+      setIsFormValid(false)
+      return
+    }
 
-    if (Object.values(form).some((value) => value.trim() === ''))
-      return setIsFormValid(false)
-    credentialsSignIn(formData)
+    try {
+      await credentialsSignIn(form)
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message)
+      }
+
+      console.error('handleSubmit', err)
+    }
   }
-  // const [state, formAction] = useActionState(credentialsSignIn, null)
+
   return (
     <div className="sign_form_container">
-      {/* <p className="form-error">{JSON.stringify(state)}</p> */}
-      <form className="sign_form" action={handleSubmit}>
+      <form
+        className="sign_form"
+        onSubmit={(event) => handleSubmit(event, form)}
+      >
         <div className="logo_container"></div>
         <div className="title_container">
           <p className="title">Login to your Account</p>
@@ -88,6 +110,7 @@ const SignIn = () => {
           />
         </div>
         {!isFormValid && <p className="form-error">Please fill all fields.</p>}
+        {error && <p className="form-error">{error}</p>}
 
         <button title="Sign In" type="submit" className="sign_btn">
           <span>Sign In</span>

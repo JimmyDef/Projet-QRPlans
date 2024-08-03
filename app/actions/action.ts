@@ -1,56 +1,85 @@
 'use server'
-import { revalidatePath } from 'next/cache'
+// import { revalidatePath } from 'next/cache'
 import { signIn } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import bcrypt from 'bcrypt'
-import { capitalizeFirstLetter } from '@/services/helpers'
-import { z } from 'zod'
 
-export const credentialsSignIn = async (formData: FormData) => {
-  const email = formData.get('email')
-  const password = formData.get('password')
+import { credentialsSchema } from '@/lib/zod'
+import { ZodError } from 'zod'
+type Form = {
+  email: string
+  password: string
+}
 
+export const credentialsSignIn = async ({ email, password }: Form) => {
   if (!email || !password) {
     throw new Error('Email or password is missing')
   }
 
-  await signIn('credentials', {
-    email,
-    password,
-    redirectTo: '/dashboard',
-  })
-}
-
-export const registration = async (formData: FormData) => {
-  console.log('formData', formData)
-
   try {
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
-    const firstName = formData.get('firstName') as string
-    const lastName = formData.get('lastName') as string
-    if (!email || !password || !firstName || !lastName) {
-      throw new Error('Missing required fields')
+    const parsedData = await credentialsSchema.parseAsync({ email })
+
+    console.log('🚀 ~ parsedData:', parsedData)
+
+    const user = await prisma.user.findUnique({
+      where: { email: parsedData.email },
+    })
+    if (!user) {
+      throw new Error("User doesn't exist")
     }
 
-    const pwHash = bcrypt.hashSync(password, 10)
+    const isPasswordValid =
+      user.password && (await bcrypt.compare(password, user.password))
+    if (!isPasswordValid) {
+      throw new Error('Invalid password')
+    }
 
-    const cleanedFirstname = capitalizeFirstLetter(firstName)
-    const cleanedLastname = capitalizeFirstLetter(lastName)
-
-    const user = await prisma.user.create({
-      data: {
-        email: email,
-        password: pwHash,
-        name: `${cleanedFirstname} ${cleanedLastname}`,
-      },
+    await signIn('credentials', {
+      email: parsedData.email,
+      password: password,
+      redirectTo: '/dashboard',
     })
-    revalidatePath('/')
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    console.log('formData', formData)
-    return 'success'
   } catch (error) {
-    console.error('Error:', error)
-    return 'error'
+    if (error instanceof ZodError) {
+      console.log('ZodError:', error)
+      // Transform the ZodError to a human-readable message
+      // const formattedError = error.errors.map((e) => e.message).join(', ')
+      throw new Error('Invalid email')
+    }
+    throw error
   }
 }
+
+// export const registration = async (formData: FormData) => {
+//   console.log('formData', formData)
+
+//   try {
+//     const email = formData.get('email') as string
+//     const password = formData.get('password') as string
+//     const firstName = formData.get('firstName') as string
+//     const lastName = formData.get('lastName') as string
+//     if (!email || !password || !firstName || !lastName) {
+//       throw new Error('Missing required fields')
+//     }
+
+//     const pwHash = bcrypt.hashSync(password, 10)
+
+//     const cleanedFirstname = capitalizeFirstLetter(firstName)
+//     const cleanedLastname = capitalizeFirstLetter(lastName)
+
+//     const user = await prisma.user.create({
+//       data: {
+//         email: email,
+//         password: pwHash,
+//         name: `${cleanedFirstname} ${cleanedLastname}`,
+//       },
+//     })
+//     revalidatePath('/')
+//     await new Promise((resolve) => setTimeout(resolve, 1000))
+//     console.log('formData', formData)
+//     return 'success'
+//   } catch (error) {
+//     console.error('Error:', error)
+//     return 'error'
+//   }
+// }

@@ -10,7 +10,7 @@
   color: $color-white;
   transition: all 0.2s;
   border-radius: 5px;
-
+  cursor: pointer;
   &:focus-visible {
     // transition: none;
   }

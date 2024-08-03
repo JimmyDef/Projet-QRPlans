@@ -23,3 +23,8 @@ export const signInSchema = object({
       'Password must contain at least one special character (!@#$%^&*)'
     ),
 })
+export const credentialsSchema = object({
+  email: string({ required_error: 'Email is required' })
+    .min(1, 'Email is required')
+    .email('Invalid email'),
+})
