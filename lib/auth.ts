@@ -7,9 +7,9 @@ import Facebook from 'next-auth/providers/facebook'
 import LinkedIn from 'next-auth/providers/linkedin'
 
 import Credentials from 'next-auth/providers/credentials'
-import { ZodError } from 'zod'
+// import { ZodError } from 'zod'
 // import { saltAndHashPassword } from '@/services/helpers'
-import { signInSchema } from '@/lib/zod'
+// import { signInSchema } from '@/lib/zod'
 // import bcrypt from 'bcrypt'
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
@@ -22,7 +22,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Credentials({
       credentials: {
         email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials): Promise<any> => {
         try {
@@ -34,7 +33,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           if (!user) {
             return null
           }
-
           return user
         } catch (error) {
           console.error('error credentials authjs', error)

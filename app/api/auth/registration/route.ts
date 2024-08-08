@@ -3,6 +3,10 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import bcrypt from 'bcrypt'
 import { capitalizeFirstLetter } from '@/services/helpers'
 import { NextResponse } from 'next/server'
+import { randomUUID } from 'crypto'
+import { sendActivationEmail } from '@/services/emailService'
+// import { redirect } from 'next/navigation'
+
 export async function POST(req: Request) {
   try {
     const { email, password, firstName, lastName } = await req.json()
@@ -23,15 +27,38 @@ export async function POST(req: Request) {
         name: `${cleanedFirstname} ${cleanedLastname}`,
       },
     })
+    if (!user) {
+      throw new Error('User not created')
+    }
 
-    return NextResponse.json({ user, status: 201 })
+    const token = await prisma.activateToken.create({
+      data: {
+        userId: user.id,
+        token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ''),
+      },
+    })
+    if (!token) {
+      throw new Error('Token not created')
+    }
+
+    sendActivationEmail({
+      email,
+      subject: 'Activate your account',
+      fullName: user.name ?? '',
+      verificationLink: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/activate/${token.token}`,
+    })
+
+    return NextResponse.json({ message: 'User created' }, { status: 201 })
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
         // Code P2002 indique une violation de la contrainte unique
-        return NextResponse.json({ error: 'Email already exists', status: 409 })
+        return NextResponse.json(
+          { error: 'Email already exists' },
+          { status: 409 }
+        )
       }
-      return NextResponse.json({ error, status: 500 })
+      return NextResponse.json({ error }, { status: 500 })
     }
   }
 }

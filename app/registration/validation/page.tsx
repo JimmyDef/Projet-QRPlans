@@ -1,7 +1,15 @@
 import React from 'react'
 import Link from 'next/link'
 import './confirm-email.scss'
-const EmailConfirmation = () => {
+import { getSession } from '@/lib/getSession'
+
+import { redirect } from 'next/navigation'
+const EmailConfirmation = async () => {
+  const session = await getSession()
+  if (session) {
+    redirect('/dashboard')
+  }
+
   return (
     <div className="confirm-email__container">
       <h1 className="confirm-email__title">Email de Confirmation Envoyé</h1>

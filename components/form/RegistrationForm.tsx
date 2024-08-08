@@ -4,16 +4,17 @@ import Image from 'next/image'
 import { AuthButton } from '@/components/buttons/AuthButton'
 import { useState } from 'react'
 import PasswordCheckList from '@/components/passwordCheckList/PasswordCheckList'
-import { removeNonAlphabeticCharacters } from '@/services/helpers'
+import { sanitizeInput } from '@/services/helpers'
 import './form.scss'
-
+import { useRouter } from 'next/navigation'
 const RegistrationForm = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [errorAuthBtn, setErrorAuthBtn] = useState<string | null>(null)
-  const [errorSignUp, setErrorSignUp] = useState(false)
+  const [errorSignUp, setErrorSignUp] = useState<string | null>(null)
+  const [isPasswordForgotten, setIsPasswordForgotten] = useState(false)
   const [isFormValid, setIsFormValid] = useState(true)
   const [isPasswordsEqual, setIsPasswordsEqual] = useState(true)
-
+  const router = useRouter()
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -40,17 +41,19 @@ const RegistrationForm = () => {
         method: 'POST',
         body: JSON.stringify(form),
       })
-      if (!res.ok) {
-        throw new Error(`HTTP error! Status: ${res.status}`)
-      }
-      const data = await res.json()
-      console.log(data)
-      if (data.error.status === 409) {
-        setErrorSignUp(true)
-        throw new Error(data.error)
+      if (res.ok) {
+        router.push('/registration/validation')
+      } else {
+        if (res.status === 409) {
+          setIsPasswordForgotten(true)
+        } else if (res.status === 400) {
+          setErrorSignUp('Missing required fields. Please fill out all fields.')
+        } else {
+          setErrorSignUp('An unexpected error occurred. Please try again.')
+        }
       }
     } catch (error) {
-      setErrorSignUp(true)
+      setErrorSignUp('Failed to submit the form. Please try again later.')
       console.error('Error fetch:', error)
     } finally {
       setIsLoading(false)
@@ -68,7 +71,7 @@ const RegistrationForm = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    const formattedValue = removeNonAlphabeticCharacters(value)
+    const formattedValue = sanitizeInput(value)
     setForm({ ...form, [name]: formattedValue })
   }
 
@@ -287,9 +290,11 @@ const RegistrationForm = () => {
           />
         </div>
         {!isFormValid && <p className="form-error">Please fill all fields.</p>}
-        {errorSignUp && (
+        {errorSignUp && <p className="form-error">{errorSignUp}</p>}
+        {isPasswordForgotten && (
           <p className="form-error">
-            Email already exists.{` `}
+            Email already exists
+            {` `}
             <Link href="/" className="form-error--password">
               Forgot password?
             </Link>

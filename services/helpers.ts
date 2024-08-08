@@ -9,3 +9,6 @@ export const removeChevronCharacters = (input: string) => {
 export const removeNonAlphabeticCharacters = (input: string) => {
   return input.replace(/[^a-zA-Z]/g, '')
 }
+export const sanitizeInput = (input: string) => {
+  return input.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ-' ]/g, '')
+}

@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import { AuthButton } from '@/components/buttons/AuthButton'
 import { useState } from 'react'
-import { credentialsSignIn } from '@/app/actions/action'
+import signInWithCredentials from '@/services/signInWithCredentials'
 import './form.scss'
 import Link from 'next/link'
 
@@ -35,7 +35,7 @@ const SignIn = () => {
     }
 
     try {
-      await credentialsSignIn(form)
+      await signInWithCredentials(form)
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)

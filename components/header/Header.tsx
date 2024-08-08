@@ -66,7 +66,7 @@ const Header = ({ user }: HeaderProps) => {
             <ul className="header__list">
               <li className="header__item">
                 <Link
-                  href="signIn"
+                  href="/signIn"
                   className="header__link header__link--sign-in"
                 >
                   {t('logIn')}
