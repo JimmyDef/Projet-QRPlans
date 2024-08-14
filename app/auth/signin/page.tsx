@@ -1,14 +1,14 @@
-import SignInForm from '@/components/form/SignInForm'
-// import { auth } from '@/lib/auth'
+import { signIn } from 'next-auth/react'
 import { getSession } from '@/lib/getSession'
-
 import { redirect } from 'next/navigation'
+import SignInForm from '@/components/form/SignInForm'
 
-const SignIn = async () => {
+const SignInPage = async () => {
   const session = await getSession()
   if (session) {
     redirect('/dashboard')
   }
+
   return <SignInForm />
 }
-export default SignIn
+export default SignInPage

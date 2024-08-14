@@ -1,42 +1,40 @@
-/* EmailConfirmation.module.scss */
-
-.confirm-email__container {
+.email__container {
   padding: 20px;
   background-color: #f9f9f9;
-  border-radius: 8px;
+  border-radius: 11px;
   max-width: 600px;
   margin: 0 auto;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.confirm-email__title {
+.email__title {
   font-size: 2rem;
   font-weight: bold;
   color: #333;
   margin-bottom: 10px;
 }
 
-.confirm-email__text {
+.email__text {
   font-size: 1rem;
   color: #555;
   line-height: 1.5;
   margin-bottom: 15px;
 }
 
-.confirm-email__link {
+.email__link {
   font-size: 1rem;
   color: #0070f3;
   text-decoration: none;
 }
 
-.confirm-email__link:hover {
+.email__link:hover {
   text-decoration: underline;
 }
 
-.confirm-email__link--resend {
+.email__link--resend {
   font-weight: bold;
 }
 
-.confirm-email__link--support {
+.email__link--support {
   font-style: italic;
 }

@@ -1,5 +1,5 @@
 import RegistrationForm from '@/components/form/RegistrationForm'
-import { get } from 'http'
+
 // import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/getSession'

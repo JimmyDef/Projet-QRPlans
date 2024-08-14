@@ -9,7 +9,6 @@ type AuthButtonProps = PropsWithChildren<{
   className?: string
   isLoading: boolean
   setIsLoading: Dispatch<SetStateAction<boolean>>
-  setErrorAuthBtn: Dispatch<SetStateAction<string | null>>
 }>
 
 export const AuthButton = ({
@@ -19,24 +18,14 @@ export const AuthButton = ({
   provider,
   isLoading,
   setIsLoading,
-  setErrorAuthBtn,
 }: AuthButtonProps) => {
   const handleSignIn = async () => {
     try {
       setIsLoading(true)
-      setErrorAuthBtn(null) // Reset error state before attempting sign in
-
-      const result = await signIn(provider, { callbackUrl: '/dashboard' })
-
-      if (result?.error) {
-        setErrorAuthBtn(result.error)
-        console.log('handleSignIn relust.error:', result.error)
-      } else {
-        // Handle successful sign-in
-      }
+      await signIn(provider, { callbackUrl: '/dashboard' })
     } catch (error) {
       console.log('handleSignIn:', error)
-      setErrorAuthBtn('An unexpected error occurred. Please try again.')
+
       setIsLoading(false)
     }
   }

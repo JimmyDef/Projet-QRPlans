@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import './confirm-email.scss'
+import '@/styles/app/shared/email-sent-success.scss'
 import { getSession } from '@/lib/getSession'
 
 import { redirect } from 'next/navigation'
@@ -26,7 +26,7 @@ const EmailConfirmation = async () => {
         Si vous n&apos;avez toujours pas reçu l&apos;email, vous pouvez{' '}
         <Link
           className="confirm-email__link  confirm-email__link--resend"
-          href="/resend-email"
+          href="/token-activation/resend-activation-link"
         >
           réenvoyer l&apos;email de validation
         </Link>

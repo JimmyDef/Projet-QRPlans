@@ -1,0 +1,39 @@
+// @import '@/styles/abstacts/variables';
+@import '@/styles/abstacts/mixins';
+.activation-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  //   height: 100%;
+  //   width: 100%;
+  //   background-color: #f5f5f5;
+  &__title {
+    font-size: clamp(24px, 5vw, 40px);
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  &__text {
+    font-size: clamp(16px, 3vw, 24px);
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+  &__link {
+    @include main-link;
+    width: 200px;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    // @include box-shadow-light-color;
+    // @include gradient-grey-blue;
+    @media (max-width: $notebook-width) {
+      font-size: 16px;
+    }
+    @media (max-width: $tablet-width) {
+      width: 200px;
+      height: 40px;
+      // font-size: 14px;
+    }
+  }
+}

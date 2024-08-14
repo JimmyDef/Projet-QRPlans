@@ -5,11 +5,12 @@ import { AuthButton } from '@/components/buttons/AuthButton'
 import { useState } from 'react'
 import PasswordCheckList from '@/components/passwordCheckList/PasswordCheckList'
 import { sanitizeInput } from '@/services/helpers'
-import './form.scss'
+import '@/styles/app/shared/form.scss'
+
 import { useRouter } from 'next/navigation'
 const RegistrationForm = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const [errorAuthBtn, setErrorAuthBtn] = useState<string | null>(null)
+
   const [errorSignUp, setErrorSignUp] = useState<string | null>(null)
   const [isPasswordForgotten, setIsPasswordForgotten] = useState(false)
   const [isFormValid, setIsFormValid] = useState(true)
@@ -42,7 +43,7 @@ const RegistrationForm = () => {
         body: JSON.stringify(form),
       })
       if (res.ok) {
-        router.push('/registration/validation')
+        router.push('/registration/emailSentSuccess')
       } else {
         if (res.status === 409) {
           setIsPasswordForgotten(true)
@@ -88,12 +89,12 @@ const RegistrationForm = () => {
         </div>
       </div>
       <div className="auth-btn-container">
-        {errorAuthBtn && <p className="error">{errorAuthBtn}</p>}
+        {/* {errorAuthBtn && <p className="error">{errorAuthBtn}</p>} */}
         <AuthButton
           className="sign__brand sign__brand--google"
           provider="google"
           setIsLoading={setIsLoading}
-          setErrorAuthBtn={setErrorAuthBtn}
+          // setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with Google"
         >
@@ -110,7 +111,7 @@ const RegistrationForm = () => {
           className="sign__brand sign__brand--github"
           provider="github"
           setIsLoading={setIsLoading}
-          setErrorAuthBtn={setErrorAuthBtn}
+          // setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with GitHub"
         >
@@ -127,7 +128,7 @@ const RegistrationForm = () => {
           className="sign__brand sign__brand--facebook"
           provider="Facebook"
           setIsLoading={setIsLoading}
-          setErrorAuthBtn={setErrorAuthBtn}
+          // setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with Facebook"
         >
@@ -144,7 +145,7 @@ const RegistrationForm = () => {
           className="sign__brand sign__brand--LinkedIn"
           provider="linkedin"
           setIsLoading={setIsLoading}
-          setErrorAuthBtn={setErrorAuthBtn}
+          // setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with LinkedIn"
         >
@@ -283,7 +284,7 @@ const RegistrationForm = () => {
             placeholder="Wick"
             name="lastName"
             type="text"
-            className={`input_field ${
+            className={`input_field   ${
               !isFormValid && !form.lastName ? 'input-error' : ''
             } `}
             id="lastName"
@@ -295,7 +296,10 @@ const RegistrationForm = () => {
           <p className="form-error">
             Email already exists
             {` `}
-            <Link href="/" className="form-error--password">
+            <Link
+              href="/reset-password/send-email"
+              className="form-password-error--registration"
+            >
               Forgot password?
             </Link>
           </p>

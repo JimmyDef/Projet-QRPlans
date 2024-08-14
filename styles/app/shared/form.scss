@@ -1,4 +1,4 @@
-@import '@/styles/abstacts/_variables.scss';
+@import '@/styles/abstacts/variables.scss';
 @import '@/styles/abstacts/mixins';
 
 .sign_form {
@@ -12,8 +12,15 @@
   font-weight: 600;
   font-size: 18px;
 }
-.form-error--password {
+.form-password-error--registration {
   text-decoration: underline;
+}
+.form-password-error--sign-in {
+  text-align: end;
+  text-decoration: underline;
+  font-size: 0.8rem;
+  margin-bottom: 20px;
+  cursor: pointer;
 }
 
 .password-confirmation-error {
@@ -78,11 +85,17 @@
   }
 
   .subtitle {
+    margin: auto;
     font-size: 1rem;
     max-width: 80%;
     text-align: center;
     // line-height: 1.1rem;
     color: #8b8e98;
+    &--OAuthAccountNotLinked {
+      padding: 15px 7px;
+      color: red;
+      background-color: $background-color-light-grey;
+    }
   }
 
   .input_container {
@@ -106,6 +119,9 @@
     padding: 0 0 0 40px;
     &.input-error {
       border: 1px solid red;
+    }
+    &--password-sign-in {
+      margin-bottom: 0px;
     }
   }
 
@@ -170,7 +186,7 @@
     position: absolute;
     z-index: 99;
     left: 12px;
-    top: 26px;
+    top: 28px;
 
     pointer-events: none;
   }

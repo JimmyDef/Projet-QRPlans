@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react'
+// import { FunctionComponent } from 'react'
 import { colors } from '@/variables'
 import { Html, Button } from '@react-email/components'
 import * as React from 'react'

@@ -5,7 +5,6 @@ import { capitalizeFirstLetter } from '@/services/helpers'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 import { sendActivationEmail } from '@/services/emailService'
-// import { redirect } from 'next/navigation'
 
 export async function POST(req: Request) {
   try {

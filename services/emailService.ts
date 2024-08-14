@@ -22,7 +22,7 @@ export const sendActivationEmail = async ({
       fullName: fullName,
       verificationLink: verificationLink,
     })
-  ) // Use React.createElement to create the JSX element
+  )
   const options = {
     from: 'QR-Plans <qrplans@gmail.com>',
     to: [email],

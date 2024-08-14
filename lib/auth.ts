@@ -5,12 +5,9 @@ import GitHub from 'next-auth/providers/github'
 import Google from 'next-auth/providers/google'
 import Facebook from 'next-auth/providers/facebook'
 import LinkedIn from 'next-auth/providers/linkedin'
-
 import Credentials from 'next-auth/providers/credentials'
-// import { ZodError } from 'zod'
-// import { saltAndHashPassword } from '@/services/helpers'
-// import { signInSchema } from '@/lib/zod'
-// import bcrypt from 'bcrypt'
+
+import bcrypt from 'bcrypt'
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
   adapter: PrismaAdapter(prisma),
@@ -22,20 +19,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Credentials({
       credentials: {
         email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials): Promise<any> => {
         try {
-          const { email } = credentials
+          const { email, password } = credentials
           const user = await prisma.user.findUnique({
             where: { email: email as string },
           })
 
           if (!user) {
+            // throw new Error('No user found with this email')
             return null
           }
+
+          // const isPasswordValid =
+          //   user.password &&
+          //   (await bcrypt.compare(password as string, user.password))
+          // if (!isPasswordValid) {
+          //   console.error('Invalid password')
+          //   return null
+          // }
           return user
         } catch (error) {
-          console.error('error credentials authjs', error)
+          console.error('Error in credentials auth:', error)
           // Return `null` to indicate that the credentials are invalid
           return null
         }
@@ -53,16 +60,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.id = token.id as string
       return session
     },
-    // async redirect({ url, baseUrl }) {
-    //   // Redirige vers le tableau de bord après la connexion
-    //   if (url.startsWith(baseUrl)) return Promise.resolve('/dashboard')
-    //   // Redirige vers la page précédente après la déconnexion
-    //   return Promise.resolve(baseUrl)
-    // },
   },
 
-  // pages: {
-  //   signIn: '/signIn',
-  //   error: '/auth/error',
-  // },
+  pages: {
+    signIn: '/auth/signin',
+    error: '/auth/error',
+  },
 })

@@ -1,11 +1,11 @@
 'use server'
-// import { revalidatePath } from 'next/cache'
+
 import { signIn } from '@/lib/auth'
 import prisma from '@/lib/prisma'
 import bcrypt from 'bcrypt'
 
 import { credentialsSchema } from '@/lib/zod'
-import { ZodError } from 'zod'
+// import { ZodError } from 'zod'
 type Form = {
   email: string
   password: string
@@ -23,7 +23,15 @@ const signInWithCredentials = async ({ email, password }: Form) => {
       where: { email: parsedData.email },
     })
     if (!user) {
-      throw new Error("User doesn't exist")
+      throw new Error("User doesn't exist.")
+    }
+    const userProvider = await prisma.account.findUnique({
+      where: { userId: user.id },
+    })
+    if (userProvider) {
+      throw new Error(
+        `Account were created with ${userProvider.provider} as provider, please use it.`
+      )
     }
 
     const isPasswordValid =
@@ -34,15 +42,10 @@ const signInWithCredentials = async ({ email, password }: Form) => {
 
     await signIn('credentials', {
       email: parsedData.email,
+      // password: password,
       redirectTo: '/dashboard',
     })
   } catch (error) {
-    if (error instanceof ZodError) {
-      console.log('ZodError:', error)
-      // Transform the ZodError to a human-readable message
-      // const formattedError = error.errors.map((e) => e.message).join(', ')
-      throw new Error('Invalid email')
-    }
     throw error
   }
 }

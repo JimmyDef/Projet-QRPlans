@@ -1,11 +1,12 @@
 'use client'
 import Image from 'next/image'
 import { AuthButton } from '@/components/buttons/AuthButton'
-import { useState } from 'react'
 import signInWithCredentials from '@/services/signInWithCredentials'
-import './form.scss'
-import Link from 'next/link'
+import '@/styles/app/shared/form.scss'
 
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
 type Form = {
   email: string
   password: string
@@ -14,20 +15,40 @@ type Form = {
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isFormValid, setIsFormValid] = useState(true)
-  const [_error, setErrorAuthBtn] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [form, setForm] = useState<Form>({
     email: '',
     password: '',
   })
-
+  const [subtitle, setSubtitle] = useState('')
+  const [subtitleClassName, setSubtitleClassName] = useState('')
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+  useEffect(() => {
+    if (
+      pathname === '/auth/signin' &&
+      searchParams.get('error') === 'OAuthAccountNotLinked'
+    ) {
+      setSubtitle(
+        'To confirm your identity, sign in with the same account you used originally.'
+      )
+      setSubtitleClassName('subtitle subtitle--OAuthAccountNotLinked')
+    } else if (pathname === '/signIn') {
+      setSubtitle(
+        'Get access to your dashboard by using credentials or providers.'
+      )
+      setSubtitleClassName('subtitle subtitle--signIn')
+    } else {
+      setSubtitle('')
+      setSubtitleClassName('')
+    }
+  }, [pathname, searchParams])
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
     form: Form
   ) => {
     event.preventDefault()
     setIsFormValid(true)
-    setErrorAuthBtn(null)
 
     if (Object.values(form).some((value) => value.trim() === '')) {
       setIsFormValid(false)
@@ -39,6 +60,7 @@ const SignIn = () => {
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)
+        console.log('setError', err.message)
       }
 
       console.error('handleSubmit', err)
@@ -54,9 +76,9 @@ const SignIn = () => {
         <div className="logo_container"></div>
         <div className="title_container">
           <p className="title">Login to your Account</p>
-          <span className="subtitle">
-            Get acces to your account, just login with your credentials.
-          </span>
+          <div className="subtitle--OAuthAccountNotLinked-wrapper">
+            <p className={subtitleClassName}>{subtitle}</p>
+          </div>
         </div>
         <br />
         <div className="input_container">
@@ -102,12 +124,18 @@ const SignIn = () => {
             placeholder="Password"
             name="password"
             type="password"
-            className={`input_field ${
+            className={`input_field  input_field--password-sign-in${
               !isFormValid && !form.password ? 'input-error' : ''
             } `}
             id="password_field"
             autoComplete="current-password"
           />
+          <Link
+            href="/reset-password/send-email"
+            className="form-password-error--sign-in"
+          >
+            Forgot password?
+          </Link>
         </div>
         {!isFormValid && <p className="form-error">Please fill all fields.</p>}
         {error && <p className="form-error">{error}</p>}
@@ -129,7 +157,6 @@ const SignIn = () => {
           className="sign__brand sign__brand--google"
           provider="google"
           setIsLoading={setIsLoading}
-          setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with Google"
         >
@@ -146,7 +173,6 @@ const SignIn = () => {
           className="sign__brand sign__brand--github"
           provider="github"
           setIsLoading={setIsLoading}
-          setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with GitHub"
         >
@@ -163,7 +189,6 @@ const SignIn = () => {
           className="sign__brand sign__brand--facebook"
           provider="Facebook"
           setIsLoading={setIsLoading}
-          setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with Facebook"
         >
@@ -180,7 +205,6 @@ const SignIn = () => {
           className="sign__brand sign__brand--LinkedIn"
           provider="linkedin"
           setIsLoading={setIsLoading}
-          setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with LinkedIn"
         >
@@ -196,9 +220,9 @@ const SignIn = () => {
       </div>
       <div className="footer">
         <p className="register">
-          Create your account with providers above or{' '}
+          Connect your account with providers above or{' '}
           <Link className="register-link" href="/registration">
-            Register.
+            register.
           </Link>
         </p>
         <p className="note">Terms of use &amp; Conditions</p>
