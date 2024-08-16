@@ -1,15 +1,16 @@
-import './activation-fail.scss'
+import '@/styles/app/shared/token-activation.scss'
+
 import Link from 'next/link'
 const ActivationFail = () => {
   return (
-    <div className="activation-fail">
-      <h1 className="activation-fail__title">
+    <div className="token-activation">
+      <h1 className="token-activation__title">
         Activation link invalid or expired.
       </h1>
-      <p className="activation-fail__text">Please request a new one.</p>
+      <p className="token-activation__text">Please request a new one.</p>
       <Link
         href="/token-activation/resend-activation-link"
-        className="activation-fail__link"
+        className="token-activation__link"
       >
         Send me a new link
       </Link>

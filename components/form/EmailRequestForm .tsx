@@ -36,12 +36,10 @@ const EmailRequestForm = ({ title, api, callBackUrl }: EmailRequestForm) => {
       if (res.ok) {
         router.push(callBackUrl)
       } else {
-        if (res.status === 409) {
-          setErrorEmail('This email is already activated.')
-        } else if (res.status === 400) {
-          setErrorEmail('Please fill Email field.')
-        } else if (res.status === 404) {
-          setErrorEmail('This email does not exist in our database.')
+        if (!res.ok) {
+          const errorMessage = await res.json()
+          console.error('Error:', errorMessage.error)
+          setErrorEmail(errorMessage.error)
         } else {
           setErrorEmail('An unexpected error occurred. Please try again.')
         }

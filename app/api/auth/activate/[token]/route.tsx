@@ -18,9 +18,6 @@ export async function GET(
           some: {
             AND: [
               {
-                activatedAt: null,
-              },
-              {
                 createdAt: {
                   gt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24 hours ago
                 },
@@ -37,6 +34,12 @@ export async function GET(
     if (!user) {
       return NextResponse.redirect(
         new URL('/token-activation/invalid', request.url)
+      )
+    }
+    console.log('🚀 ~ user:', user)
+    if (user.active) {
+      return NextResponse.redirect(
+        new URL('/token-activation/already-activated', request.url)
       )
     }
 
@@ -72,7 +75,7 @@ export async function GET(
       )
     }
     return NextResponse.redirect(
-      new URL('/tokent-activation/success', request.url)
+      new URL('/token-activation/success', request.url)
     )
   } catch (error) {
     console.error('Error activating user:', error)

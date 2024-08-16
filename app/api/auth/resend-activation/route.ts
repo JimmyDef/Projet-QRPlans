@@ -22,25 +22,40 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       )
     }
-    const isTokenActive = await prisma.activateToken.findFirst({
-      where: {
-        userId: user.id,
-        activatedAt: null,
-      },
-    })
-
-    if (!isTokenActive) {
+    if (user.active) {
       return NextResponse.json(
         { error: 'This email is already activated.' },
         { status: 409 }
       )
     }
 
-    const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000)
-    if (isTokenActive.createdAt > fifteenMinutesAgo) {
+    const userProvider = await prisma.account.findUnique({
+      where: { userId: user.id, provider: { not: undefined } },
+    })
+    if (userProvider) {
       return NextResponse.json(
         {
-          error: 'You can only request a new activation link once every hour.',
+          error: `Account doesn't need activation. It was created with ${userProvider.provider} as provider, please use it to sign in.`,
+        },
+        { status: 403 }
+      )
+    }
+
+    const isTokenActive = await prisma.activateToken.findFirst({
+      where: {
+        userId: user.id,
+        activatedAt: null,
+      },
+      orderBy: {
+        createdAt: 'desc', // Trie par date de création, du plus récent au plus ancien
+      },
+    })
+    const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000)
+    if (isTokenActive && isTokenActive.createdAt > fifteenMinutesAgo) {
+      return NextResponse.json(
+        {
+          error:
+            'You can only request a new activation link once every 15 minutes.',
         },
         { status: 429 }
       )

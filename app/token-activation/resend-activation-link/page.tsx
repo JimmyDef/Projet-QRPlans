@@ -1,4 +1,5 @@
-import './activation-resend.scss'
+import '@/styles/app/shared/token-activation.scss'
+
 // import Link from 'next/link'
 import EmailRequestForm from '@/components/form/EmailRequestForm '
 const RequestActivationMail = async () => {
@@ -6,7 +7,7 @@ const RequestActivationMail = async () => {
     <EmailRequestForm
       title="Activate Your Account"
       api="/api/auth/resend-activation"
-      callBackUrl="/registration/emailSentSuccess"
+      callBackUrl="/registration/email-sent-successfully"
     />
   )
 }

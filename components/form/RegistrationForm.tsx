@@ -43,7 +43,7 @@ const RegistrationForm = () => {
         body: JSON.stringify(form),
       })
       if (res.ok) {
-        router.push('/registration/emailSentSuccess')
+        router.push('/registration/email-sent-successfully')
       } else {
         if (res.status === 409) {
           setIsPasswordForgotten(true)
