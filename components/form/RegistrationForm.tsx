@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { AuthButton } from '@/components/buttons/AuthButton'
 import { useState } from 'react'
 import PasswordCheckList from '@/components/passwordCheckList/PasswordCheckList'
-import { sanitizeInput } from '@/services/helpers'
+import { sanitizeInput, comparePasswords } from '@/services/helpers'
 import '@/styles/app/shared/form.scss'
 
 import { useRouter } from 'next/navigation'
@@ -14,6 +14,7 @@ const RegistrationForm = () => {
   const [errorSignUp, setErrorSignUp] = useState<string | null>(null)
   const [isPasswordForgotten, setIsPasswordForgotten] = useState(false)
   const [isFormValid, setIsFormValid] = useState(true)
+  const [isPasswordValid, setIsPasswordValid] = useState(true)
   const [isPasswordsEqual, setIsPasswordsEqual] = useState(true)
   const router = useRouter()
   const [form, setForm] = useState({
@@ -24,17 +25,17 @@ const RegistrationForm = () => {
     lastName: '',
   })
 
-  const comparePasswords = (password: string, passwordConfirmation: string) => {
-    return password !== passwordConfirmation
-  }
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    if (!isPasswordValid) {
+      return setErrorSignUp('Password is not strong enough.')
+    }
+    setErrorSignUp('')
+    if (Object.values(form).some((value) => value.trim() === ''))
+      return setIsFormValid(false)
 
     if (comparePasswords(form.password, form.passwordConfirmation))
       return setIsPasswordsEqual(false)
-    if (Object.values(form).some((value) => value.trim() === ''))
-      return setIsFormValid(false)
 
     try {
       setIsLoading(true)
@@ -69,7 +70,20 @@ const RegistrationForm = () => {
     }
     return setIsPasswordsEqual(true)
   }
+  const handlePasswordConfirmationChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const updatedPasswordConfirmation = e.target.value
+    setForm({
+      ...form,
+      passwordConfirmation: updatedPasswordConfirmation,
+    })
 
+    if (form.password === updatedPasswordConfirmation) {
+      console.log('form', updatedPasswordConfirmation)
+      return setIsPasswordsEqual(true)
+    }
+  }
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     const formattedValue = sanitizeInput(value)
@@ -89,12 +103,10 @@ const RegistrationForm = () => {
         </div>
       </div>
       <div className="auth-btn-container">
-        {/* {errorAuthBtn && <p className="error">{errorAuthBtn}</p>} */}
         <AuthButton
           className="sign__brand sign__brand--google"
           provider="google"
           setIsLoading={setIsLoading}
-          // setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with Google"
         >
@@ -111,7 +123,6 @@ const RegistrationForm = () => {
           className="sign__brand sign__brand--github"
           provider="github"
           setIsLoading={setIsLoading}
-          // setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with GitHub"
         >
@@ -128,7 +139,6 @@ const RegistrationForm = () => {
           className="sign__brand sign__brand--facebook"
           provider="Facebook"
           setIsLoading={setIsLoading}
-          // setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with Facebook"
         >
@@ -145,7 +155,6 @@ const RegistrationForm = () => {
           className="sign__brand sign__brand--LinkedIn"
           provider="linkedin"
           setIsLoading={setIsLoading}
-          // setErrorAuthBtn={setErrorAuthBtn}
           isLoading={isLoading}
           title="Sign In with LinkedIn"
         >
@@ -158,7 +167,7 @@ const RegistrationForm = () => {
           />
           <span className="auth-label">Linked In</span>
         </AuthButton>
-        {/* <p className="note">Terms of use &amp; Conditions</p> */}
+        <p className="note">Terms of use &amp; Conditions</p>
       </div>
 
       <div className="separator">
@@ -221,7 +230,10 @@ const RegistrationForm = () => {
             id="password_field"
             autoComplete="new-password"
           />
-          <PasswordCheckList password={form.password} />
+          <PasswordCheckList
+            password={form.password}
+            setIsPasswordValid={setIsPasswordValid}
+          />
         </div>
         <div className="input_container">
           <label className="input_label" htmlFor="password_confirmation_field">
@@ -239,9 +251,7 @@ const RegistrationForm = () => {
           />
           <input
             value={form.passwordConfirmation}
-            onChange={(e) =>
-              setForm({ ...form, passwordConfirmation: e.target.value })
-            }
+            onChange={handlePasswordConfirmationChange}
             onBlur={handlePasswordMismatch}
             placeholder="Password"
             name="passwordConfirmation"
@@ -253,7 +263,7 @@ const RegistrationForm = () => {
                 : ''
             } `}
             id="password_confirmation_field"
-            autoComplete="new-password"
+            autoComplete="none"
           />
         </div>
         <div className="input_container">

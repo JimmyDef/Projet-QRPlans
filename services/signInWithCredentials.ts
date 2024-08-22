@@ -33,7 +33,9 @@ const signInWithCredentials = async ({ email, password }: Form) => {
         `Account were created with ${userProvider.provider} as provider, please use it.`
       )
     }
-
+    if (user.active === false) {
+      throw new Error('Email is not verified.')
+    }
     const isPasswordValid =
       user.password && (await bcrypt.compare(password, user.password))
     if (!isPasswordValid) {
@@ -42,7 +44,7 @@ const signInWithCredentials = async ({ email, password }: Form) => {
 
     await signIn('credentials', {
       email: parsedData.email,
-      // password: password,
+      password: password,
       redirectTo: '/dashboard',
     })
   } catch (error) {

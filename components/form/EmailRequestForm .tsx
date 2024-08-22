@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import '@/styles/app/shared/form.scss'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 type EmailRequestForm = {
   title: string
@@ -97,7 +98,20 @@ const EmailRequestForm = ({ title, api, callBackUrl }: EmailRequestForm) => {
         </div>
 
         {!isFormValid && <p className="form-error">Please fill Email field.</p>}
-        {errorEmail && <p className="form-error">{errorEmail}</p>}
+        {errorEmail && (
+          <p className="form-error">
+            {errorEmail} {''}
+            <br />
+            {errorEmail === 'This email must be activated.' && (
+              <Link
+                href="/token-activation/resend-activation-link"
+                className="unverified-email-link "
+              >
+                Request activation link.
+              </Link>
+            )}
+          </p>
+        )}
 
         <button type="submit" className="sign_btn" disabled={isLoading}>
           <span>Send me the link</span>

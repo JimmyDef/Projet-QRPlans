@@ -1,24 +1,24 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { getCsrfToken } from 'next-auth/react'
+// import { useState, useEffect } from 'react'
+// import { getCsrfToken } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
-import { signIn } from 'next-auth/react'
+// import { signIn } from 'next-auth/react'
 
 import SignInForm from '@/components/form/SignInForm'
 
 const SignInModule = () => {
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
-  const [csrfToken, setCsrfToken] = useState<string | null>(null)
+  // const [csrfToken, setCsrfToken] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchCsrfToken = async () => {
-      const token = await getCsrfToken()
-      setCsrfToken(token)
-    }
-    fetchCsrfToken()
-  }, [])
+  // useEffect(() => {
+  //   const fetchCsrfToken = async () => {
+  //     const token = await getCsrfToken()
+  //     setCsrfToken(token)
+  //   }
+  //   fetchCsrfToken()
+  // }, [])
   let errorMessage = ''
 
   switch (error) {

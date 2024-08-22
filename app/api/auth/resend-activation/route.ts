@@ -1,8 +1,9 @@
 import { NextRequest } from 'next/server'
-import { sendActivationEmail } from '@/services/emailService'
+import { sendEmail } from '@/services/emailService'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 import prisma from '@/lib/prisma'
+import EmailVerificationTemplate from '@/emails/EmailVerificationTemplate'
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json()
@@ -29,7 +30,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const userProvider = await prisma.account.findUnique({
+    const userProvider = await prisma.account.findFirst({
       where: { userId: user.id, provider: { not: undefined } },
     })
     if (userProvider) {
@@ -47,7 +48,7 @@ export async function POST(req: NextRequest) {
         activatedAt: null,
       },
       orderBy: {
-        createdAt: 'desc', // Trie par date de création, du plus récent au plus ancien
+        createdAt: 'desc',
       },
     })
     const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000)
@@ -70,11 +71,12 @@ export async function POST(req: NextRequest) {
       throw new Error('Token not created')
     }
 
-    sendActivationEmail({
+    sendEmail({
       email,
       subject: 'Activate your account',
       fullName: user.name ?? '',
-      verificationLink: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/activate/${token.token}`,
+      link: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/activate/${token.token}`,
+      template: EmailVerificationTemplate,
     })
     return NextResponse.json({ message: 'Email sent' }, { status: 200 })
   } catch (error) {

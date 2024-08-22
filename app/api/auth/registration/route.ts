@@ -4,16 +4,19 @@ import bcrypt from 'bcrypt'
 import { capitalizeFirstLetter } from '@/services/helpers'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
-import { sendActivationEmail } from '@/services/emailService'
+import { sendEmail } from '@/services/emailService'
+import EmailVerificationTemplate from '@/emails/EmailVerificationTemplate'
 
 export async function POST(req: Request) {
   try {
     const { email, password, firstName, lastName } = await req.json()
     if (!email || !password || !firstName || !lastName) {
-      return NextResponse.json({
-        error: 'Missing required fields',
-        status: 400,
-      })
+      return NextResponse.json(
+        {
+          error: 'Missing required fields',
+        },
+        { status: 400 }
+      )
     }
     const pwHash = bcrypt.hashSync(password, 10)
     const cleanedFirstname = capitalizeFirstLetter(firstName)
@@ -40,11 +43,12 @@ export async function POST(req: Request) {
       throw new Error('Token not created')
     }
 
-    sendActivationEmail({
+    sendEmail({
       email,
       subject: 'Activate your account',
       fullName: user.name ?? '',
-      verificationLink: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/activate/${token.token}`,
+      link: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/activate/${token.token}`,
+      template: EmailVerificationTemplate,
     })
 
     return NextResponse.json({ message: 'User created' }, { status: 201 })

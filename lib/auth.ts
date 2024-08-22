@@ -7,7 +7,6 @@ import Facebook from 'next-auth/providers/facebook'
 import LinkedIn from 'next-auth/providers/linkedin'
 import Credentials from 'next-auth/providers/credentials'
 
-import bcrypt from 'bcrypt'
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
   adapter: PrismaAdapter(prisma),
@@ -33,13 +32,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             return null
           }
 
-          // const isPasswordValid =
-          //   user.password &&
-          //   (await bcrypt.compare(password as string, user.password))
-          // if (!isPasswordValid) {
-          //   console.error('Invalid password')
-          //   return null
-          // }
           return user
         } catch (error) {
           console.error('Error in credentials auth:', error)

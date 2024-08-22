@@ -1,17 +1,26 @@
-import React from 'react'
+import { Dispatch, SetStateAction, useEffect } from 'react'
 import Image from 'next/image'
 import './passwordCheckList.scss'
+import {
+  hasLowercase,
+  hasUppercase,
+  hasNumber,
+  hasSpecialCharacter,
+  isValidLength,
+  isPasswordStrong,
+} from '@/services/helpers'
 type PasswordCheckListProps = {
   password: string
+  setIsPasswordValid: Dispatch<SetStateAction<boolean>>
 }
 
-const PasswordCheckList = ({ password }: PasswordCheckListProps) => {
-  const hasLowercase = (password: string) => /[a-z]/.test(password)
-  const hasUppercase = (password: string) => /[A-Z]/.test(password)
-  const hasNumber = (password: string) => /\d/.test(password)
-  const hasSpecialCharacter = (password: string) => /[!@#$%^&*]/.test(password)
-  const isValidLength = (password: string) =>
-    password.length >= 8 && password.length <= 20
+const PasswordCheckList = ({
+  password,
+  setIsPasswordValid,
+}: PasswordCheckListProps) => {
+  useEffect(() => {
+    setIsPasswordValid(isPasswordStrong(password))
+  }, [password, setIsPasswordValid])
 
   const getIcon = (isValid: boolean): string =>
     isValid ? '/logos/check.svg' : '/logos/dot.svg'

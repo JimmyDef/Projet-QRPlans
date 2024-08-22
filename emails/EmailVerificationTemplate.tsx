@@ -4,12 +4,12 @@ import { Html, Button } from '@react-email/components'
 import * as React from 'react'
 interface EmailVerificationProps {
   fullName: string
-  verificationLink: string
+  link: string
 }
 
-const EmailVerification: React.FC<EmailVerificationProps> = ({
+const EmailVerificationTemplate: React.FC<EmailVerificationProps> = ({
   fullName,
-  verificationLink,
+  link,
 }) => {
   return (
     <Html lang="en">
@@ -28,7 +28,7 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
         <p>Please verify your email address by clicking the link below:</p>
         <p>
           <a
-            href={verificationLink}
+            href={link}
             style={{
               display: 'inline-block',
               padding: '10px 20px',
@@ -47,8 +47,8 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
           into your web browser:
         </p>
         <p>
-          <a href={verificationLink} style={{ color: '#007bff' }}>
-            {verificationLink}
+          <a href={link} style={{ color: '#007bff' }}>
+            {link}
           </a>
         </p>
         <p>If you did not sign up for our service, please ignore this email.</p>
@@ -61,4 +61,4 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({
     </Html>
   )
 }
-export default EmailVerification
+export default EmailVerificationTemplate

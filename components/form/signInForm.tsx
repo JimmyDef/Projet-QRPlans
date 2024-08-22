@@ -3,10 +3,11 @@ import Image from 'next/image'
 import { AuthButton } from '@/components/buttons/AuthButton'
 import signInWithCredentials from '@/services/signInWithCredentials'
 import '@/styles/app/shared/form.scss'
-
+import Loader from '@/components/loader/Loader'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
+// import { set } from 'zod'
 type Form = {
   email: string
   password: string
@@ -49,9 +50,10 @@ const SignIn = () => {
   ) => {
     event.preventDefault()
     setIsFormValid(true)
-
+    setIsLoading(true)
     if (Object.values(form).some((value) => value.trim() === '')) {
       setIsFormValid(false)
+      setIsLoading(false)
       return
     }
 
@@ -62,8 +64,9 @@ const SignIn = () => {
         setError(err.message)
         console.log('setError', err.message)
       }
-
       console.error('handleSubmit', err)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -138,10 +141,28 @@ const SignIn = () => {
           </Link>
         </div>
         {!isFormValid && <p className="form-error">Please fill all fields.</p>}
-        {error && <p className="form-error">{error}</p>}
+        {error && (
+          <p className="form-error">
+            {error} {''}
+            {error === 'Email is not verified.' ? (
+              <Link
+                className="unverified-email-link"
+                href="/token-activation/resend-activation-link"
+              >
+                Request activation link?
+              </Link>
+            ) : null}
+          </p>
+        )}
 
-        <button title="Sign In" type="submit" className="sign_btn">
-          <span>Sign In</span>
+        <button
+          title="Sign In"
+          type="submit"
+          className="sign_btn"
+          disabled={isLoading}
+        >
+          {isLoading ? <Loader /> : <span>Sign In</span>}
+          {/* <span>Sign In</span> */}
         </button>
       </form>
       {/* FIN DU FORM ----------------------------------------------- 

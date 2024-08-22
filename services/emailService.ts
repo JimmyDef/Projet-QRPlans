@@ -1,5 +1,4 @@
 import React from 'react'
-import EmailVerification from '@/emails/verificationLink'
 import { NextResponse } from 'next/server'
 import { transporter } from '@/lib/mailTransporter'
 import { render } from '@react-email/components'
@@ -8,19 +7,21 @@ type Email = {
   email: string
   subject: string
   fullName: string
-  verificationLink: string
+  link: string
+  template: React.FC<{ fullName: string; link: string }>
 }
 
-export const sendActivationEmail = async ({
+export const sendEmail = async ({
   email,
   subject,
   fullName,
-  verificationLink,
+  link,
+  template,
 }: Email) => {
   const emailHtml = render(
-    React.createElement(EmailVerification, {
-      fullName: fullName,
-      verificationLink: verificationLink,
+    React.createElement(template, {
+      fullName,
+      link,
     })
   )
   const options = {

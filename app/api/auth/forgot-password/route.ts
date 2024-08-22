@@ -1,8 +1,9 @@
 import { NextRequest } from 'next/server'
-import { sendActivationEmail } from '@/services/emailService'
+import { sendEmail } from '@/services/emailService'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 import prisma from '@/lib/prisma'
+import PasswordResetTemplate from '@/emails/PasswordResetTemplate'
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json()
@@ -22,34 +23,45 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       )
     }
-    // const isTokenActive = await prisma.activateToken.findFirst({
-    //   where: {
-    //     userId: user.id,
-    //     activatedAt: null,
-    //   },
-    // })
-
-    // if (!isTokenActive) {
-    //   return NextResponse.json(
-    //     { error: 'This email is already activated.' },
-    //     { status: 409 }
-    //   )
-    // }
-    const token = await prisma.activateToken.create({
+    if (!user.active) {
+      return NextResponse.json(
+        { error: 'This email must be activated.' },
+        { status: 403 }
+      )
+    }
+    const userProvider = await prisma.account.findFirst({
+      where: { userId: user.id, provider: { not: undefined } },
+    })
+    if (userProvider) {
+      return NextResponse.json(
+        {
+          error: `Account doesn't need password. It was created with ${userProvider.provider} as provider, please use it to sign in.`,
+        },
+        { status: 403 }
+      )
+    }
+    await prisma.passwordResetToken.deleteMany({
+      where: {
+        userId: user.id,
+      },
+    })
+    const token = await prisma.passwordResetToken.create({
       data: {
         userId: user.id,
         token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ''),
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000), // Exemple : le token expire dans 5min
       },
     })
     if (!token) {
       throw new Error('Token not created')
     }
 
-    sendActivationEmail({
+    sendEmail({
       email,
-      subject: 'Activate your account',
+      subject: 'Reset your password',
       fullName: user.name ?? '',
-      verificationLink: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/activate/${token.token}`,
+      link: `${process.env.NEXT_PUBLIC_API_URL}/reset-password/new-password/${token.token}`,
+      template: PasswordResetTemplate,
     })
     return NextResponse.json({ message: 'Email sent' }, { status: 200 })
   } catch (error) {

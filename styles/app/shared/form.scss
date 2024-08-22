@@ -5,34 +5,6 @@
   width: 100%;
   grid-area: form;
 }
-.form-error {
-  margin: 10px auto;
-  text-align: center;
-  color: red;
-  font-weight: 600;
-  font-size: 18px;
-}
-.form-password-error--registration {
-  text-decoration: underline;
-}
-.form-password-error--sign-in {
-  text-align: end;
-  text-decoration: underline;
-  font-size: 0.8rem;
-  margin-bottom: 20px;
-  cursor: pointer;
-}
-
-.password-confirmation-error {
-  &::after {
-    position: absolute;
-    right: 0;
-    content: 'Passwords do not match';
-    color: red;
-    font-size: 14px;
-    font-weight: 500;
-  }
-}
 
 .sign_form_container {
   color: $color-primary;
@@ -242,6 +214,38 @@
     font-weight: 600;
     text-decoration: underline;
     cursor: pointer;
+  }
+
+  .form-error {
+    margin: 10px auto 15px;
+    text-align: center;
+    color: red;
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  .form-password-error--registration {
+    text-decoration: underline;
+  }
+  .form-password-error--sign-in {
+    text-align: end;
+    text-decoration: underline;
+    font-size: 0.8rem;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+  .unverified-email-link {
+    text-decoration: underline;
+  }
+  .password-confirmation-error {
+    &::after {
+      position: absolute;
+      right: 0;
+      content: 'Passwords do not match';
+      color: red;
+      font-size: 14px;
+      font-weight: 500;
+    }
   }
 
   @media screen and (max-width: 600px) {

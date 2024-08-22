@@ -1,4 +1,4 @@
-import './activation-resend.scss'
+// import './activation-resend.scss'
 import { redirect } from 'next/navigation'
 import EmailRequestForm from '@/components/form/EmailRequestForm '
 import { getSession } from '@/lib/getSession'

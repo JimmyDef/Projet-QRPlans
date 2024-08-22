@@ -12,7 +12,7 @@ const SignOutButton = ({ className }: SignOutButtonProps) => {
   const t = useTranslations('header')
 
   return (
-    <button className={className} onClick={() => signOut()}>
+    <button className={className} onClick={() => signOut({ callbackUrl: '/' })}>
       <Image
         className="exit-icon"
         width={20}

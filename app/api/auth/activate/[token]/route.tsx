@@ -11,32 +11,26 @@ export async function GET(
 
   try {
     console.log(`Received token: ${token}`)
-
-    const user = await prisma.user.findFirst({
+    const activateToken = await prisma.activateToken.findUnique({
       where: {
-        activateTokens: {
-          some: {
-            AND: [
-              {
-                createdAt: {
-                  gt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 24 hours ago
-                },
-              },
-              {
-                token,
-              },
-            ],
-          },
+        token,
+        createdAt: {
+          gt: new Date(Date.now() - 5 * 60 * 60 * 1000),
         },
+      },
+      include: {
+        user: true,
       },
     })
 
-    if (!user) {
+    if (!activateToken) {
       return NextResponse.redirect(
         new URL('/token-activation/invalid', request.url)
       )
     }
-    console.log('🚀 ~ user:', user)
+
+    const user = activateToken.user
+
     if (user.active) {
       return NextResponse.redirect(
         new URL('/token-activation/already-activated', request.url)
