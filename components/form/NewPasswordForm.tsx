@@ -1,8 +1,6 @@
 'use client'
-// import Link from 'next/link'
 import Image from 'next/image'
-
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import PasswordCheckList from '@/components/passwordCheckList/PasswordCheckList'
 import { comparePasswords } from '@/services/helpers'
 import '@/styles/app/shared/form.scss'
@@ -19,8 +17,9 @@ const NewPasswordForm = () => {
   const [form, setForm] = useState({
     password: '',
     passwordConfirmation: '',
-    token: token || '',
+    token: token,
   })
+
   if (!token) redirect('/reset-password/send-email')
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -45,17 +44,17 @@ const NewPasswordForm = () => {
       setIsLoading(true)
       const res = await fetch('/api/auth/reset-password', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(form),
       })
+
       if (res.ok) {
-        router.push('/registration/email-sent-successfully')
+        router.push('/reset-password/request-result/success')
       } else {
-        if (res.status === 409) {
-        } else if (res.status === 400) {
-          setErrorSignUp('Missing required fields. Please fill out all fields.')
-        } else {
-          setErrorSignUp('An unexpected error occurred. Please try again.')
-        }
+        const errorData = await res.json()
+        setErrorSignUp(errorData.error || 'An unexpected error occurred.')
       }
     } catch (error) {
       setErrorSignUp('Failed to submit the form. Please try again later.')

@@ -9,10 +9,10 @@ import Link from 'next/link'
 type EmailRequestForm = {
   title: string
   api: string
-  callBackUrl: string
+  redirectUrl: string
 }
 
-const EmailRequestForm = ({ title, api, callBackUrl }: EmailRequestForm) => {
+const EmailRequestForm = ({ title, api, redirectUrl }: EmailRequestForm) => {
   const [isLoading, setIsLoading] = useState(false)
   const [errorEmail, setErrorEmail] = useState<string | null>(null)
   const [isFormValid, setIsFormValid] = useState(true)
@@ -35,7 +35,7 @@ const EmailRequestForm = ({ title, api, callBackUrl }: EmailRequestForm) => {
         body: JSON.stringify(form),
       })
       if (res.ok) {
-        router.push(callBackUrl)
+        router.push(redirectUrl)
       } else {
         if (!res.ok) {
           const errorMessage = await res.json()
@@ -104,7 +104,7 @@ const EmailRequestForm = ({ title, api, callBackUrl }: EmailRequestForm) => {
             <br />
             {errorEmail === 'This email must be activated.' && (
               <Link
-                href="/token-activation/resend-activation-link"
+                href="/registration/token-activation/resend-activation-link"
                 className="unverified-email-link "
               >
                 Request activation link.

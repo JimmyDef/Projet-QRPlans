@@ -4,13 +4,12 @@ import { NextRequest } from 'next/server'
 import { signIn } from '@/lib/auth'
 
 export async function GET(
-  request: NextRequest,
+  req: NextRequest,
   { params }: { params: { token: string } }
 ) {
   const { token } = params
 
   try {
-    console.log(`Received token: ${token}`)
     const activateToken = await prisma.activateToken.findUnique({
       where: {
         token,
@@ -25,7 +24,7 @@ export async function GET(
 
     if (!activateToken) {
       return NextResponse.redirect(
-        new URL('/token-activation/invalid', request.url)
+        new URL('/registration/token-activation/invalid', req.url)
       )
     }
 
@@ -33,7 +32,7 @@ export async function GET(
 
     if (user.active) {
       return NextResponse.redirect(
-        new URL('/token-activation/already-activated', request.url)
+        new URL('/registration/token-activation/already-activated', req.url)
       )
     }
 
@@ -63,19 +62,13 @@ export async function GET(
 
     if (signInResponse?.error) {
       console.log('Sign in error:', signInResponse.error)
-      return NextResponse.json(
-        { message: 'Could not sign in' },
-        { status: 500 }
-      )
+      return NextResponse.redirect(new URL('/not-found', req.url))
     }
     return NextResponse.redirect(
-      new URL('/token-activation/success', request.url)
+      new URL('/registration/token-activation/success', req.url)
     )
   } catch (error) {
     console.error('Error activating user:', error)
-    return NextResponse.json(
-      { message: 'Could not activate user' },
-      { status: 500 }
-    )
+    return NextResponse.redirect(new URL('/not-found', req.url))
   }
 }

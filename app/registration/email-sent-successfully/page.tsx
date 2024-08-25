@@ -26,7 +26,7 @@ const EmailConfirmation = async () => {
         Si vous n&apos;avez toujours pas reçu l&apos;email, vous pouvez{' '}
         <Link
           className="email__link  email__link--resend"
-          href="/token-activation/resend-activation-link"
+          href="/registration/token-activation/resend-activation-link"
         >
           réenvoyer l&apos;email de validation
         </Link>

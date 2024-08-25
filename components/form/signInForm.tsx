@@ -147,7 +147,7 @@ const SignIn = () => {
             {error === 'Email is not verified.' ? (
               <Link
                 className="unverified-email-link"
-                href="/token-activation/resend-activation-link"
+                href="/registration/token-activation/resend-activation-link"
               >
                 Request activation link?
               </Link>

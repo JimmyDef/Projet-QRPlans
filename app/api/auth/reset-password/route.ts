@@ -1,63 +1,80 @@
-// import prisma from '@/lib/prisma'
-// import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
-// import bcrypt from 'bcrypt'
-// import { capitalizeFirstLetter } from '@/services/helpers'
-// import { NextResponse } from 'next/server'
-// import { randomUUID } from 'crypto'
-// import { sendActivationEmail } from '@/services/emailService'
+import prisma from '@/lib/prisma'
+import bcrypt from 'bcrypt'
+import { NextRequest, NextResponse } from 'next/server'
+import { signIn } from '@/lib/auth'
 
-// export async function POST(req: Request) {
-//   try {
-//     const { email, password, firstName, lastName } = await req.json()
-//     if (!email || !password || !firstName || !lastName) {
-//       return NextResponse.json({
-//         error: 'Missing required fields',
-//         status: 400,
-//       })
-//     }
-//     const pwHash = bcrypt.hashSync(password, 10)
-//     const cleanedFirstname = capitalizeFirstLetter(firstName)
-//     const cleanedLastname = capitalizeFirstLetter(lastName)
+export async function POST(req: NextRequest) {
+  try {
+    const { password, passwordConfirmation, token } = await req.json()
+    if (!password || !passwordConfirmation || !token) {
+      return NextResponse.json({
+        error: 'Missing required fields',
+        status: 400,
+      })
+    }
 
-//     const user = await prisma.user.create({
-//       data: {
-//         email,
-//         password: pwHash,
-//         name: `${cleanedFirstname} ${cleanedLastname}`,
-//       },
-//     })
-//     if (!user) {
-//       throw new Error('User not created')
-//     }
+    if (password !== passwordConfirmation) {
+      return NextResponse.json({
+        error: 'Passwords do not match',
+        status: 400,
+      })
+    }
 
-//     const token = await prisma.activateToken.create({
-//       data: {
-//         userId: user.id,
-//         token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ''),
-//       },
-//     })
-//     if (!token) {
-//       throw new Error('Token not created')
-//     }
+    const PasswordResetToken = await prisma.passwordResetToken.findFirst({
+      where: {
+        token,
+        createdAt: {
+          gt: new Date(Date.now() - 5 * 60 * 1000), // 5 minutes
+        },
+      },
+      include: {
+        user: true,
+      },
+    })
 
-//     sendActivationEmail({
-//       email,
-//       subject: 'Activate your account',
-//       fullName: user.name ?? '',
-//       verificationLink: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/activate/${token.token}`,
-//     })
+    if (!PasswordResetToken) {
+      console.log('PasswordResetToken Invalid:', PasswordResetToken)
+      return NextResponse.json({
+        error: 'Invalid or expired password reset token',
+        status: 400,
+      })
+    }
 
-//     return NextResponse.json({ message: 'User created' }, { status: 201 })
-//   } catch (error) {
-//     if (error instanceof PrismaClientKnownRequestError) {
-//       if (error.code === 'P2002') {
-//         // Code P2002 indique une violation de la contrainte unique
-//         return NextResponse.json(
-//           { error: 'Email already exists' },
-//           { status: 409 }
-//         )
-//       }
-//       return NextResponse.json({ error }, { status: 500 })
-//     }
-//   }
-// }
+    const user = PasswordResetToken.user
+    console.log('🚀 ~ user:', user)
+
+    const hashedPassword = await bcrypt.hash(password, 10)
+    await prisma.user.update({
+      where: { id: PasswordResetToken.userId },
+      data: { password: hashedPassword },
+    })
+
+    await prisma.passwordResetToken.delete({
+      where: { token },
+    })
+
+    const signInResponse = await signIn('credentials', {
+      redirect: false,
+      email: user.email,
+    })
+
+    if (signInResponse?.error) {
+      console.log('Sign in error:', signInResponse.error)
+      return NextResponse.json({
+        error: 'Could not sign in after resetting password',
+        status: 500,
+      })
+    }
+
+    return NextResponse.json({
+      message: 'Password reset successfully. You are now signed in.',
+      status: 200,
+    })
+  } catch (error) {
+    console.error('Error resetting password:', error)
+    return NextResponse.json({
+      error: 'An error occurred while resetting the password',
+      status: 500,
+    })
+  }
+}

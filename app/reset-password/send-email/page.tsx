@@ -13,7 +13,7 @@ const RequestResetPasswordEmail = async () => {
     <EmailRequestForm
       title="Reset your password"
       api="/api/auth/forgot-password"
-      callBackUrl="/reset-password/email-sent-success"
+      redirectUrl="/reset-password/email-sent-success"
     />
   )
 }
