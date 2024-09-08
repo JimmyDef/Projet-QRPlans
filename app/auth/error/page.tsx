@@ -1,12 +1,11 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 export default function AuthErrorPage() {
   const searchParams = useSearchParams()
   const error = searchParams.get('error')
-
+  const router = useRouter()
   let errorMessage = 'An unknown error occurred. Please try again.'
 
   switch (error) {
@@ -35,15 +34,15 @@ export default function AuthErrorPage() {
   }
 
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h1>Authentication Error</h1>
-      <p style={{ color: 'red' }}>{errorMessage}</p>
-      <a
-        href="/auth/signin"
-        style={{ display: 'inline-block', marginTop: '1rem' }}
+    <div className="error-container">
+      <h2 className="error-title">Authentication Error</h2>
+      <p className="error-text">{errorMessage}</p>
+      <button
+        className="retry-button"
+        onClick={() => router.push('/auth/signin-by-authJs')}
       >
-        Go back to Sign In
-      </a>
+        Go back to Sign-In
+      </button>
     </div>
   )
 }

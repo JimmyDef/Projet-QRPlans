@@ -1,7 +1,7 @@
-import prisma from '@/lib/prisma'
+import prisma from '@/src/lib/prisma'
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
-import { signIn } from '@/lib/auth'
+import { signIn } from '@/src/lib/auth'
 
 export async function GET(
   req: NextRequest,
@@ -24,7 +24,7 @@ export async function GET(
 
     if (!activateToken) {
       return NextResponse.redirect(
-        new URL('/registration/token-activation/invalid', req.url)
+        new URL('/auth/registration/token-activation/invalid', req.url)
       )
     }
 
@@ -32,7 +32,10 @@ export async function GET(
 
     if (user.active) {
       return NextResponse.redirect(
-        new URL('/registration/token-activation/already-activated', req.url)
+        new URL(
+          '/auth/registration/token-activation/already-activated',
+          req.url
+        )
       )
     }
 
@@ -65,7 +68,7 @@ export async function GET(
       return NextResponse.redirect(new URL('/not-found', req.url))
     }
     return NextResponse.redirect(
-      new URL('/registration/token-activation/success', req.url)
+      new URL('/auth/registration/token-activation/success', req.url)
     )
   } catch (error) {
     console.error('Error activating user:', error)

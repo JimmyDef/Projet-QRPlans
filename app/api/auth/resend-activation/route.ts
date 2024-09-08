@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server'
-import { sendEmail } from '@/services/emailService'
+import { sendEmail } from '@/src/services/emailService'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
-import prisma from '@/lib/prisma'
-import EmailVerificationTemplate from '@/emails/EmailVerificationTemplate'
+import prisma from '@/src/lib/prisma'
+import EmailVerificationTemplate from '@/src/emails/EmailVerificationTemplate'
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json()
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     if (userProvider) {
       return NextResponse.json(
         {
-          error: `Account doesn't need activation. It was created with ${userProvider.provider} as provider, please use it to sign in.`,
+          error: `This ccount doesn't need activation. It was created with ${userProvider.provider} as provider, please use it to sign in.`,
         },
         { status: 403 }
       )

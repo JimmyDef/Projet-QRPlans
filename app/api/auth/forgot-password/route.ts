@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server'
-import { sendEmail } from '@/services/emailService'
+import { sendEmail } from '@/src/services/emailService'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
-import prisma from '@/lib/prisma'
-import PasswordResetTemplate from '@/emails/PasswordResetTemplate'
+import prisma from '@/src/lib/prisma'
+import PasswordResetTemplate from '@/src/emails/PasswordResetTemplate'
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json()
@@ -23,20 +23,21 @@ export async function POST(req: NextRequest) {
         { status: 404 }
       )
     }
-    if (!user.active) {
-      return NextResponse.json(
-        { error: 'This email must be activated.' },
-        { status: 403 }
-      )
-    }
+
     const userProvider = await prisma.account.findFirst({
       where: { userId: user.id, provider: { not: undefined } },
     })
     if (userProvider) {
       return NextResponse.json(
         {
-          error: `Account doesn't need password. It was created with ${userProvider.provider} as provider, please use it to sign in.`,
+          error: `This account doesn't need password. It was created with ${userProvider.provider} as provider, please use it to sign in.`,
         },
+        { status: 403 }
+      )
+    }
+    if (!user.active) {
+      return NextResponse.json(
+        { error: 'This email must be activated.' },
         { status: 403 }
       )
     }
@@ -60,7 +61,7 @@ export async function POST(req: NextRequest) {
       email,
       subject: 'Reset your password',
       fullName: user.name ?? '',
-      link: `${process.env.NEXT_PUBLIC_API_URL}/reset-password/new-password/${token.token}`,
+      link: `${process.env.NEXT_PUBLIC_API_URL}/auth/reset-password/new-password/${token.token}`,
       template: PasswordResetTemplate,
     })
     return NextResponse.json({ message: 'Email sent' }, { status: 200 })

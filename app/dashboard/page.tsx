@@ -1,15 +1,15 @@
-import { auth } from '@/lib/auth'
+import { auth } from '@/src/lib/auth'
 import { redirect } from 'next/navigation'
-
+import Panel from '@/src/components/panel/page'
 const Dashboard = async () => {
   const session = await auth()
   if (!session) {
-    redirect('/signIn')
+    redirect('/auth/sign-in')
   }
 
   return (
     <>
-      <h1>dashboard</h1>
+      <Panel />
       <p>Session: {session?.user?.id}</p>
     </>
   )

@@ -23,7 +23,7 @@ const Home = () => {
           <li>Partagez vos plans avec un simple scan</li>
           <li>Accessible depuis n&apos;importe quel appareil</li>
         </ul>
-        <Link href="/signIn" className="hero__button">
+        <Link href="/auth/sign-in" className="hero__button">
           Démarrez gratuitement
         </Link>
       </div>

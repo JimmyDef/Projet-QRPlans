@@ -1,11 +1,11 @@
-import prisma from '@/lib/prisma'
+import prisma from '@/src/lib/prisma'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import bcrypt from 'bcrypt'
-import { capitalizeFirstLetter } from '@/services/helpers'
+import { capitalizeFirstLetter } from '@/src/services/helpers'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
-import { sendEmail } from '@/services/emailService'
-import EmailVerificationTemplate from '@/emails/EmailVerificationTemplate'
+import { sendEmail } from '@/src/services/emailService'
+import EmailVerificationTemplate from '@/src/emails/EmailVerificationTemplate'
 
 export async function POST(req: Request) {
   try {
