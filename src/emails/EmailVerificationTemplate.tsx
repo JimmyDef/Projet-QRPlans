@@ -1,6 +1,6 @@
 // import { FunctionComponent } from 'react'
 import { colors } from '@/variables'
-import { Html, Button } from '@react-email/components'
+import { Html } from '@react-email/components'
 import * as React from 'react'
 interface EmailVerificationProps {
   fullName: string
@@ -11,6 +11,9 @@ const EmailVerificationTemplate: React.FC<EmailVerificationProps> = ({
   fullName,
   link,
 }) => {
+  const [isVerified, setIsVerified] = React.useState(false)
+  const location = useLocation()
+
   return (
     <Html lang="en">
       <div
