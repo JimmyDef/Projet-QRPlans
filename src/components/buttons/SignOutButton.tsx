@@ -1,9 +1,8 @@
-// 'use client'
-import React from 'react'
+'use client'
 import { signOut } from 'next-auth/react'
-import './signOutButton.scss'
-import Image from 'next/image'
 import { useTranslations } from 'next-intl'
+import Image from 'next/image'
+import './signOutButton.scss'
 
 type SignOutButtonProps = {
   className?: string
@@ -12,7 +11,14 @@ const SignOutButton = ({ className }: SignOutButtonProps) => {
   const t = useTranslations('header')
 
   return (
-    <button className={className} onClick={() => signOut({ callbackUrl: '/' })}>
+    <button
+      className={className}
+      onClick={() => {
+        console.log('Signing out')
+        // setUser(null)
+        signOut({ callbackUrl: '/' })
+      }}
+    >
       <Image
         className="exit-icon"
         width={20}

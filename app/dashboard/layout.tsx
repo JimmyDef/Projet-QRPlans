@@ -1,11 +1,10 @@
 import Panel from '@/app/dashboard/_components/Panel'
-import { get } from 'http'
 import { getSession } from '@/src/lib/getSession'
-import { redirect } from 'next/navigation'
 import prisma from '@/src/lib/prisma'
-import { useDashboardStore } from '@/src/lib/store'
+import { redirect } from 'next/navigation'
+
 export default async function DashboardLayout({
-  children, // will be a page or nested layout
+  children,
 }: {
   children: React.ReactNode
 }) {

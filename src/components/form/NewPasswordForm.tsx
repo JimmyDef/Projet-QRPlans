@@ -88,10 +88,10 @@ const NewPasswordForm = () => {
   }
 
   return (
-    <div className="sign_form_container sign-up_form_container">
+    <div className="sign-form-container sign-up-form-container">
       <div className="header-sign-up">
-        <div className="logo_container"></div>
-        <div className="title_container">
+        <div className="logo-container"></div>
+        <div className="title-container">
           <p className="title">Create new password</p>
           <span className="subtitle">
             Fill in the form to create a new password.
@@ -100,13 +100,13 @@ const NewPasswordForm = () => {
       </div>
 
       <form
-        className="sign_form"
+        className="sign-form"
         onSubmit={(e) => {
           handleSubmit(e)
         }}
       >
-        <div className="input_container">
-          <label className="input_label" htmlFor="password_field">
+        <div className="input-container">
+          <label className="input-label" htmlFor="password_field">
             New password
           </label>
           <Image
@@ -122,7 +122,7 @@ const NewPasswordForm = () => {
             placeholder="Password"
             name="password"
             type="password"
-            className={`input_field ${
+            className={`input-field ${
               !isFormValid && form.password === '' ? 'input-error' : ''
             } `}
             id="password_field"
@@ -133,8 +133,8 @@ const NewPasswordForm = () => {
             setIsPasswordValid={setIsPasswordValid}
           />
         </div>
-        <div className="input_container">
-          <label className="input_label" htmlFor="password_confirmation_field">
+        <div className="input-container">
+          <label className="input-label" htmlFor="password_confirmation_field">
             New password confirmation
             {!isPasswordsEqual && (
               <span className="password-confirmation-error"></span>
@@ -154,7 +154,7 @@ const NewPasswordForm = () => {
             placeholder="Password"
             name="passwordConfirmation"
             type="password"
-            className={`input_field ${
+            className={`input-field ${
               (!isFormValid && form.passwordConfirmation === '') ||
               !isPasswordsEqual
                 ? 'input-error'
@@ -168,12 +168,10 @@ const NewPasswordForm = () => {
         {!isFormValid && <p className="form-error">Please fill all fields.</p>}
         {errorSignUp && <p className="form-error">{errorSignUp}</p>}
 
-        <button type="submit" className="sign_btn" disabled={isLoading}>
+        <button type="submit" className="sign-btn" disabled={isLoading}>
           <span>Sign Up</span>
         </button>
       </form>
-      {/* FIN DU FORM ----------------------------------------------- 
-      ---------------------------------------*/}
     </div>
   )
 }

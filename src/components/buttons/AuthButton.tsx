@@ -22,7 +22,9 @@ export const AuthButton = ({
   const handleSignIn = async () => {
     try {
       setIsLoading(true)
-      await signIn(provider, { callbackUrl: '/dashboard' })
+      const currentSession = await signIn(provider, {
+        callbackUrl: '/dashboard',
+      })
     } catch (error) {
       console.log('handleSignIn:', error)
 

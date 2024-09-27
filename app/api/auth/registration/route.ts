@@ -19,8 +19,8 @@ export async function POST(req: Request) {
       )
     }
     const pwHash = bcrypt.hashSync(password, 10)
-    const cleanedFirstname = capitalizeFirstLetter(firstName)
-    const cleanedLastname = capitalizeFirstLetter(lastName)
+    const cleanedFirstname = capitalizeFirstLetter(firstName).trim()
+    const cleanedLastname = capitalizeFirstLetter(lastName).trim()
 
     const user = await prisma.user.create({
       data: {

@@ -1,17 +1,13 @@
 // import '@/src/styles/globals.scss'
-import '@/src/styles/main.scss'
 import Header from '@/src/components/header/Header'
-import { Inter } from 'next/font/google'
+import '@/src/styles/main.scss'
+import { auth } from '@/src/lib/auth'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
-import { auth } from '@/src/lib/auth'
-// import { redirect } from 'next/navigation'
-// import { useRouter } from 'next/navigation'
-const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'QR Plan',
-  description: 'QR Plan app',
+  title: 'QR Plans',
+  description: 'QR Plans app',
 }
 
 export default async function RootLayout({
@@ -22,16 +18,16 @@ export default async function RootLayout({
   const locale = await getLocale()
   const messages = await getMessages()
   const session = await auth()
-
+  const securedSession = session?.user ? { ...session.user, id: null } : null
   return (
     <html lang={locale}>
       <head>
-        <title>QR Plan</title>
+        <title>QR Plans</title>
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <Header user={session?.user} />
+          <Header user={securedSession} />
 
           <main className="main">{children}</main>
         </NextIntlClientProvider>

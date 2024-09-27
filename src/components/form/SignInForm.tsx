@@ -1,14 +1,14 @@
 'use client'
-import Image from 'next/image'
-import { AuthButton } from '@/src/components/buttons/AuthButton'
-import signInWithCredentials from '@/src/services/signInWithCredentials'
-import './form.scss'
 import Loader from '@/src/components/loader/Loader'
+import signInWithCredentials from '@/src/services/signInWithCredentials'
+import Image from 'next/image'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
-// import { set } from 'zod'
-type Form = {
+import { useEffect, useState } from 'react'
+import { AuthProviders } from './components/AuthProviders'
+import './form.scss'
+
+interface Form {
   email: string
   password: string
 }
@@ -21,29 +21,26 @@ const SignIn = () => {
     email: '',
     password: '',
   })
-  const [subtitle, setSubtitle] = useState('')
-  const [subtitleClassName, setSubtitleClassName] = useState('')
+  const [subtitle, setSubtitle] = useState(
+    'Get access to your dashboard by using credentials or providers.'
+  )
+  const [subtitleClassName, setSubtitleClassName] = useState('subtitle')
   const pathname = usePathname()
   const searchParams = useSearchParams()
+
   useEffect(() => {
     if (
-      pathname === '/auth/signin-by-authJs' &&
+      pathname === '/auth/sign-in' &&
       searchParams.get('error') === 'OAuthAccountNotLinked'
     ) {
       setSubtitle(
         'To confirm your identity, sign in with the same account you used originally.'
       )
-      setSubtitleClassName('subtitle subtitle--OAuthAccountNotLinked')
-    } else if (pathname === '/auth/sign-in') {
-      setSubtitle(
-        'Get access to your dashboard by using credentials or providers.'
-      )
-      setSubtitleClassName('subtitle subtitle--sign-in')
-    } else {
-      setSubtitle('')
-      setSubtitleClassName('')
+      setSubtitleClassName('subtitle subtitle--oauth-account-not-linked')
+      return
     }
   }, [pathname, searchParams])
+
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
     form: Form
@@ -71,21 +68,21 @@ const SignIn = () => {
   }
 
   return (
-    <div className="sign_form_container">
+    <div className="sign-form-container">
       <form
-        className="sign_form"
+        className="sign-form"
         onSubmit={(event) => handleSubmit(event, form)}
       >
-        <div className="logo_container"></div>
-        <div className="title_container">
+        <div className="logo-container"></div>
+        <div className="title-container">
           <p className="title">Login to your Account</p>
-          <div className="subtitle--OAuthAccountNotLinked-wrapper">
+          <div className="subtitle-wrapper">
             <p className={subtitleClassName}>{subtitle}</p>
           </div>
         </div>
         <br />
-        <div className="input_container">
-          <label className="input_label" htmlFor="email">
+        <div className="input-container">
+          <label className="input-label" htmlFor="email">
             Email
           </label>
 
@@ -102,7 +99,7 @@ const SignIn = () => {
             placeholder="name@mail.com"
             name="email"
             type="email"
-            className={`input_field ${
+            className={`input-field ${
               !isFormValid && !form.email ? 'input-error' : ''
             } `}
             id="email_field"
@@ -110,8 +107,8 @@ const SignIn = () => {
             required
           />
         </div>
-        <div className="input_container">
-          <label className="input_label" htmlFor="password">
+        <div className="input-container">
+          <label className="input-label" htmlFor="password">
             Password
           </label>
           <Image
@@ -119,7 +116,7 @@ const SignIn = () => {
             width={30}
             height={30}
             src="/icons/password.svg"
-            alt="email icon"
+            alt="password icon"
           />
           <input
             value={form.password}
@@ -127,7 +124,7 @@ const SignIn = () => {
             placeholder="Password"
             name="password"
             type="password"
-            className={`input_field  input_field--password-sign-in${
+            className={`input-field input-field--password-sign-in ${
               !isFormValid && !form.password ? 'input-error' : ''
             } `}
             id="password_field"
@@ -143,7 +140,7 @@ const SignIn = () => {
         {!isFormValid && <p className="form-error">Please fill all fields.</p>}
         {error && (
           <p className="form-error">
-            {error} {''}
+            {error}{' '}
             {error === 'Email is not verified.' ? (
               <Link
                 className="unverified-email-link"
@@ -158,87 +155,20 @@ const SignIn = () => {
         <button
           title="Sign In"
           type="submit"
-          className="sign_btn"
+          className="sign-btn"
           disabled={isLoading}
         >
           {isLoading ? <Loader /> : <span>Sign In</span>}
-          {/* <span>Sign In</span> */}
         </button>
       </form>
-      {/* FIN DU FORM ----------------------------------------------- 
-      ---------------------------------------*/}
 
       <div className="separator">
         <hr className="line" />
         <span>Or</span>
         <hr className="line" />
       </div>
-      <div className="auth-btn-container">
-        <AuthButton
-          className="sign__brand sign__brand--google"
-          provider="google"
-          setIsLoading={setIsLoading}
-          isLoading={isLoading}
-          title="Sign In with Google"
-        >
-          <Image
-            className="icon-auth"
-            width={30}
-            height={30}
-            src="/icons/google.svg"
-            alt="google icon"
-          />
-          <span className="auth-label">Google</span>
-        </AuthButton>
-        <AuthButton
-          className="sign__brand sign__brand--github"
-          provider="github"
-          setIsLoading={setIsLoading}
-          isLoading={isLoading}
-          title="Sign In with GitHub"
-        >
-          <Image
-            className="icon-auth"
-            width={30}
-            height={30}
-            src="/icons/github.svg"
-            alt="github icon"
-          />
-          <span className="auth-label">GitHub</span>
-        </AuthButton>
-        <AuthButton
-          className="sign__brand sign__brand--facebook"
-          provider="Facebook"
-          setIsLoading={setIsLoading}
-          isLoading={isLoading}
-          title="Sign In with Facebook"
-        >
-          <Image
-            className="icon-auth"
-            width={30}
-            height={30}
-            src="/icons/facebook.svg"
-            alt="facebook icon"
-          />
-          <span className="auth-label">Facebook</span>
-        </AuthButton>
-        <AuthButton
-          className="sign__brand sign__brand--LinkedIn"
-          provider="linkedin"
-          setIsLoading={setIsLoading}
-          isLoading={isLoading}
-          title="Sign In with LinkedIn"
-        >
-          <Image
-            className="icon-auth icon-auth--linkedin"
-            width={32}
-            height={32}
-            src="/icons/linkedin.svg"
-            alt="linkedin icon"
-          />
-          <span className="auth-label">Linked In</span>
-        </AuthButton>
-      </div>
+      <AuthProviders isLoading={isLoading} setIsLoading={setIsLoading} />
+
       <div className="footer">
         <p className="register">
           Connect your account with providers above or{' '}

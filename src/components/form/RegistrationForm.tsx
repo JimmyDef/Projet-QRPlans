@@ -1,16 +1,21 @@
 'use client'
-import Link from 'next/link'
-import Image from 'next/image'
-import { AuthButton } from '@/src/components/buttons/AuthButton'
-import { useState } from 'react'
 import PasswordCheckList from '@/src/components/passwordCheckList/PasswordCheckList'
-import { sanitizeInput, comparePasswords } from '@/src/services/helpers'
+import {
+  comparePasswords,
+  sanitizeEmailInput,
+  sanitizeNameInput,
+  sanitizePasswordInput,
+} from '@/src/services/helpers'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useState } from 'react'
 import './form.scss'
 
 import { useRouter } from 'next/navigation'
+import { AuthProviders } from './components/AuthProviders'
+
 const RegistrationForm = () => {
   const [isLoading, setIsLoading] = useState(false)
-
   const [errorSignUp, setErrorSignUp] = useState<string | null>(null)
   const [isPasswordForgotten, setIsPasswordForgotten] = useState(false)
   const [isFormValid, setIsFormValid] = useState(true)
@@ -27,6 +32,7 @@ const RegistrationForm = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
     if (!isPasswordValid) {
       return setErrorSignUp('Password is not strong enough.')
     }
@@ -37,11 +43,18 @@ const RegistrationForm = () => {
     if (comparePasswords(form.password, form.passwordConfirmation))
       return setIsPasswordsEqual(false)
 
+    const updatedForm = {
+      ...form,
+      email: form.email.trim(),
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+    }
+
     try {
       setIsLoading(true)
       const res = await fetch('/api/auth/registration', {
         method: 'POST',
-        body: JSON.stringify(form),
+        body: JSON.stringify(updatedForm),
       })
       if (res.ok) {
         router.push('/auth/registration/email-sent-successfully')
@@ -70,31 +83,44 @@ const RegistrationForm = () => {
     }
     return setIsPasswordsEqual(true)
   }
+
   const handlePasswordConfirmationChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const updatedPasswordConfirmation = e.target.value
+    const passwordConfirmation = e.target.value
     setForm({
       ...form,
-      passwordConfirmation: updatedPasswordConfirmation,
+      passwordConfirmation: passwordConfirmation,
     })
 
-    if (form.password === updatedPasswordConfirmation) {
-      console.log('form', updatedPasswordConfirmation)
+    if (form.password === passwordConfirmation) {
+      console.log('form', passwordConfirmation)
       return setIsPasswordsEqual(true)
     }
   }
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    const formattedValue = sanitizeInput(value)
+    const formattedValue = sanitizeNameInput(value)
     setForm({ ...form, [name]: formattedValue })
   }
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, email: sanitizeEmailInput(e.target.value) })
+  }
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({
+      ...form,
+      password: sanitizePasswordInput(e.target.value),
+    })
+  }
+
   return (
-    <div className="sign_form_container sign-up_form_container">
+    <div className="sign-form-container sign-up-form-container">
       <div className="header-sign-up">
-        <div className="logo_container"></div>
-        <div className="title_container">
+        <div className="logo-container"></div>
+        <div className="title-container">
           <p className="title">Create your Account</p>
           <span className="subtitle">
             Get started with our app, just create an account and enjoy the
@@ -102,73 +128,7 @@ const RegistrationForm = () => {
           </span>
         </div>
       </div>
-      <div className="auth-btn-container">
-        <AuthButton
-          className="sign__brand sign__brand--google"
-          provider="google"
-          setIsLoading={setIsLoading}
-          isLoading={isLoading}
-          title="Sign In with Google"
-        >
-          <Image
-            className="icon-auth"
-            width={30}
-            height={30}
-            src="/icons/google.svg"
-            alt="google icon"
-          />
-          <span className="auth-label">Google</span>
-        </AuthButton>
-        <AuthButton
-          className="sign__brand sign__brand--github"
-          provider="github"
-          setIsLoading={setIsLoading}
-          isLoading={isLoading}
-          title="Sign In with GitHub"
-        >
-          <Image
-            className="icon-auth"
-            width={30}
-            height={30}
-            src="/icons/github.svg"
-            alt="github icon"
-          />
-          <span className="auth-label">GitHub</span>
-        </AuthButton>
-        <AuthButton
-          className="sign__brand sign__brand--facebook"
-          provider="Facebook"
-          setIsLoading={setIsLoading}
-          isLoading={isLoading}
-          title="Sign In with Facebook"
-        >
-          <Image
-            className="icon-auth"
-            width={30}
-            height={30}
-            src="/icons/facebook.svg"
-            alt="facebook icon"
-          />
-          <span className="auth-label">Facebook</span>
-        </AuthButton>
-        <AuthButton
-          className="sign__brand sign__brand--LinkedIn"
-          provider="linkedin"
-          setIsLoading={setIsLoading}
-          isLoading={isLoading}
-          title="Sign In with LinkedIn"
-        >
-          <Image
-            className="icon-auth icon-auth--linkedin"
-            width={32}
-            height={32}
-            src="/icons/linkedin.svg"
-            alt="linkedin icon"
-          />
-          <span className="auth-label">Linked In</span>
-        </AuthButton>
-        <p className="note">Terms of use &amp; Conditions</p>
-      </div>
+      <AuthProviders isLoading={isLoading} setIsLoading={setIsLoading} />
 
       <div className="separator">
         <hr className="line" />
@@ -177,13 +137,13 @@ const RegistrationForm = () => {
       </div>
 
       <form
-        className="sign_form"
+        className="sign-form"
         onSubmit={(e) => {
           handleSubmit(e)
         }}
       >
-        <div className="input_container">
-          <label className="input_label" htmlFor="email">
+        <div className="input-container">
+          <label className="input-label" htmlFor="email">
             Email
           </label>
 
@@ -196,19 +156,19 @@ const RegistrationForm = () => {
           />
           <input
             value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            onChange={handleEmailChange}
             placeholder="name@mail.com"
             name="email"
             type="email"
-            className={`input_field ${
+            className={`input-field ${
               !isFormValid && form.email === '' ? 'input-error' : ''
             } `}
             id="email_field"
             autoComplete="email"
           />
         </div>
-        <div className="input_container">
-          <label className="input_label" htmlFor="password_field">
+        <div className="input-container">
+          <label className="input-label" htmlFor="password_field">
             Password
           </label>
           <Image
@@ -216,15 +176,15 @@ const RegistrationForm = () => {
             width={30}
             height={30}
             src="/icons/password.svg"
-            alt="email icon"
+            alt="password icon"
           />
           <input
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            onChange={handlePasswordChange}
             value={form.password}
             placeholder="Password"
             name="password"
             type="password"
-            className={`input_field ${
+            className={`input-field ${
               !isFormValid && form.password === '' ? 'input-error' : ''
             } `}
             id="password_field"
@@ -235,8 +195,8 @@ const RegistrationForm = () => {
             setIsPasswordValid={setIsPasswordValid}
           />
         </div>
-        <div className="input_container">
-          <label className="input_label" htmlFor="password_confirmation_field">
+        <div className="input-container">
+          <label className="input-label" htmlFor="password_confirmation_field">
             Password confirmation
             {!isPasswordsEqual && (
               <span className="password-confirmation-error"></span>
@@ -247,7 +207,7 @@ const RegistrationForm = () => {
             width={30}
             height={30}
             src="/icons/password.svg"
-            alt="email icon"
+            alt="password icon"
           />
           <input
             value={form.passwordConfirmation}
@@ -256,7 +216,7 @@ const RegistrationForm = () => {
             placeholder="Password"
             name="passwordConfirmation"
             type="password"
-            className={`input_field ${
+            className={`input-field ${
               (!isFormValid && form.passwordConfirmation === '') ||
               !isPasswordsEqual
                 ? 'input-error'
@@ -266,35 +226,35 @@ const RegistrationForm = () => {
             autoComplete="none"
           />
         </div>
-        <div className="input_container">
-          <label className="input_label" htmlFor="firstName">
+        <div className="input-container">
+          <label className="input-label" htmlFor="firstName">
             First name
           </label>
 
           <input
             value={form.firstName}
-            onChange={handleInputChange}
+            onChange={handleNameChange}
             placeholder="John"
             name="firstName"
             type="text"
-            className={`input_field ${
+            className={`input-field ${
               !isFormValid && form.firstName === '' ? 'input-error' : ''
             } `}
             id="firstName"
           />
         </div>
-        <div className="input_container">
-          <label className="input_label" htmlFor="lastName">
+        <div className="input-container">
+          <label className="input-label" htmlFor="lastName">
             Last name
           </label>
 
           <input
             value={form.lastName}
-            onChange={handleInputChange}
+            onChange={handleNameChange}
             placeholder="Wick"
             name="lastName"
             type="text"
-            className={`input_field   ${
+            className={`input-field ${
               !isFormValid && !form.lastName ? 'input-error' : ''
             } `}
             id="lastName"
@@ -304,8 +264,7 @@ const RegistrationForm = () => {
         {errorSignUp && <p className="form-error">{errorSignUp}</p>}
         {isPasswordForgotten && (
           <p className="form-error">
-            Email already exists
-            {` `}
+            Email already exists{' '}
             <Link
               href="/auth/reset-password/send-email"
               className="form-password-error--registration"
@@ -315,12 +274,11 @@ const RegistrationForm = () => {
           </p>
         )}
 
-        <button type="submit" className="sign_btn" disabled={isLoading}>
+        <button type="submit" className="sign-btn" disabled={isLoading}>
           <span>Sign Up</span>
         </button>
       </form>
-      {/* FIN DU FORM ----------------------------------------------- 
-      ---------------------------------------*/}
+      <p className="note">Terms of use &amp; Conditions</p>
     </div>
   )
 }

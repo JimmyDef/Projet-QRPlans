@@ -5,6 +5,7 @@ import { useState } from 'react'
 import './form.scss'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { sanitizeEmailInput } from '@/src/services/helpers'
 
 type EmailRequestForm = {
   title: string
@@ -28,11 +29,12 @@ const EmailRequestForm = ({ title, api, redirectUrl }: EmailRequestForm) => {
     if (Object.values(form).some((value) => value.trim() === ''))
       return setIsFormValid(false)
 
+    const updatedForm = { email: form.email.trim() }
     try {
       setIsLoading(true)
       const res = await fetch(api, {
         method: 'POST',
-        body: JSON.stringify(form),
+        body: JSON.stringify(updatedForm),
       })
       if (res.ok) {
         router.push(redirectUrl)
@@ -53,11 +55,14 @@ const EmailRequestForm = ({ title, api, redirectUrl }: EmailRequestForm) => {
     }
   }
 
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, email: sanitizeEmailInput(e.target.value) })
+  }
   return (
-    <div className="sign_form_container sign-up_form_container">
+    <div className="sign-form-container sign-up-form-container">
       <div className="header-sign-up">
-        <div className="logo_container"></div>
-        <div className="title_container">
+        <div className="logo-container"></div>
+        <div className="title-container">
           <p className="title">{title}</p>
           <span className="subtitle">
             Please enter your email address to receive a link.
@@ -66,13 +71,13 @@ const EmailRequestForm = ({ title, api, redirectUrl }: EmailRequestForm) => {
       </div>
 
       <form
-        className="sign_form"
+        className="sign-form"
         onSubmit={(e) => {
           handleSubmit(e)
         }}
       >
-        <div className="input_container">
-          <label className="input_label" htmlFor="email">
+        <div className="input-container">
+          <label className="input-label" htmlFor="email">
             Email
           </label>
 
@@ -85,11 +90,11 @@ const EmailRequestForm = ({ title, api, redirectUrl }: EmailRequestForm) => {
           />
           <input
             value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            onChange={handleEmailChange}
             placeholder="name@mail.com"
             name="email"
             type="email"
-            className={`input_field ${
+            className={`input-field ${
               !isFormValid && form.email === '' ? 'input-error' : ''
             } `}
             id="email_field"
@@ -100,12 +105,11 @@ const EmailRequestForm = ({ title, api, redirectUrl }: EmailRequestForm) => {
         {!isFormValid && <p className="form-error">Please fill Email field.</p>}
         {errorEmail && (
           <p className="form-error">
-            {errorEmail} {''}
-            <br />
+            {errorEmail} <br />
             {errorEmail === 'This email must be activated.' && (
               <Link
                 href="/auth/registration/token-activation/resend-activation-link"
-                className="unverified-email-link "
+                className="unverified-email-link"
               >
                 Request activation link.
               </Link>
@@ -113,7 +117,7 @@ const EmailRequestForm = ({ title, api, redirectUrl }: EmailRequestForm) => {
           </p>
         )}
 
-        <button type="submit" className="sign_btn" disabled={isLoading}>
+        <button type="submit" className="sign-btn" disabled={isLoading}>
           <span>Send me the link</span>
         </button>
       </form>

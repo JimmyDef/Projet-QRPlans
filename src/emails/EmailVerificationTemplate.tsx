@@ -11,9 +11,6 @@ const EmailVerificationTemplate: React.FC<EmailVerificationProps> = ({
   fullName,
   link,
 }) => {
-  const [isVerified, setIsVerified] = React.useState(false)
-  const location = useLocation()
-
   return (
     <Html lang="en">
       <div

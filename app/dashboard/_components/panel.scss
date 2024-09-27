@@ -34,6 +34,12 @@
     font-weight: bold;
     margin-bottom: 10px;
     color: #333;
+    line-height: 16px;
+  }
+  &__folders-count {
+    transform: scale(50%);
+
+    color: #666;
   }
 
   &__status-buttons {
@@ -77,14 +83,22 @@
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    // margin-left: 10px;
   }
   &__new-folder-icon {
     margin-right: 10px;
+    // backface-visibility: hidden;
+    // transform-style: preserve-3d;
+    // will-change: transform;
+    // transform: translateZ(0);
+    cursor: pointer;
+    transition: all 0.1s;
+    &:hover {
+      transform: scale(1.05);
+    }
   }
   &__folders {
-    flex-grow: 1; /* Pour que la liste des dossiers prenne tout l'espace disponible */
-    overflow-y: auto; /* Ajoute un scroll si la liste dépasse la hauteur */
+    flex-grow: 1;
+    overflow-y: auto;
     margin-bottom: 20px;
   }
 

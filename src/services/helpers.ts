@@ -9,8 +9,19 @@ export const removeChevronCharacters = (input: string) => {
 export const removeNonAlphabeticCharacters = (input: string) => {
   return input.replace(/[^a-zA-Z]/g, '')
 }
-export const sanitizeInput = (input: string) => {
+export const sanitizeNameInput = (input: string) => {
   return input.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ-' ]/g, '')
+}
+export const sanitizeFoldersInput = (input: string) => {
+  return input.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ0-9-' ]/g, '')
+}
+export const sanitizeEmailInput = (email: string) => {
+  const forbiddenCharacters = /[(),:;<>[\]\\]/g
+  return email.replace(forbiddenCharacters, '')
+}
+export const sanitizePasswordInput = (password: string) => {
+  const forbiddenCharacters = /[<>]/g
+  return password.replace(forbiddenCharacters, '')
 }
 
 export const hasLowercase = (password: string) => /[a-z]/.test(password)

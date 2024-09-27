@@ -39,7 +39,7 @@ export default function AuthErrorPage() {
       <p className="error-text">{errorMessage}</p>
       <button
         className="retry-button"
-        onClick={() => router.push('/auth/signin-by-authJs')}
+        onClick={() => router.push('/auth/sign-in')}
       >
         Go back to Sign-In
       </button>

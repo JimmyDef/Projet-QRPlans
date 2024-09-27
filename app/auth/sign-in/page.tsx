@@ -1,7 +1,5 @@
 import SignInForm from '@/src/components/form/SignInForm'
-
 import { getSession } from '@/src/lib/getSession'
-
 import { redirect } from 'next/navigation'
 
 const SignIn = async () => {

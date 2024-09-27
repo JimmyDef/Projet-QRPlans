@@ -1,12 +1,12 @@
 @import '@/src/styles/abstacts/variables.scss';
 @import '@/src/styles/abstacts/mixins';
 
-.sign_form {
+.sign-form {
   width: 100%;
   grid-area: form;
 }
 
-.sign_form_container {
+.sign-form-container {
   color: $color-primary;
   @include box-modal;
   max-width: 500px;
@@ -24,7 +24,7 @@
   border-radius: 11px;
   font-family: 'Inter', sans-serif;
 
-  .logo_container {
+  .logo-container {
     margin: 0 auto 15px;
 
     width: 80px;
@@ -40,7 +40,7 @@
     border-radius: 11px;
   }
 
-  .title_container {
+  .title-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -56,21 +56,30 @@
     font-weight: 700;
   }
 
+  .subtitle-wrapper {
+    // Styles pour le wrapper de la sous-titre
+  }
+
   .subtitle {
     margin: auto;
+    border-radius: 11px;
     font-size: 1rem;
-    max-width: 80%;
+    max-width: 85%;
     text-align: center;
-    // line-height: 1.1rem;
     color: #8b8e98;
-    &--OAuthAccountNotLinked {
+
+    &--oauth-account-not-linked {
       padding: 15px 7px;
       color: red;
       background-color: $background-color-light-grey;
     }
+
+    &--sign-in {
+      // Styles spécifiques pour le modificateur sign-in si nécessaire
+    }
   }
 
-  .input_container {
+  .input-container {
     width: 100%;
     height: fit-content;
     position: relative;
@@ -79,19 +88,21 @@
     gap: 5px;
   }
 
-  .input_label {
+  .input-label {
     font-size: 0.75rem;
     color: #8b8e98;
     font-weight: 600;
     pointer-events: none;
   }
 
-  .input_field {
+  .input-field {
     @include sign-input-btn;
     padding: 0 0 0 40px;
+
     &.input-error {
       border: 1px solid red;
     }
+
     &--password-sign-in {
       margin-bottom: 0px;
     }
@@ -108,7 +119,7 @@
     }
   }
 
-  .sign_btn {
+  .sign-btn {
     @include sign-input-btn;
     width: 100%;
     border: 0;
@@ -134,24 +145,6 @@
     }
   }
 
-  .auth-btn-container {
-    grid-area: authBtn;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-
-    gap: 15px;
-  }
-  .sign__brand {
-    @include sign-input-btn;
-    width: 100%;
-    margin-bottom: 0;
-    cursor: pointer;
-    position: relative;
-    font-weight: 600;
-    color: $color-primary;
-  }
-
   .icon-credential {
     width: 20px;
     height: auto;
@@ -162,22 +155,6 @@
 
     pointer-events: none;
   }
-  .icon-auth {
-    position: absolute;
-    left: 15px;
-    top: 4px;
-    width: 28px;
-    height: auto;
-    &--apple {
-      top: 3px;
-    }
-    &--linkedin {
-      left: 12px;
-      top: 1px;
-      width: 34px;
-      height: 34px;
-    }
-  }
 
   .separator {
     width: 100%;
@@ -186,29 +163,33 @@
     justify-content: center;
     gap: 30px;
     color: #8b8e98;
-  }
 
-  .separator .line {
-    display: block;
-    width: 100%;
-    height: 1px;
-    border: 0;
-    background-color: #e8e8e8;
+    .line {
+      display: block;
+      width: 100%;
+      height: 1px;
+      border: 0;
+      background-color: #e8e8e8;
+    }
   }
 
   .note {
     font-size: 0.75rem;
     color: #8b8e98;
     text-decoration: underline;
+    text-align: center;
   }
+
   .footer {
     text-align: center;
     margin-top: 1px;
   }
+
   .register {
     margin-bottom: 15px;
     color: #8b8e98;
   }
+
   .register-link {
     color: $color-primary;
     font-weight: 600;
@@ -227,6 +208,7 @@
   .form-password-error--registration {
     text-decoration: underline;
   }
+
   .form-password-error--sign-in {
     text-align: end;
     text-decoration: underline;
@@ -234,9 +216,11 @@
     margin-bottom: 20px;
     cursor: pointer;
   }
+
   .unverified-email-link {
     text-decoration: underline;
   }
+
   .password-confirmation-error {
     &::after {
       position: absolute;
@@ -248,35 +232,9 @@
     }
   }
 
-  @media screen and (max-width: 600px) {
-    .icon-auth {
-      left: 50%;
-      translate: -50%;
-    }
-    .auth-label {
-      display: none;
-    }
-  }
   @media screen and (max-width: 389px) {
-    .logo_container {
+    .logo-container {
       display: none;
     }
   }
 }
-
-// .sign-up_form_container {
-//   max-width: 900px;
-//   display: grid;
-//   grid-template:
-//     'head head'
-//     'form authBtn';
-//   .header-sign-up {
-//     grid-area: head;
-//   }
-
-//   .separator {
-//     display: none;
-//   }
-//   .sign_form {
-//   }
-// }
