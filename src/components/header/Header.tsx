@@ -1,20 +1,20 @@
-// 'use client'
-import { User } from '@/src/lib/types'
+'use client'
+// import { User } from '@/src/lib/types'
 import Link from 'next/link'
 import LocaleSwitcher from '../localSwitcher/LocaleSwitcher'
 import './header.scss'
 import { ConnexionButtons } from './navbar/ConnexionButtons'
+// type HeaderProps = {
+//   user: User | null
+// }
 
-type HeaderProps = {
-  user: User | null
-}
-
-const Header = ({ user }: HeaderProps) => {
+// const Header = ({ user }: HeaderProps) => {
+const Header = () => {
   const localeOptions = [
     { value: 'en', label: 'English', image: '/icons/usa-flag.svg' },
     { value: 'fr', label: 'French', image: '/icons/fr-flag.svg ' },
   ]
-  console.log('🚀 ~ userHEADER:', user)
+
   return (
     <header className="header">
       <div className="header__container">
@@ -27,7 +27,8 @@ const Header = ({ user }: HeaderProps) => {
             aria-label="changeLanguage"
             id="changeLanguage"
           />
-          <ConnexionButtons user={user} />
+          <ConnexionButtons />
+          {/* <ConnexionButtons user={user} /> */}
         </nav>
       </div>
     </header>

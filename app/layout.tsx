@@ -4,6 +4,7 @@ import '@/src/styles/main.scss'
 import { auth } from '@/src/lib/auth'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
+import ClientProviders from './components/ClientProviders'
 
 export const metadata = {
   title: 'QR Plans',
@@ -18,7 +19,7 @@ export default async function RootLayout({
   const locale = await getLocale()
   const messages = await getMessages()
   const session = await auth()
-  const securedSession = session?.user ? { ...session.user, id: null } : null
+  // const securedSession = session?.user ? { ...session.user, id: null } : null
   return (
     <html lang={locale}>
       <head>
@@ -27,9 +28,12 @@ export default async function RootLayout({
       </head>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <Header user={securedSession} />
+          <ClientProviders>
+            <Header />
+            {/* <Header user={securedSession} /> */}
 
-          <main className="main">{children}</main>
+            <main className="main">{children}</main>
+          </ClientProviders>
         </NextIntlClientProvider>
       </body>
     </html>

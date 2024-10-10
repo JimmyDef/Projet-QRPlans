@@ -1,56 +1,22 @@
 'use client'
 import SignOutButton from '@/src/components/buttons/SignOutButton'
-import { useUserStore } from '@/src/lib/store'
-import { User } from '@/src/lib/types'
 import { capitalizeFirstLetter } from '@/src/services/helpers'
+import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { useEffect } from 'react'
-import verifySession from '@/src/services/verifySession'
-type HeaderProps = {
-  user: User | null
-}
 
-export const ConnexionButtons = ({ user }: HeaderProps) => {
-  const { setUser, clearUser } = useUserStore()
-  const currentUser = useUserStore((state) => state.user)
-  const fistName = currentUser?.name?.split(' ')[0]
-  const formattedFirstName = capitalizeFirstLetter(fistName ?? '')
+export const ConnexionButtons = () => {
   const t = useTranslations('header')
-  const router = useRouter()
-  const pathname = usePathname()
+  const { data: session, status } = useSession()
+  const fistName = session?.user?.name?.split(' ')[0]
+  const formattedFirstName = capitalizeFirstLetter(fistName ?? '')
 
-  useEffect(() => {
-    setUser(user)
-  }, [user, setUser])
-
-  useEffect(() => {
-    const handleFocus = async () => {
-      const fetchedSessionUser = await verifySession()
-
-      if (fetchedSessionUser && currentUser === null) {
-        setUser(fetchedSessionUser)
-        return
-      }
-      if (currentUser && fetchedSessionUser === null) {
-        clearUser()
-
-        if (pathname === '/dashboard') {
-          router.push('/auth/sign-in')
-          return
-        }
-      }
-    }
-
-    window.addEventListener('focus', handleFocus)
-    return () => window.removeEventListener('focus', handleFocus)
-  }, [user, currentUser, pathname, router, setUser, clearUser])
+  if (status === 'loading') return <p>Loading...</p>
 
   return (
     <>
-      {currentUser ? (
+      {session ? (
         <>
           <Link
             href="/dashboard"
@@ -66,7 +32,7 @@ export const ConnexionButtons = ({ user }: HeaderProps) => {
               width={50}
               height={50}
               className="user-image"
-              src={currentUser.image || '/icons/defaultUser.svg'}
+              src={session?.user?.image || '/icons/defaultUser.svg'}
               alt="user icon"
             />
           </Link>

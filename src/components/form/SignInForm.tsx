@@ -7,6 +7,8 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { AuthProviders } from './components/AuthProviders'
 import './form.scss'
+import { signIn, useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 interface Form {
   email: string
@@ -14,6 +16,8 @@ interface Form {
 }
 
 const SignIn = () => {
+  const router = useRouter()
+  const session = useSession()
   const [isLoading, setIsLoading] = useState(false)
   const [isFormValid, setIsFormValid] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -27,8 +31,11 @@ const SignIn = () => {
   const [subtitleClassName, setSubtitleClassName] = useState('subtitle')
   const pathname = usePathname()
   const searchParams = useSearchParams()
-
   useEffect(() => {
+    if (session.status === 'authenticated') {
+      router.push('/dashboard')
+    }
+
     if (
       pathname === '/auth/sign-in' &&
       searchParams.get('error') === 'OAuthAccountNotLinked'
@@ -39,7 +46,7 @@ const SignIn = () => {
       setSubtitleClassName('subtitle subtitle--oauth-account-not-linked')
       return
     }
-  }, [pathname, searchParams])
+  }, [pathname, searchParams, session.status, router])
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
@@ -55,13 +62,20 @@ const SignIn = () => {
     }
 
     try {
-      await signInWithCredentials(form)
+      const res = await signInWithCredentials(form)
+      if (res.status === 'success') {
+        await signIn('credentials', {
+          email: form.email,
+          password: form.password,
+        })
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)
         console.log('setError', err.message)
+      } else {
+        setError('An error occurred')
       }
-      console.error('handleSubmit', err)
     } finally {
       setIsLoading(false)
     }

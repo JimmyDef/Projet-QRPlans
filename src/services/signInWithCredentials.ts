@@ -5,7 +5,7 @@ import prisma from '@/src/lib/prisma'
 import bcrypt from 'bcrypt'
 
 import { credentialsSchema } from '@/src/lib/zod'
-// import { ZodError } from 'zod'
+
 type Form = {
   email: string
   password: string
@@ -42,12 +42,15 @@ const signInWithCredentials = async ({ email, password }: Form) => {
       throw new Error('Invalid password')
     }
 
-    await signIn('credentials', {
-      email: parsedData.email,
-      password: password,
-      redirectTo: '/dashboard',
-    })
+    // await signIn('credentials', {
+    //   redirectTo: '/dashboard',
+    //   email: parsedData.email,
+    //   password: password,
+    // })
+    return { status: 'success' }
   } catch (error) {
+    console.log('Error:', error)
+    // throw new Error('test')
     throw error
   }
 }

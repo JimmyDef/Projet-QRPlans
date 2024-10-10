@@ -2,6 +2,7 @@ import Panel from '@/app/dashboard/_components/Panel'
 import { getSession } from '@/src/lib/getSession'
 import prisma from '@/src/lib/prisma'
 import { redirect } from 'next/navigation'
+import SessionChecker from './SessionChecker'
 
 export default async function DashboardLayout({
   children,
@@ -27,9 +28,20 @@ export default async function DashboardLayout({
       userId: userId,
     },
   })
+  //  const serializedFolders = folders.map((folder) => ({
+  //    ...folder,
+  //    createdAt: folder.createdAt.toISOString(),
+  //    updatedAt: folder.updatedAt.toISOString(),
+  //    files: folder.files.map((file) => ({
+  //      ...file,
+  //      createdAt: file.createdAt.toISOString(),
+  //      updatedAt: file.updatedAt.toISOString(),
+  //    })),
+  //  }))
 
   return (
     <div className="dashboard">
+      <SessionChecker />
       <Panel folders={folders} files={files} />
 
       {children}
