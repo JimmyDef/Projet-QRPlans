@@ -1,10 +1,11 @@
 // import '@/src/styles/globals.scss'
-import Header from '@/src/components/header/Header'
+import Header from '@/src/components/layouts/header/Header'
 import '@/src/styles/main.scss'
-import { auth } from '@/src/lib/auth'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
-import ClientProviders from './components/ClientProviders'
+import ClientProviders from './ClientProviders'
+import { auth } from '@/src/lib/auth'
+import { redirect } from 'next/navigation'
 
 export const metadata = {
   title: 'QR Plans',
@@ -18,8 +19,7 @@ export default async function RootLayout({
 }) {
   const locale = await getLocale()
   const messages = await getMessages()
-  const session = await auth()
-  // const securedSession = session?.user ? { ...session.user, id: null } : null
+
   return (
     <html lang={locale}>
       <head>
@@ -30,8 +30,6 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages}>
           <ClientProviders>
             <Header />
-            {/* <Header user={securedSession} /> */}
-
             <main className="main">{children}</main>
           </ClientProviders>
         </NextIntlClientProvider>

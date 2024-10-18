@@ -1,15 +1,21 @@
 'use client'
-// import { User } from '@/src/lib/types'
+
 import Link from 'next/link'
-import LocaleSwitcher from '../localSwitcher/LocaleSwitcher'
+import LocaleSwitcher from '@/src/components/layouts/header/localeSwitcher/LocaleSwitcher'
 import './header.scss'
 import { ConnexionButtons } from './navbar/ConnexionButtons'
-// type HeaderProps = {
-//   user: User | null
-// }
+import { usePathname } from 'next/navigation'
+import { useSession } from 'next-auth/react'
 
-// const Header = ({ user }: HeaderProps) => {
 const Header = () => {
+  const pathname = usePathname()
+  const { status } = useSession()
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (status === 'authenticated' && pathname === '/dashboard') {
+      e.preventDefault()
+    }
+  }
+
   const localeOptions = [
     { value: 'en', label: 'English', image: '/icons/usa-flag.svg' },
     { value: 'fr', label: 'French', image: '/icons/fr-flag.svg ' },
@@ -18,7 +24,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header__container">
-        <Link href="/" className="header__link--title">
+        <Link href="/" className="header__link--title" onClick={handleClick}>
           <h1 className="header__title"> QR-Plans</h1>
         </Link>
         <nav className="header__nav">
@@ -28,7 +34,6 @@ const Header = () => {
             id="changeLanguage"
           />
           <ConnexionButtons />
-          {/* <ConnexionButtons user={user} /> */}
         </nav>
       </div>
     </header>

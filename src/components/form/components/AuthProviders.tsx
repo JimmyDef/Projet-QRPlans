@@ -1,5 +1,5 @@
 import React, { Dispatch, SetStateAction } from 'react'
-import { AuthButton } from '@/src/components/buttons/AuthButton'
+import { AuthButton } from '@/src/components/buttons/auth/AuthButton'
 import Image from 'next/image'
 import './auth-providers.scss'
 interface AuthProvidersProps {

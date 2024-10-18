@@ -16,7 +16,7 @@ const SignOutButton = ({ className }: SignOutButtonProps) => {
       onClick={() => {
         console.log('Signing out')
         // setUser(null)
-        signOut({ callbackUrl: '/' })
+        signOut({ callbackUrl: '/auth/sign-in' })
       }}
     >
       <Image

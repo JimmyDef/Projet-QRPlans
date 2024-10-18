@@ -1,6 +1,6 @@
 'use client'
 import Loader from '@/src/components/loader/Loader'
-import signInWithCredentials from '@/src/services/signInWithCredentials'
+import signInWithCredentials from '@/src/services/auth/signInWithCredentials'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
@@ -32,10 +32,6 @@ const SignIn = () => {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   useEffect(() => {
-    if (session.status === 'authenticated') {
-      router.push('/dashboard')
-    }
-
     if (
       pathname === '/auth/sign-in' &&
       searchParams.get('error') === 'OAuthAccountNotLinked'
@@ -74,7 +70,7 @@ const SignIn = () => {
         setError(err.message)
         console.log('setError', err.message)
       } else {
-        setError('An error occurred')
+        setError('An error occurred, please try again.')
       }
     } finally {
       setIsLoading(false)

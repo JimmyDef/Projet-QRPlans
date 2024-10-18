@@ -1,11 +1,11 @@
-// import { getSession } from 'next-auth/react'
+import { auth } from '@/src/lib/auth'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
   // If the user is signed in, continue to the dashboard
-  //   const session = await getSession()
+  //   const session = await auth()
   //   if (!session) {
   //     console.log('Redirecting to sign-in')
   //     return NextResponse.redirect(new URL('/auth/sign-in', request.url))

@@ -1,25 +1,14 @@
 import { set } from 'zod'
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import { User } from '@/src/lib/types'
-type File = {
-  id: string
-  name: string
-  url: string
-  qrCode: string
-  status: 'ACTIVE' | 'PAUSED' | 'DELETED'
-}
+import { User } from '@/src/types/types'
+import { Folder, File } from '@/src/types/types'
 
-type Folder = {
-  id: string
-  name: string
-  files: File[]
-}
-interface UserStore {
-  user: User | null
-  setUser: (user: User | null) => void
-  clearUser: () => void
-}
+// interface UserStore {
+//   user: User | null
+//   setUser: (user: User | null) => void
+//   clearUser: () => void
+// }
 interface DashboardStore {
   files: File[]
   folders: Folder[]
@@ -34,22 +23,22 @@ interface DashboardStore {
   deleteAllFolders: () => void
 }
 
-export const useUserStore = create<UserStore>()(
-  persist(
-    (set) => ({
-      user: null,
-      setUser: (user: User | null) => set({ user }),
-      clearUser: () => {
-        console.log('Clearing user from store')
-        set({ user: null })
-      },
-    }),
-    {
-      name: 'user-session-storage',
-      storage: createJSONStorage(() => sessionStorage),
-    }
-  )
-)
+// export const useUserStore = create<UserStore>()(
+//   persist(
+//     (set) => ({
+//       user: null,
+//       setUser: (user: User | null) => set({ user }),
+//       clearUser: () => {
+//         console.log('Clearing user from store')
+//         set({ user: null })
+//       },
+//     }),
+//     {
+//       name: 'user-session-storage',
+//       storage: createJSONStorage(() => sessionStorage),
+//     }
+//   )
+// )
 
 export const useDashboardStore = create<DashboardStore>()(
   persist(

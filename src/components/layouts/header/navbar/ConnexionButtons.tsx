@@ -1,16 +1,24 @@
 'use client'
-import SignOutButton from '@/src/components/buttons/SignOutButton'
+import SignOutButton from '@/src/components/buttons/auth/SignOutButton'
 import { capitalizeFirstLetter } from '@/src/services/helpers'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
-
+// import { useRouter } from 'next/navigation'
+// import { useEffect } from 'react'
 export const ConnexionButtons = () => {
+  // const router = useRouter()
   const t = useTranslations('header')
   const { data: session, status } = useSession()
   const fistName = session?.user?.name?.split(' ')[0]
   const formattedFirstName = capitalizeFirstLetter(fistName ?? '')
+
+  // useEffect(() => {
+  //   if (status === 'authenticated' && pathname === '/') {
+  //     router.push('/dashboard')
+  //   }
+  // }, [status])
 
   if (status === 'loading') return <p>Loading...</p>
 

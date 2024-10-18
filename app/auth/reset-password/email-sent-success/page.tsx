@@ -1,11 +1,9 @@
-import React from 'react'
-import Link from 'next/link'
 import '@/src/styles/app/shared/email-sent-success.scss'
-import { getSession } from '@/src/lib/getSession'
-
+import Link from 'next/link'
+import { auth } from '@/src/lib/auth'
 import { redirect } from 'next/navigation'
 const EmailConfirmation = async () => {
-  const session = await getSession()
+  const session = await auth()
   if (session) {
     redirect('/dashboard')
   }

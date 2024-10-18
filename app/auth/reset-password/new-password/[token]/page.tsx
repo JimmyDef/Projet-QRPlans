@@ -1,16 +1,15 @@
 'use server'
-import { redirect } from 'next/navigation'
 import NewPasswordForm from '@/src/components/form/NewPasswordForm'
-import { getSession } from '@/src/lib/getSession'
-
+import { redirect } from 'next/navigation'
 import prisma from '@/src/lib/prisma'
+import { auth } from '@/src/lib/auth'
 
 const RequestResetPasswordEmail = async ({
   params,
 }: {
   params: { token: string }
 }) => {
-  const session = await getSession()
+  const session = await auth()
 
   const resetPasswordToken = await prisma.passwordResetToken.findUnique({
     where: {

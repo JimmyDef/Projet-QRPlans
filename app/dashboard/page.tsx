@@ -1,13 +1,54 @@
-// import { auth } from '@/src/lib/auth'
-// import { redirect } from 'next/navigation'
-// import Panel from '@/app/dashboard/_components/page'
-
-import { getSession } from '@/src/lib/getSession'
+import { auth } from '@/src/lib/auth'
+import prisma from '@/src/lib/prisma'
+import { redirect } from 'next/navigation'
+import './dashboard.scss'
+import SessionChecker from './_services/SessionChecker'
+import Panel from './_components/panel/Panel'
+import { DashboardMainContent } from './_components/main-content/DashboardMainContent'
+import DashboardDataProvider from './_services/DashboardDataProvider'
 
 const Dashboard = async () => {
-  // const session = await auth()
+  const session = await auth()
 
-  return <>{/* <p>Session: {session?.user?.id}</p> */}</>
+  if (!session) {
+    redirect('/auth/sign-in')
+  }
+
+  const userId = session?.user?.id
+
+  const folders = await prisma.folder.findMany({
+    where: {
+      userId: userId,
+    },
+    include: {
+      files: true, // Inclut les fichiers dans chaque dossier
+    },
+    orderBy: { name: 'asc' },
+  })
+  const files = await prisma.file.findMany({
+    where: {
+      userId: userId,
+    },
+  })
+  //  const serializedFolders = folders.map((folder) => ({
+  //    ...folder,
+  //    createdAt: folder.createdAt.toISOString(),
+  //    updatedAt: folder.updatedAt.toISOString(),
+  //    files: folder.files.map((file) => ({
+  //      ...file,
+  //      createdAt: file.createdAt.toISOString(),
+  //      updatedAt: file.updatedAt.toISOString(),
+  //    })),
+  //  }))
+
+  return (
+    <div className="dashboard-layout">
+      <SessionChecker />
+      <DashboardDataProvider files={files} folders={folders} />
+      <Panel />
+      <DashboardMainContent />
+    </div>
+  )
 }
 
 export default Dashboard

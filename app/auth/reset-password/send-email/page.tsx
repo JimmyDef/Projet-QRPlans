@@ -1,9 +1,9 @@
-// import './activation-resend.scss'
 import { redirect } from 'next/navigation'
 import EmailRequestForm from '@/src/components/form/EmailRequestForm'
-import { getSession } from '@/src/lib/getSession'
+
+import { auth } from '@/src/lib/auth'
 const RequestResetPasswordEmail = async () => {
-  const session = await getSession()
+  const session = await auth()
 
   if (session) {
     redirect('/dashboard')

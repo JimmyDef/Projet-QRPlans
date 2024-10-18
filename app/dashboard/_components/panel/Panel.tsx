@@ -1,78 +1,60 @@
 'use client'
-import './panel.scss'
-import useStore from '@/src/hooks/useStore'
-import { sanitizeFoldersInput } from '@/src/services/helpers'
 import { useDashboardStore } from '@/src/lib/store'
+import { sanitizeFoldersInput } from '@/src/services/helpers'
 import {
-  Folder,
-  List,
-  SquarePlus,
   Activity,
   ArrowDownNarrowWide,
   ChartColumnDecreasing,
   ChartNoAxesColumnDecreasing,
   CirclePause,
   Clock,
+  EllipsisVertical,
+  Folder,
   FolderPlus,
   Link,
+  List,
   Pencil,
   Plus,
   Search,
   SquareChevronDown,
   SquareChevronUp,
+  SquarePlus,
   Trash2,
-  EllipsisVertical,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { set } from 'zod'
-import { redirect } from 'next/dist/server/api-utils'
+import { useState } from 'react'
+import './panel.scss'
+import { createNewFolder } from '@/app/actions/folders.action'
+const Panel = () => {
+  const { files, folders } = useDashboardStore()
 
-type File = {
-  id: string
-  name: string
-  url: string
-  qrCode: string
-  status: 'ACTIVE' | 'PAUSED' | 'DELETED'
-}
-
-type Folder = {
-  id: string
-  name: string
-  files: File[]
-}
-
-interface PanelProps {
-  files: File[]
-  folders: Folder[]
-}
-
-const Panel = ({ folders, files }: PanelProps) => {
   const [newFolder, setNewFolder] = useState('')
-  const storedFolders = useDashboardStore((state) => state.folders)
-  const storedFiles = useDashboardStore((state) => state.files)
-  const setFolders = useDashboardStore((state) => state.setFolders)
-  const setFiles = useDashboardStore((state) => state.setFiles)
-  const addFolder = useDashboardStore((state) => state.addFolder)
-  const deleteAllFolders = useDashboardStore((state) => state.deleteAllFolders)
+  const { addFile, setFiles, addFolder, updateFolder, setFolders } =
+    useDashboardStore()
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Escape' && newFolder.trim().length > 0) setNewFolder('')
     if (e.key === 'Enter') handleAddNewFolder()
   }
-  const handleAddNewFolder = () => {
-    if (newFolder.trim().length === 0) return
+  const handleAddNewFolder = async () => {
+    const trimmedFolder = newFolder.trim()
+    if (trimmedFolder.length === 0) return
     addFolder({ id: crypto.randomUUID(), name: newFolder.trim(), files: [] })
     setNewFolder('')
+
+    try {
+      const res = await createNewFolder(trimmedFolder)
+    } catch (error) {
+      console.error('Error creating folder:', error)
+    }
   }
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sanitizedInput = sanitizeFoldersInput(e.target.value)
     setNewFolder(sanitizedInput)
   }
-  useEffect(() => {
-    if (storedFolders.length === 0) {
-      setFolders(folders)
-    }
-  }, [folders, setFolders, storedFolders.length])
+  // useEffect(() => {
+
+  // }, [folders, setFolders, storedFolders.length])
 
   return (
     <section className="panel">
@@ -102,7 +84,7 @@ const Panel = ({ folders, files }: PanelProps) => {
 
       <h2 className="panel__section-title">
         MES DOSSIERS{' '}
-        <span className="panel__folders-count">({storedFolders.length}) </span>
+        <span className="panel__folders-count">({folders.length}) </span>
       </h2>
       <div className="panel__folder-input-group">
         <FolderPlus
@@ -124,7 +106,7 @@ const Panel = ({ folders, files }: PanelProps) => {
       </div>
 
       <div className="panel__folders">
-        {storedFolders.map((folder) => (
+        {folders.map((folder) => (
           <div key={folder.id} className="panel__folder">
             <Folder className="panel__folder-icon" />
             <button
@@ -140,7 +122,7 @@ const Panel = ({ folders, files }: PanelProps) => {
       </div>
 
       <div className="panel__actions">
-        <EllipsisVertical onClick={deleteAllFolders} />
+        <EllipsisVertical />
         <SquarePlus />
         <Plus />
         <Folder />
