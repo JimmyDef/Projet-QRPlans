@@ -1,11 +1,16 @@
 'use client'
 import { useDashboardStore } from '@/src/lib/store'
-import { sanitizeFoldersInput } from '@/src/services/helpers'
+import {
+  generateUniqueFolderName,
+  sanitizeFoldersInput,
+} from '@/src/services/helpers'
 import {
   Activity,
   ArrowDownNarrowWide,
   ChartColumnDecreasing,
   ChartNoAxesColumnDecreasing,
+  ChevronDown,
+  ChevronUp,
   CirclePause,
   Clock,
   EllipsisVertical,
@@ -24,12 +29,22 @@ import {
 import { useState } from 'react'
 import './panel.scss'
 import { createNewFolder } from '@/app/actions/folders.action'
+import useScrollArrows from '@/src/hooks/useScrollArrows'
 const Panel = () => {
   const { files, folders } = useDashboardStore()
 
+  const { scrollContainerRef, showBottomArrow, showTopArrow } =
+    useScrollArrows()
+
   const [newFolder, setNewFolder] = useState('')
-  const { addFile, setFiles, addFolder, updateFolder, setFolders } =
-    useDashboardStore()
+  const {
+    addFile,
+    setFiles,
+    addFolder,
+    updateFolderId,
+    setFolders,
+    removeFolder,
+  } = useDashboardStore()
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Escape' && newFolder.trim().length > 0) setNewFolder('')
@@ -38,12 +53,21 @@ const Panel = () => {
   const handleAddNewFolder = async () => {
     const trimmedFolder = newFolder.trim()
     if (trimmedFolder.length === 0) return
-    addFolder({ id: crypto.randomUUID(), name: newFolder.trim(), files: [] })
+    const tempId = crypto.randomUUID()
+    const uniqueFolderName = generateUniqueFolderName(trimmedFolder, folders)
+    addFolder({
+      id: tempId,
+      name: uniqueFolderName,
+      files: [],
+      isTemporary: true,
+    })
     setNewFolder('')
 
     try {
-      const res = await createNewFolder(trimmedFolder)
+      const res = await createNewFolder(trimmedFolder, tempId)
+      updateFolderId(tempId, res.folder.id)
     } catch (error) {
+      removeFolder(tempId)
       console.error('Error creating folder:', error)
     }
   }
@@ -99,29 +123,36 @@ const Panel = () => {
           minLength={1}
           maxLength={25}
           value={newFolder}
-          // onBlur={() => setNewFolder('')}
           onChange={handleOnChange}
           onKeyDown={handleKeyPress}
         ></input>
       </div>
 
       <div className="panel__folders">
-        {folders.map((folder) => (
-          <div key={folder.id} className="panel__folder">
-            <Folder className="panel__folder-icon" />
-            <button
-              className="panel__folder-button"
-              // onClick={() => {
-              //   redirect(`/dashboard/folder/${folder.id}`)
-              // }}
-            >
-              {folder.name}
-            </button>
+        {showTopArrow && (
+          <div className=" panel__scroll-arrow-container panel__scroll-arrow-container--top">
+            <ChevronUp className="panel__scroll-arrow" />
           </div>
-        ))}
+        )}
+        <div className="panel__folders-wrapper" ref={scrollContainerRef}>
+          {folders.map((folder) => (
+            <button key={folder.id} className="panel__folder">
+              <Folder className="panel__folder-icon" />
+              <p className="panel__folder-name">{folder.name}</p>
+            </button>
+          ))}
+        </div>
+
+        {showBottomArrow && (
+          <div className="panel__scroll-arrow-container panel__scroll-arrow-container--bottom">
+            <ChevronDown className="panel__scroll-arrow" />
+          </div>
+        )}
       </div>
 
       <div className="panel__actions">
+        <ChevronDown />
+        <ChevronUp />
         <EllipsisVertical />
         <SquarePlus />
         <Plus />

@@ -1,27 +1,8 @@
 import { set } from 'zod'
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import { User } from '@/src/types/types'
+import { DashboardStore, FolderStore } from '@/src/types/types'
 import { Folder, File } from '@/src/types/types'
-
-// interface UserStore {
-//   user: User | null
-//   setUser: (user: User | null) => void
-//   clearUser: () => void
-// }
-interface DashboardStore {
-  files: File[]
-  folders: Folder[]
-
-  addFile: (file: File) => void
-  addFolder: (folder: Folder) => void
-  updateFolder: (folder: Folder) => void
-  deleteFolder: (folderId: string) => void
-  updateFile: (file: File) => void
-  setFiles: (files: File[]) => void
-  setFolders: (folders: Folder[]) => void
-  deleteAllFolders: () => void
-}
 
 // export const useUserStore = create<UserStore>()(
 //   persist(
@@ -45,36 +26,49 @@ export const useDashboardStore = create<DashboardStore>()(
     (set) => ({
       files: [],
       folders: [],
-      setFolders: (folders: Folder[]) => set({ folders }),
+      setFolders: (folders: FolderStore[]) => set({ folders }),
       setFiles: (files: File[]) => set({ files }),
       addFile: (file: File) =>
         set((state: { files: File[] }) => ({ files: [...state.files, file] })),
 
-      addFolder: (folder: Folder) => {
-        console.log('Adding folder:', folder)
-        set((state: { folders: Folder[] }) => ({
+      addFolder: (folder) =>
+        set((state) => ({
           folders: [...state.folders, folder].sort((a, b) =>
             a.name.localeCompare(b.name)
           ),
-        }))
-      },
-
-      updateFolder: (folder: Folder) =>
-        set((state: { folders: Folder[] }) => {
-          const updatedFolders = state.folders.map((f) =>
-            f.id === folder.id ? folder : f
+        })),
+      updateFolderId: (tempId, newId) =>
+        set((state) => {
+          const index = state.folders.findIndex(
+            (folder) => folder.id === tempId
           )
-          updatedFolders.sort((a, b) => a.name.localeCompare(b.name))
+          if (index === -1) {
+            console.error(
+              `Dossier avec l'ID temporaire ${tempId} non trouvé lors de la mise à jour de l'ID.`
+            )
+            return state
+          }
 
+          const updatedFolders = [...state.folders]
+
+          updatedFolders[index] = {
+            ...updatedFolders[index],
+            id: newId,
+            isTemporary: false,
+          }
           return { folders: updatedFolders }
         }),
 
-      deleteFolder: (folderId: string) =>
-        set((state: { folders: Folder[] }) => ({
+      removeFolder: (folderId: string) => {
+        console.log('removeFolder:', folderId)
+        set((state) => ({
           folders: state.folders.filter((f) => f.id !== folderId),
-        })),
-      deleteAllFolders: () =>
-        set((state: { folders: Folder[] }) => ({
+        }))
+        return
+      },
+
+      removeAllFolders: () =>
+        set(() => ({
           folders: [],
         })),
 

@@ -48,3 +48,34 @@ export const comparePasswords = (
 ) => {
   return password !== passwordConfirmation
 }
+
+export const escapeRegExp = (string: string) => {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+export const generateUniqueFolderName = (
+  baseName: string,
+  similarFolders: {
+    name: string
+  }[]
+) => {
+  const existingNames = similarFolders.map((folder) => folder.name)
+  const escapedBaseName = escapeRegExp(baseName)
+  let uniqueName = baseName
+  let suffix = 1
+
+  if (existingNames.includes(uniqueName)) {
+    const regex = new RegExp(`^${escapedBaseName}( \\((\\d+)\\))?$`)
+    const suffixes = existingNames
+      .map((n) => {
+        const match = n.match(regex)
+        return match && match[2] ? parseInt(match[2], 10) : 0
+      })
+      .filter((n) => n >= 1)
+
+    suffix = suffixes.length > 0 ? Math.max(...suffixes) + 1 : 1
+    uniqueName = `${baseName} (${suffix})`
+  }
+
+  return uniqueName
+}

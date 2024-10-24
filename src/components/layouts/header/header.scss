@@ -2,6 +2,11 @@
 @import '@/src/styles/abstacts/mixins';
 
 .header {
+  // overflow-y: hidden;
+  background-color: $color-white;
+  // z-index: 1000;
+  position: sticky;
+  top: 0;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   &__container {
     margin: 0 auto 20px;
@@ -36,7 +41,6 @@
   &__link {
     cursor: pointer;
     text-decoration: none;
-
     &:hover {
       text-decoration: underline;
     }

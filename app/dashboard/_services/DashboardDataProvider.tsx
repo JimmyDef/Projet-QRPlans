@@ -1,13 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 import { useDashboardStore } from '@/src/lib/store'
-import { Folder, File } from '@/src/types/types'
-
-type DashboardDataProviderProps = {
-  files: File[]
-  folders: Folder[]
-  userId?: string
-}
+import { DashboardDataProviderProps } from '@/src/types/types'
 
 const DashboardDataProvider = ({
   folders,
