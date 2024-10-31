@@ -9,15 +9,14 @@ interface ScrollArrowsHook {
 
 const useScrollArrows = (): ScrollArrowsHook => {
   const [showTopArrow, setShowTopArrow] = useState<boolean>(false)
-  const [showBottomArrow, setShowBottomArrow] = useState<boolean>(true)
+  const [showBottomArrow, setShowBottomArrow] = useState<boolean>(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
-
+  const scrollContainer = scrollContainerRef.current
   useEffect(() => {
     const handleScroll = () => {
-      const scrollContainer = scrollContainerRef.current
-
       if (scrollContainer) {
         const canScrollTop = scrollContainer.scrollTop > 0
+
         const canScrollBottom =
           scrollContainer.scrollTop + scrollContainer.clientHeight <
           scrollContainer.scrollHeight
@@ -27,7 +26,6 @@ const useScrollArrows = (): ScrollArrowsHook => {
       }
     }
 
-    const scrollContainer = scrollContainerRef.current
     if (scrollContainer) {
       scrollContainer.addEventListener('scroll', handleScroll)
 
@@ -39,7 +37,7 @@ const useScrollArrows = (): ScrollArrowsHook => {
         scrollContainer.removeEventListener('scroll', handleScroll)
       }
     }
-  }, [scrollContainerRef])
+  }, [scrollContainer])
 
   return { scrollContainerRef, showTopArrow, showBottomArrow }
 }

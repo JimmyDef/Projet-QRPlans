@@ -1,4 +1,4 @@
-'use server'
+'use client'
 
 const GlobalError = ({ error, reset }: { error: Error; reset: () => void }) => {
   return (

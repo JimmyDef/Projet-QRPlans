@@ -1,4 +1,4 @@
-@import '@/src/styles/abstacts/mixins';
+@use './../../src/styles/abstacts/mixins.scss' as V;
 .support-page__container {
   margin: 0 auto;
   max-width: fit-content;
@@ -47,20 +47,20 @@
   @include sign-input-btn;
   width: 100%;
   border: 0;
-  background: $color-secondary;
+  background: V.$color-secondary;
   margin-bottom: 0;
   color: #ffffff;
   cursor: pointer;
   font-weight: 600;
   &:hover {
-    background: $color-secondary-darker;
+    background: V.$color-secondary-darker;
     box-shadow: none;
     &:focus {
-      background: $color-secondary-darker;
+      background: V.$color-secondary-darker;
     }
   }
   &:focus {
-    background: $color-secondary;
+    background: V.$color-secondary;
   }
   &:disabled {
     background: #cccccc;

@@ -1,4 +1,4 @@
-@import './../abstacts/variables';
+@use '../abstacts/variables';
 
 .hero {
   background-color: #f7f7f7;
@@ -37,7 +37,7 @@
 
 .hero__button {
   display: inline-block;
-  background-color: $color-secondary;
+  background-color: variables.$color-secondary;
   color: black;
   padding: 15px 30px;
   border-radius: 5px;
@@ -47,5 +47,5 @@
 }
 
 .hero__button:hover {
-  background-color: $color-secondary;
+  background-color: variables.$color-secondary;
 }

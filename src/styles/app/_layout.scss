@@ -1,3 +1,5 @@
+@use "../abstacts/variables";
+
 html {
   // scrollbar-gutter: stable;
   overflow-y: scroll;
@@ -11,6 +13,6 @@ body {
 }
 .main {
   margin: 0 auto;
-  max-width: $desktop-width;
+  max-width: variables.$desktop-width;
   padding: 0 20px 0px;
 }

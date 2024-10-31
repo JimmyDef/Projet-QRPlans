@@ -1,5 +1,5 @@
-@import '@/src/styles/abstacts/variables';
-@import '@/src/styles/abstacts/mixins';
+@use '../abstacts/variables.scss';
+@use '../abstacts/mixins.scss';
 
 .error-container {
   display: flex;
@@ -7,7 +7,7 @@
   align-items: center;
   justify-content: center;
   height: 50vh;
-  background-color: $background-color-light-grey;
+  background-color: variables.$background-color-light-grey;
 
   padding: 20px;
   border-radius: 8px;
@@ -24,7 +24,7 @@
 }
 
 .retry-button {
-  @include main-link;
+  @include mixins.main-link;
   &:focus-visible {
     outline: none;
     border: 3px solid black;

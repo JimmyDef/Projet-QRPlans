@@ -1,4 +1,6 @@
-@import '@/src/styles/abstacts/variables';
+@use '../abstacts/variables' as V;
+
+// @import '@/src/styles/abstacts/variables';
 
 *,
 *::after,
@@ -13,7 +15,7 @@
 }
 
 body {
-  color: $color-primary;
+  color: V.$color-primary;
   font-family: 'Montserrat', sans-serif;
 }
 .main {
@@ -21,7 +23,7 @@ body {
 
 a {
   text-decoration: none;
-  color: $color-primary;
+  color: V.$color-primary;
   &:hover {
     cursor: pointer;
   }

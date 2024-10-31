@@ -1,5 +1,5 @@
-@import '@/src/styles/abstacts/variables.scss';
-@import '@/src/styles/abstacts/mixins';
+@use './../../../styles/abstacts/variables.scss' as V;
+@use './../../../styles/abstacts/mixins';
 
 .auth-provider__wrapper {
   grid-area: authBtn;
@@ -16,7 +16,7 @@
   cursor: pointer;
   position: relative;
   font-weight: 600;
-  color: $color-primary;
+  color: V.$color-primary;
 }
 
 .auth-provider__icon {

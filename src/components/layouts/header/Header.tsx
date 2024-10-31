@@ -18,7 +18,7 @@ const Header = () => {
 
   const localeOptions = [
     { value: 'en', label: 'English', image: '/icons/usa-flag.svg' },
-    { value: 'fr', label: 'French', image: '/icons/fr-flag.svg ' },
+    { value: 'fr', label: 'French', image: '/icons/fr-flag.svg' },
   ]
 
   return (

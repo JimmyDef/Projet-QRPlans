@@ -8,7 +8,7 @@ const locales: Locale[] = ['en', 'fr']
 const COOKIE_NAME = 'USER_LOCALE_PREFERENCE'
 
 export async function getUserLocale(): Promise<Locale> {
-  const headersList = headers()
+  const headersList = await headers()
   const acceptLanguage = headersList.get('accept-language')
   const localeCandidate: string | undefined = acceptLanguage
     ?.split(',')[0]
@@ -18,11 +18,11 @@ export async function getUserLocale(): Promise<Locale> {
     ? localeCandidate
     : 'fr'
 
-  const userLocale = cookies().get(COOKIE_NAME)?.value as Locale
+  const userLocale = (await cookies()).get(COOKIE_NAME)?.value as Locale
 
   return userLocale || localeFromHeaders
 }
 
 export async function setUserLocale(locale: Locale): Promise<void> {
-  cookies().set(COOKIE_NAME, locale)
+  ;(await cookies()).set(COOKIE_NAME, locale)
 }

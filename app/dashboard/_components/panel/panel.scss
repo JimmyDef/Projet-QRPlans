@@ -1,10 +1,10 @@
-@import '@/src/styles/abstacts/_variables';
-@import '@/src/styles/abstacts/mixins';
+@use './../../../../src/styles/abstacts/variables.scss' as V;
+// @use './../../../../src/styles/abstacts/mixins';
 
 .panel {
   width: 250px;
   height: calc(100vh - 70px);
-  background-color: $background-color-light-grey;
+  background-color: V.$background-color-light-grey;
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1); /* Ombre uniquement sur les côtés et en bas */
   position: fixed;
@@ -12,7 +12,7 @@
   left: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  // justify-content: space-between;
 
   &__search-container {
     position: relative;
@@ -24,7 +24,7 @@
     width: 210px;
 
     padding: 8px 32px 8px 8px;
-    border: 1px solid $color-bg-border-white-grey;
+    border: 1px solid V.$color-bg-border-white-grey;
     border-radius: 4px;
   }
 
@@ -34,19 +34,19 @@
     right: 5px;
     // flex-shrink: 0;
     // margin-left: 10px;
-    color: $icon-color;
+    color: V.$icon-color;
   }
 
   &__section-title {
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 10px;
-    color: $color-dark-grey;
+    color: V.$color-dark-grey;
     line-height: 16px;
   }
   &__folders-count {
     transform: scale(50%);
-    color: $color-dark-grey-2;
+    color: V.$color-dark-grey-2;
   }
 
   &__status-buttons {
@@ -57,7 +57,7 @@
   }
 
   &__status-button {
-    background-color: $status-btn-bg-color;
+    background-color: V.$status-btn-bg-color;
     border: none;
     padding: 10px 15px;
     border-radius: 4px;
@@ -68,17 +68,18 @@
     transition: background-color 0.3s ease;
 
     &:hover {
-      background-color: $status-btn-bg-color-hover;
+      background-color: V.$status-btn-bg-color-hover;
     }
   }
 
   &__divider {
     height: 1px;
-    background-color: $color-bg-border-white-grey;
+    background-color: V.$color-bg-border-white-grey;
     margin: 20px 0;
   }
 
   &__folder-input-group {
+    // flex: 1;
     display: flex;
     align-items: center;
     margin-bottom: 20px;
@@ -88,7 +89,7 @@
     width: 20px;
     flex: 1;
     padding: 8px;
-    border: 1px solid $color-bg-border-white-grey;
+    border: 1px solid V.$color-bg-border-white-grey;
     border-radius: 4px;
   }
   &__new-folder-icon {
@@ -102,15 +103,15 @@
   }
   &__folders {
     position: relative;
-
     overflow-y: hidden;
     margin-bottom: 20px;
+    flex: 1;
   }
 
   &__folders-wrapper {
     max-height: 100%;
     overflow-y: auto;
-    scrollbar-width: none;
+    // scrollbar-width: none;
   }
   &__scroll-arrow-container {
     position: absolute;
@@ -119,7 +120,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: $background-color-light-grey;
+    background-color: V.$background-color-light-grey;
 
     &--top {
       top: 0;
@@ -133,43 +134,11 @@
     width: 40px;
     height: 40px;
 
-    color: $color-dark-grey-2;
+    color: V.$color-dark-grey-2;
     transition: color 0.3s ease;
 
     &:hover {
-      color: $color-dark-grey;
-    }
-  }
-
-  &__folder {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px;
-    background-color: #f9f9f9;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-      background-color: #eaeaea;
-    }
-  }
-
-  &__folder-icon {
-    // color: #555;
-  }
-
-  &__folder-name {
-    background-color: transparent;
-    border: none;
-    color: #007bff;
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-      color: #0056b3;
+      color: V.$color-dark-grey;
     }
   }
 
@@ -183,7 +152,7 @@
 
   &__action-icon {
     cursor: pointer;
-    color: $color-dark-grey-2;
+    color: V.$color-dark-grey-2;
     transition: color 0.3s ease;
 
     &:hover {

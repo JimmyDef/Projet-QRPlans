@@ -22,65 +22,64 @@ import { Folder, File } from '@/src/types/types'
 // )
 
 export const useDashboardStore = create<DashboardStore>()(
-  persist(
-    (set) => ({
-      files: [],
-      folders: [],
-      setFolders: (folders: FolderStore[]) => set({ folders }),
-      setFiles: (files: File[]) => set({ files }),
-      addFile: (file: File) =>
-        set((state: { files: File[] }) => ({ files: [...state.files, file] })),
+  // persist(
+  (set) => ({
+    files: [],
+    folders: [],
+    activeFolderId: null,
+    setActiveFolderId: (id) => set({ activeFolderId: id }),
+    setFiles: (files: File[]) => set({ files }),
+    addFile: (file: File) =>
+      set((state: { files: File[] }) => ({ files: [...state.files, file] })),
+    updateFile: (file: File) =>
+      set((state: { files: File[] }) => ({
+        files: state.files.map((f) => (f.id === file.id ? file : f)),
+      })),
+    addFolder: (folder) =>
+      set((state) => ({
+        folders: [...state.folders, folder].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        ),
+      })),
+    setFolders: (folders: FolderStore[]) => set({ folders }),
 
-      addFolder: (folder) =>
-        set((state) => ({
-          folders: [...state.folders, folder].sort((a, b) =>
-            a.name.localeCompare(b.name)
-          ),
-        })),
-      updateFolderId: (tempId, newId) =>
-        set((state) => {
-          const index = state.folders.findIndex(
-            (folder) => folder.id === tempId
+    updateFolderId: (tempId, newId) =>
+      set((state) => {
+        const index = state.folders.findIndex((folder) => folder.id === tempId)
+        if (index === -1) {
+          console.error(
+            `Dossier avec l'ID temporaire ${tempId} non trouvé lors de la mise à jour de l'ID.`
           )
-          if (index === -1) {
-            console.error(
-              `Dossier avec l'ID temporaire ${tempId} non trouvé lors de la mise à jour de l'ID.`
-            )
-            return state
-          }
+          return state
+        }
 
-          const updatedFolders = [...state.folders]
+        const updatedFolders = [...state.folders]
 
-          updatedFolders[index] = {
-            ...updatedFolders[index],
-            id: newId,
-            isTemporary: false,
-          }
-          return { folders: updatedFolders }
-        }),
+        updatedFolders[index] = {
+          ...updatedFolders[index],
+          id: newId,
+          isTemporary: false,
+        }
+        return { folders: updatedFolders }
+      }),
 
-      removeFolder: (folderId: string) => {
-        console.log('removeFolder:', folderId)
-        set((state) => ({
-          folders: state.folders.filter((f) => f.id !== folderId),
-        }))
-        return
-      },
+    removeFolder: (folderId: string) => {
+      console.log('removeFolder:', folderId)
+      set((state) => ({
+        folders: state.folders.filter((f) => f.id !== folderId),
+      }))
+      return
+    },
 
-      removeAllFolders: () =>
-        set(() => ({
-          folders: [],
-        })),
+    removeAllFolders: () =>
+      set(() => ({
+        folders: [],
+      })),
+  })
 
-      updateFile: (file: File) =>
-        set((state: { files: File[] }) => ({
-          files: state.files.map((f) => (f.id === file.id ? file : f)),
-        })),
-    }),
-
-    {
-      name: 'dashboard-storage',
-      storage: createJSONStorage(() => sessionStorage),
-    }
-  )
+  // {
+  //   name: 'dashboard-storage',
+  //   storage: createJSONStorage(() => sessionStorage),
+  // }
+  // )
 )

@@ -4,6 +4,7 @@ import {
   generateUniqueFolderName,
   sanitizeFoldersInput,
 } from '@/src/services/helpers'
+import { Tooltip } from 'react-tooltip'
 import {
   Activity,
   ArrowDownNarrowWide,
@@ -26,13 +27,14 @@ import {
   SquarePlus,
   Trash2,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import './panel.scss'
 import { createNewFolder } from '@/app/actions/folders.action'
 import useScrollArrows from '@/src/hooks/useScrollArrows'
+import { DropdownFolderOptions } from '../DropdownFolderOptions'
+import { FolderButton } from '../Folder-button/FolderButton'
 const Panel = () => {
   const { files, folders } = useDashboardStore()
-
   const { scrollContainerRef, showBottomArrow, showTopArrow } =
     useScrollArrows()
 
@@ -44,12 +46,18 @@ const Panel = () => {
     updateFolderId,
     setFolders,
     removeFolder,
+    activeFolderId,
+    setActiveFolderId,
   } = useDashboardStore()
-
+  // const targetRef = useRef<HTMLDivElement>(null)
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Escape' && newFolder.trim().length > 0) setNewFolder('')
     if (e.key === 'Enter') handleAddNewFolder()
   }
+  // const handleScroll = () => {
+  //   if (targetRef.current)
+  //     targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  // }
   const handleAddNewFolder = async () => {
     const trimmedFolder = newFolder.trim()
     if (trimmedFolder.length === 0) return
@@ -76,6 +84,13 @@ const Panel = () => {
     const sanitizedInput = sanitizeFoldersInput(e.target.value)
     setNewFolder(sanitizedInput)
   }
+
+  const handleFolderClick = useCallback(
+    (id: string) => {
+      setActiveFolderId(id)
+    },
+    [setActiveFolderId]
+  )
   // useEffect(() => {
 
   // }, [folders, setFolders, storedFolders.length])
@@ -135,12 +150,17 @@ const Panel = () => {
           </div>
         )}
         <div className="panel__folders-wrapper" ref={scrollContainerRef}>
-          {folders.map((folder) => (
-            <button key={folder.id} className="panel__folder">
-              <Folder className="panel__folder-icon" />
-              <p className="panel__folder-name">{folder.name}</p>
-            </button>
-          ))}
+          <Tooltip id="tooltip-folder-menu-options" offset={13} opacity={1} />
+          {folders.map((folder) =>
+            FolderButton({
+              folder,
+              isActive: activeFolderId === folder.id,
+              onClick: () => {
+                if (activeFolderId !== folder.id)
+                  return handleFolderClick(folder.id)
+              },
+            })
+          )}
         </div>
 
         {showBottomArrow && (

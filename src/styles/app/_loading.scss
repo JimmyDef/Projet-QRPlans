@@ -1,8 +1,8 @@
-@import '@/src/styles/abstacts/_variables.scss';
+@use '../abstacts/variables.scss';
 
 .home-page-loader {
   width: 100%;
-  height: calc(100vh - $header-height - 150px);
+  height: calc(100vh - variables.$header-height - 150px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -201,7 +201,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - $header-height - 150px);
+  height: calc(100vh - variables.$header-height - 150px);
 }
 .loader {
   margin: 20% auto;

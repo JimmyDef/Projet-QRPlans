@@ -1,15 +1,15 @@
-@import './abstacts/variables';
-@import './abstacts/mixins';
+@use 'abstacts/variables';
+@use 'abstacts/mixins';
 
-@import './base/base';
-@import './base/normalize';
-@import './base/typography';
+@use 'base/base';
+@use 'base/normalize';
+@use 'base/typography';
 
-@import './app/layout';
+@use 'app/layout';
 // @import './app/loader';
-@import './app/global-error';
-@import './app/error';
-@import './app/loading';
-@import './app/not-found';
-@import './app/homepage';
+@use 'app/global-error';
+@use 'app/error';
+@use 'app/loading';
+@use 'app/not-found';
+@use 'app/homepage';
 // @import './app/sign-form';

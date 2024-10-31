@@ -1,5 +1,5 @@
-@import '@/src/styles/abstacts/variables.scss';
-@import '@/src/styles/abstacts/mixins';
+@use './../../styles/abstacts/variables.scss' as V;
+@use './../../styles/abstacts/mixins';
 
 .sign-form {
   width: 100%;
@@ -7,7 +7,7 @@
 }
 
 .sign-form-container {
-  color: $color-primary;
+  color: V.$color-primary;
   @include box-modal;
   max-width: 500px;
   margin: 0 auto 50px;
@@ -71,7 +71,7 @@
     &--oauth-account-not-linked {
       padding: 15px 7px;
       color: red;
-      background-color: $background-color-light-grey;
+      background-color: V.$background-color-light-grey;
     }
 
     &--sign-in {
@@ -123,20 +123,20 @@
     @include sign-input-btn;
     width: 100%;
     border: 0;
-    background: $color-secondary;
+    background: V.$color-secondary;
     margin-bottom: 0;
     color: #ffffff;
     cursor: pointer;
     font-weight: 600;
     &:hover {
-      background: $color-secondary-darker;
+      background: V.$color-secondary-darker;
       box-shadow: none;
       &:focus {
-        background: $color-secondary-darker;
+        background: V.$color-secondary-darker;
       }
     }
     &:focus {
-      background: $color-secondary;
+      background: V.$color-secondary;
     }
     &:disabled {
       background: #cccccc;
@@ -191,7 +191,7 @@
   }
 
   .register-link {
-    color: $color-primary;
+    color: V.$color-primary;
     font-weight: 600;
     text-decoration: underline;
     cursor: pointer;
