@@ -17,11 +17,9 @@ export const DropdownFolderOptions: React.FC<DropdownFolderOptionsProps> = ({
   children,
 }) => {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild onClick={() => console.log('clickeeeed')}>
-        {children}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent side="right">
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
+      <DropdownMenuContent>
         <DropdownMenuItem>Renommer</DropdownMenuItem>
 
         <DropdownMenuItem>Supprimer</DropdownMenuItem>

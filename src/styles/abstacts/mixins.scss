@@ -9,7 +9,7 @@
   text-align: center;
   background-color: V.$color-secondary;
   color: V.$color-white;
-  transition: all 0.2s;
+  transition: background-color 0.2s;
   border-radius: 5px;
   cursor: pointer;
   &:focus-visible {

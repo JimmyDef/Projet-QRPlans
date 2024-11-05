@@ -25,6 +25,8 @@ export interface FolderButtonProps {
   folder: Folder
   isActive: boolean
   onClick: () => void
+
+  onRename: () => void
 }
 
 export interface FolderStore extends Folder {

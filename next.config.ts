@@ -1,7 +1,6 @@
 import createNextIntlPlugin from 'next-intl/plugin'
 const withNextIntl = createNextIntlPlugin()
 
-/** @type {import('next').NextConfig} */
 const nextConfig = {
   sassOptions: {
     silenceDeprecations: ['legacy-js-api'],
@@ -11,22 +10,22 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     remotePatterns: [
       {
-        protocol: 'https',
+        protocol: 'https' as const,
         hostname: '*.googleusercontent.com',
         pathname: '**',
       },
       {
-        protocol: 'https',
+        protocol: 'https' as const,
         hostname: 'avatars.githubusercontent.com',
         pathname: '**',
       },
       {
-        protocol: 'https',
+        protocol: 'https' as const,
         hostname: '*.platform-lookaside.fbsbx.com',
         pathname: '**',
       },
       {
-        protocol: 'https',
+        protocol: 'https' as const,
         hostname: '*.media-exp1.licdn.com',
         pathname: '**',
       },

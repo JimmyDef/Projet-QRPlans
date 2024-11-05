@@ -1,7 +1,8 @@
 @use './../../../../src/styles/abstacts/variables.scss' as V;
 
 .folder {
-  width: 100%;
+  // width: 100%;
+  width: 200px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -10,6 +11,7 @@
   border-radius: 4px;
   margin-bottom: 8px;
   transition: background-color 0.2s ease;
+  border: 2px solid transparent;
   cursor: pointer;
 
   &:hover {
@@ -17,6 +19,17 @@
     .folder__menu-icon {
       opacity: 1;
     }
+  }
+  &:focus {
+    border: 2px solid black;
+    .folder__menu-icon {
+      opacity: 1;
+    }
+  }
+
+  &:focus-visible {
+    // z-index: 500;
+    outline: none;
   }
 }
 
@@ -28,20 +41,8 @@
 }
 
 .folder__icon {
+  flex-shrink: 0;
   // color: #555;
-}
-
-// .folder__menu-icon-wrapper {
-//   border: 1px solid red;
-//   width: 40px;
-//   height: 20px;
-// }
-.folder__menu-icon {
-  opacity: 0;
-  &:hover {
-    color: V.$color-secondary;
-  }
-  color: #6d6d6d;
 }
 
 .folder__name {
@@ -52,6 +53,55 @@
   color: #007bff;
   text-decoration: underline;
 
+  &:hover {
+    color: #0056b3;
+  }
+}
+.folder__menu-icon {
+  opacity: 0;
+  color: #6d6d6d;
+
+  &:hover {
+    color: V.$color-secondary;
+  }
+  &:focus {
+    color: V.$color-secondary;
+    opacity: 1;
+  }
+}
+
+.folder__triggerBtn {
+  // width: 30px;
+  display: block;
+  flex-shrink: 0;
+  background-color: transparent;
+  border: none;
+  color: #007bff;
+  text-decoration: underline;
+  &:focus {
+    .folder__menu-icon {
+      color: V.$color-secondary;
+      opacity: 1;
+    }
+  }
+}
+.folder__menu-select {
+  div {
+    cursor: pointer;
+  }
+}
+
+.folder__item--red {
+  color: red;
+}
+
+.folder__new-name {
+  flex-grow: 1;
+  width: 100%;
+  // background-color: transparent;
+  border: none;
+  color: #007bff;
+  text-decoration: underline;
   &:hover {
     color: #0056b3;
   }

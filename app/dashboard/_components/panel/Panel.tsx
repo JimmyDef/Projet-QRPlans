@@ -1,9 +1,6 @@
 'use client'
 import { useDashboardStore } from '@/src/lib/store'
-import {
-  generateUniqueFolderName,
-  sanitizeFoldersInput,
-} from '@/src/services/helpers'
+import { sanitizeFoldersInput } from '@/src/services/helpers'
 import { Tooltip } from 'react-tooltip'
 import {
   Activity,
@@ -27,57 +24,54 @@ import {
   SquarePlus,
   Trash2,
 } from 'lucide-react'
-import { useCallback, useRef, useState } from 'react'
 import './panel.scss'
-import { createNewFolder } from '@/app/actions/folders.action'
+// import {
+//   createNewFolderAction,
+//   removeFolderAction,
+// } from '@/app/actions/folders.action'
 import useScrollArrows from '@/src/hooks/useScrollArrows'
-import { DropdownFolderOptions } from '../DropdownFolderOptions'
-import { FolderButton } from '../Folder-button/FolderButton'
-const Panel = () => {
-  const { files, folders } = useDashboardStore()
-  const { scrollContainerRef, showBottomArrow, showTopArrow } =
-    useScrollArrows()
 
-  const [newFolder, setNewFolder] = useState('')
+import { FolderButton } from '../Folder-button/FolderButton'
+import { shallow } from 'zustand/shallow'
+// import { toast } from 'react-toastify'
+
+import { useAddFolder } from '@/src/hooks/useAddFolder'
+const Panel = () => {
+  const { handleAddNewFolder, newFolder, setNewFolder } = useAddFolder()
+
   const {
+    files,
+    folders,
     addFile,
-    setFiles,
     addFolder,
     updateFolderId,
-    setFolders,
     removeFolder,
     activeFolderId,
     setActiveFolderId,
-  } = useDashboardStore()
-  // const targetRef = useRef<HTMLDivElement>(null)
+  } = useDashboardStore(
+    (state) => ({
+      files: state.files,
+      folders: state.folders,
+      addFile: state.addFile,
+      addFolder: state.addFolder,
+      updateFolderId: state.updateFolderId,
+      removeFolder: state.removeFolder,
+      activeFolderId: state.activeFolderId,
+      setActiveFolderId: state.setActiveFolderId,
+    }),
+    shallow
+  )
+  const {
+    scrollContainerRef,
+    showBottomArrow,
+    showTopArrow,
+    handleScrollUp,
+    handleScrollDown,
+  } = useScrollArrows(folders.length)
+
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Escape' && newFolder.trim().length > 0) setNewFolder('')
     if (e.key === 'Enter') handleAddNewFolder()
-  }
-  // const handleScroll = () => {
-  //   if (targetRef.current)
-  //     targetRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  // }
-  const handleAddNewFolder = async () => {
-    const trimmedFolder = newFolder.trim()
-    if (trimmedFolder.length === 0) return
-    const tempId = crypto.randomUUID()
-    const uniqueFolderName = generateUniqueFolderName(trimmedFolder, folders)
-    addFolder({
-      id: tempId,
-      name: uniqueFolderName,
-      files: [],
-      isTemporary: true,
-    })
-    setNewFolder('')
-
-    try {
-      const res = await createNewFolder(trimmedFolder, tempId)
-      updateFolderId(tempId, res.folder.id)
-    } catch (error) {
-      removeFolder(tempId)
-      console.error('Error creating folder:', error)
-    }
   }
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,12 +79,6 @@ const Panel = () => {
     setNewFolder(sanitizedInput)
   }
 
-  const handleFolderClick = useCallback(
-    (id: string) => {
-      setActiveFolderId(id)
-    },
-    [setActiveFolderId]
-  )
   // useEffect(() => {
 
   // }, [folders, setFolders, storedFolders.length])
@@ -145,32 +133,42 @@ const Panel = () => {
 
       <div className="panel__folders">
         {showTopArrow && (
-          <div className=" panel__scroll-arrow-container panel__scroll-arrow-container--top">
+          <div
+            className=" panel__scroll-arrow-container panel__scroll-arrow-container--top"
+            onClick={handleScrollUp}
+          >
             <ChevronUp className="panel__scroll-arrow" />
           </div>
         )}
         <div className="panel__folders-wrapper" ref={scrollContainerRef}>
           <Tooltip id="tooltip-folder-menu-options" offset={13} opacity={1} />
-          {folders.map((folder) =>
-            FolderButton({
-              folder,
-              isActive: activeFolderId === folder.id,
-              onClick: () => {
-                if (activeFolderId !== folder.id)
-                  return handleFolderClick(folder.id)
-              },
-            })
-          )}
+          {folders.map((folder) => (
+            <FolderButton
+              key={folder.id}
+              folder={folder}
+              isActive={activeFolderId === folder.id}
+              onRename={() => console.log('rename')}
+              onClick={() => {
+                if (activeFolderId !== folder.id) {
+                  setActiveFolderId(folder.id)
+                }
+              }}
+            />
+          ))}
         </div>
 
         {showBottomArrow && (
-          <div className="panel__scroll-arrow-container panel__scroll-arrow-container--bottom">
+          <div
+            className="panel__scroll-arrow-container panel__scroll-arrow-container--bottom"
+            onClick={handleScrollDown}
+          >
             <ChevronDown className="panel__scroll-arrow" />
           </div>
         )}
       </div>
 
       <div className="panel__actions">
+        <Pencil />
         <ChevronDown />
         <ChevronUp />
         <EllipsisVertical />

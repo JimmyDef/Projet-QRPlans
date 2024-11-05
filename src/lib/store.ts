@@ -1,5 +1,6 @@
 import { set } from 'zod'
 import { create } from 'zustand'
+import { createWithEqualityFn } from 'zustand/traditional'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { DashboardStore, FolderStore } from '@/src/types/types'
 import { Folder, File } from '@/src/types/types'
@@ -21,7 +22,7 @@ import { Folder, File } from '@/src/types/types'
 //   )
 // )
 
-export const useDashboardStore = create<DashboardStore>()(
+export const useDashboardStore = createWithEqualityFn<DashboardStore>()(
   // persist(
   (set) => ({
     files: [],

@@ -4,6 +4,8 @@ import '@/src/styles/main.scss'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import ClientProviders from './ClientProviders'
+// import { ToastContainer } from 'react-toastify'
+import ClientSideToastContainer from './ToastContainer'
 
 export const metadata = {
   title: 'QR Plans',
@@ -30,6 +32,7 @@ export default async function RootLayout({
             <Header />
             <main className="main">{children}</main>
           </ClientProviders>
+          <ClientSideToastContainer />
         </NextIntlClientProvider>
       </body>
     </html>
