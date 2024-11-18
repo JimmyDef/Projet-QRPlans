@@ -1,5 +1,5 @@
 'use server'
-import NewPasswordForm from '@/src/components/form/NewPasswordForm'
+import NewPasswordForm from '@/src/components/ui/form/NewPasswordForm'
 import { redirect } from 'next/navigation'
 import prisma from '@/src/lib/prisma'
 import { auth } from '@/src/lib/auth'

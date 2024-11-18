@@ -1,0 +1,235 @@
+@use './.../../../../../styles/abstacts/variables.scss' as V;
+@use './.../../../../../styles/abstacts/mixins' as M;
+
+.sign-form {
+  width: 100%;
+  grid-area: form;
+}
+
+.sign-form-container {
+  @include M.box-modal;
+  color: V.$color-primary;
+  max-width: 500px;
+  margin: 0 auto 50px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  padding: 50px 40px 40px 40px;
+  background-color: #ffffff;
+  border-radius: 11px;
+  font-family: 'Inter', sans-serif;
+
+  .logo-container {
+    margin: 0 auto 15px;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(
+      180deg,
+      rgba(248, 248, 248, 0) 50%,
+      #f8f8f888 100%
+    );
+    border: 1px solid #f7f7f8;
+    filter: drop-shadow(0px 0.5px 0.5px #efefef)
+      drop-shadow(0px 1px 0.5px rgba(239, 239, 239, 0.5));
+    border-radius: 11px;
+  }
+
+  .title-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .subtitle-wrapper {
+  }
+
+  .subtitle {
+    margin: auto;
+    border-radius: 11px;
+    font-size: 1rem;
+    max-width: 85%;
+    text-align: center;
+    color: #8b8e98;
+
+    &--oauth-account-not-linked {
+      padding: 15px 7px;
+      color: red;
+      background-color: V.$background-color-light-grey;
+    }
+
+    &--sign-in {
+    }
+  }
+
+  .input-container {
+    width: 100%;
+    height: fit-content;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .input-label {
+    font-size: 0.75rem;
+    color: #8b8e98;
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  .input-field {
+    @include M.sign-input-btn;
+    padding: 0 0 0 40px;
+
+    &.input-error {
+      border: 1px solid red;
+    }
+
+    &--password-sign-in {
+      margin-bottom: 0px;
+    }
+  }
+
+  button:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: progress;
+    opacity: 0.6;
+    :hover {
+      background-color: none;
+      transition: none;
+    }
+  }
+
+  .sign-btn {
+    @include M.sign-input-btn;
+    width: 100%;
+    border: 0;
+    background: V.$color-secondary;
+    margin-bottom: 0;
+    color: #ffffff;
+    cursor: pointer;
+    font-weight: 600;
+    &:hover {
+      background: V.$color-secondary-darker;
+      box-shadow: none;
+      &:focus {
+        background: V.$color-secondary-darker;
+      }
+    }
+    &:focus {
+      background: V.$color-secondary;
+    }
+    &:disabled {
+      background: #cccccc;
+      color: #666666;
+      cursor: progress;
+    }
+  }
+
+  .icon-credential {
+    width: 20px;
+    height: auto;
+    position: absolute;
+    z-index: 99;
+    left: 12px;
+    top: 28px;
+
+    pointer-events: none;
+  }
+
+  .separator {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    color: #8b8e98;
+
+    .line {
+      display: block;
+      width: 100%;
+      height: 1px;
+      border: 0;
+      background-color: #e8e8e8;
+    }
+  }
+
+  .note {
+    font-size: 0.75rem;
+    color: #8b8e98;
+    text-decoration: underline;
+    text-align: center;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 1px;
+  }
+
+  .register {
+    margin-bottom: 15px;
+    color: #8b8e98;
+  }
+
+  .register-link {
+    color: V.$color-primary;
+    font-weight: 600;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .form-error {
+    margin: 10px auto 15px;
+    text-align: center;
+    color: red;
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  .form-password-error--registration {
+    text-decoration: underline;
+  }
+
+  .form-password-error--sign-in {
+    text-align: end;
+    text-decoration: underline;
+    font-size: 0.8rem;
+    margin-bottom: 20px;
+    cursor: pointer;
+  }
+
+  .unverified-email-link {
+    text-decoration: underline;
+  }
+
+  .password-confirmation-error {
+    &::after {
+      position: absolute;
+      right: 0;
+      content: 'Passwords do not match';
+      color: red;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+
+  @media screen and (max-width: 389px) {
+    .logo-container {
+      display: none;
+    }
+  }
+}

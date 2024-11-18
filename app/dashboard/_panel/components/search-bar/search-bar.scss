@@ -1,0 +1,22 @@
+@use './../../../../../src/styles/abstacts/variables.scss' as V;
+
+.panel__search-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.panel__search-input {
+  width: 210px;
+  padding: 8px 32px 8px 8px;
+  border: 1px solid black;
+  border-radius: 4px;
+}
+
+.panel__search-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  // flex-shrink: 0;
+  // margin-left: 10px;
+  color: V.$icon-color;
+}

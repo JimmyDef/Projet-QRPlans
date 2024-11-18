@@ -1,7 +1,8 @@
 'use client'
 
-import 'react-toastify/dist/ReactToastify.css'
-import { Slide, ToastContainer, Zoom } from 'react-toastify'
+import 'react-toastify/ReactToastify.css'
+// import 'react-toastify/ReactToastify.min.css'
+import { Slide, ToastContainer } from 'react-toastify'
 
 const ClientSideToastContainer = () => (
   <ToastContainer

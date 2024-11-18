@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import EmailRequestForm from '@/src/components/form/EmailRequestForm'
+import EmailRequestForm from '@/src/components/ui/form/EmailRequestForm'
 
 import { auth } from '@/src/lib/auth'
 const RequestResetPasswordEmail = async () => {

@@ -1,4 +1,4 @@
-import RegistrationForm from '@/src/components/form/RegistrationForm'
+import RegistrationForm from '@/src/components/ui/form/RegistrationForm'
 
 import { auth } from '@/src/lib/auth'
 import { redirect } from 'next/navigation'

@@ -1,4 +1,4 @@
-import Header from '@/src/components/layouts/header/Header'
+import Header from '@/src/components/layout/header/Header'
 import '@/src/styles/globals.scss'
 import '@/src/styles/main.scss'
 import { NextIntlClientProvider } from 'next-intl'

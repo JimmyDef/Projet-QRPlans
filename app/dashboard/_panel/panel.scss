@@ -1,0 +1,59 @@
+@use './../../../src/styles/abstacts/variables.scss' as V;
+// @use './../../../../src/styles/abstacts/mixins';
+
+.panel {
+  width: 250px;
+  height: calc(100vh - 70px);
+  background-color: V.$background-color-light-grey;
+  padding: 20px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1); /* Ombre uniquement sur les côtés et en bas */
+  position: fixed;
+  top: 90px;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel__section-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: V.$color-dark-grey;
+  line-height: 16px;
+}
+.panel__folders-count {
+  transform: scale(50%);
+  color: V.$color-dark-grey-2;
+}
+
+.panel__divider {
+  height: 1px;
+  background-color: V.$color-bg-border-white-grey;
+  margin: 20px 0;
+}
+
+.panel__folders {
+  position: relative;
+  overflow-y: hidden;
+  margin-top: 4px;
+  margin-bottom: 20px;
+  flex: 1;
+}
+
+.panel__actions {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.panel__action-icon {
+  cursor: pointer;
+  color: V.$color-dark-grey-2;
+  transition: color 0.3s ease;
+
+  &:hover {
+    // color: #000;
+  }
+}

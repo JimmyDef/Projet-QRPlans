@@ -1,0 +1,24 @@
+@use './../../../../../src/styles/abstacts/variables.scss' as V;
+
+.panel__status-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.panel__status-button {
+  background-color: V.$status-btn-bg-color;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: V.$status-btn-bg-color-hover;
+  }
+}

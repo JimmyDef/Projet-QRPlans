@@ -44,6 +44,26 @@ export const useDashboardStore = createWithEqualityFn<DashboardStore>()(
       })),
     setFolders: (folders: FolderStore[]) => set({ folders }),
 
+    updateFolderName: (folderId: string, newName: string) =>
+      set((state) => {
+        const index = state.folders.findIndex(
+          (folder) => folder.id === folderId
+        )
+        if (index === -1) {
+          console.error(
+            `Dossier avec l'ID ${folderId} non trouvé lors de la mise à jour du nom.`
+          )
+          return state
+        }
+
+        const updatedFolders = [...state.folders]
+
+        updatedFolders[index] = {
+          ...updatedFolders[index],
+          name: newName,
+        }
+        return { folders: updatedFolders }
+      }),
     updateFolderId: (tempId, newId) =>
       set((state) => {
         const index = state.folders.findIndex((folder) => folder.id === tempId)

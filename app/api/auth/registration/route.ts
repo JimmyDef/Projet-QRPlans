@@ -5,7 +5,7 @@ import { capitalizeFirstLetter } from '@/src/services/helpers'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 import { sendEmail } from '@/src/services/emailService'
-import EmailVerificationTemplate from '@/src/emails/EmailVerificationTemplate'
+import EmailVerificationTemplate from '@/src/templates/EmailVerificationTemplate'
 
 export async function POST(req: Request) {
   try {

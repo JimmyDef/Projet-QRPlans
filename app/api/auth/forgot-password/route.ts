@@ -3,7 +3,7 @@ import { sendEmail } from '@/src/services/emailService'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 import prisma from '@/src/lib/prisma'
-import PasswordResetTemplate from '@/src/emails/PasswordResetTemplate'
+import PasswordResetTemplate from '@/src/templates/PasswordResetTemplate'
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json()

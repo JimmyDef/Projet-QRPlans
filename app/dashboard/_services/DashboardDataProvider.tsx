@@ -10,7 +10,6 @@ const DashboardDataProvider = ({
   const { setFolders, setFiles } = useDashboardStore()
 
   useEffect(() => {
-    console.log('dashboard data provider:', folders, files)
     setFolders(folders)
     setFiles(files)
   }, [folders, files, setFolders, setFiles])

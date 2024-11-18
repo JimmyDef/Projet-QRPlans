@@ -3,8 +3,8 @@ import prisma from '@/src/lib/prisma'
 import { redirect } from 'next/navigation'
 import './dashboard.scss'
 import SessionChecker from './_services/SessionChecker'
-import Panel from './_components/panel/Panel'
-import { DashboardMainContent } from './_components/main-content/DashboardMainContent'
+import Panel from './_panel/Panel'
+import { DashboardMainContent } from './_main-content/DashboardMainContent'
 import DashboardDataProvider from './_services/DashboardDataProvider'
 
 const Dashboard = async () => {
@@ -25,6 +25,7 @@ const Dashboard = async () => {
     },
     orderBy: { name: 'asc' },
   })
+
   const files = await prisma.file.findMany({
     where: {
       userId: userId,
@@ -40,7 +41,9 @@ const Dashboard = async () => {
   //      updatedAt: file.updatedAt.toISOString(),
   //    })),
   //  }))
-
+  if (!folders) {
+    return <div>loading...</div>
+  }
   return (
     <div className="dashboard-layout">
       <SessionChecker />

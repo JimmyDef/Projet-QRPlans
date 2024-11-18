@@ -1,6 +1,6 @@
 // src/hooks/useRemoveFolder.js
 import { useDashboardStore } from '@/src/lib/store'
-import { removeFolderAction } from '@/app/actions/folders.action'
+import { removeFolderAction } from '@/app/actions/folders/deleteFolder.action'
 import { shallow } from 'zustand/shallow'
 import { toast } from 'react-toastify'
 

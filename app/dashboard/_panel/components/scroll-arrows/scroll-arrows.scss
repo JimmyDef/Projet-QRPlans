@@ -1,0 +1,30 @@
+@use './../../../../../src/styles/abstacts/variables.scss' as V;
+
+.panel__scroll-arrow-container {
+  position: absolute;
+  width: 100%;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: V.$background-color-light-grey;
+  cursor: pointer;
+  &--top {
+    top: 0;
+  }
+  &--bottom {
+    bottom: 0;
+  }
+}
+
+.panel__scroll-arrow {
+  width: 40px;
+  height: 40px;
+
+  color: V.$color-dark-grey-2;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: V.$color-dark-grey;
+  }
+}
