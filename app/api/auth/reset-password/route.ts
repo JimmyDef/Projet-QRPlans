@@ -7,17 +7,25 @@ export async function POST(req: NextRequest) {
   try {
     const { password, passwordConfirmation, token } = await req.json()
     if (!password || !passwordConfirmation || !token) {
-      return NextResponse.json({
-        error: 'Missing required fields',
-        status: 400,
-      })
+      return NextResponse.json(
+        {
+          error: 'Missing required fields',
+        },
+        {
+          status: 400,
+        }
+      )
     }
 
     if (password !== passwordConfirmation) {
-      return NextResponse.json({
-        error: 'Passwords do not match',
-        status: 400,
-      })
+      return NextResponse.json(
+        {
+          error: 'Passwords do not match',
+        },
+        {
+          status: 400,
+        }
+      )
     }
 
     const PasswordResetToken = await prisma.passwordResetToken.findFirst({
@@ -33,11 +41,14 @@ export async function POST(req: NextRequest) {
     })
 
     if (!PasswordResetToken) {
-      console.log('PasswordResetToken Invalid:', PasswordResetToken)
-      return NextResponse.json({
-        error: 'Invalid or expired password reset token',
-        status: 400,
-      })
+      return NextResponse.json(
+        {
+          error: 'Invalid or expired password reset token',
+        },
+        {
+          status: 400,
+        }
+      )
     }
 
     const user = PasswordResetToken.user
@@ -49,32 +60,47 @@ export async function POST(req: NextRequest) {
       data: { password: hashedPassword },
     })
 
-    await prisma.passwordResetToken.delete({
+    const deleteOldPassword = await prisma.passwordResetToken.delete({
       where: { token },
     })
+
+    console.log('🚀 ~ deleteOldPassword:', deleteOldPassword)
 
     const signInResponse = await signIn('credentials', {
       redirect: false,
       email: user.email,
+      password: password,
     })
 
     if (signInResponse?.error) {
       console.log('Sign in error:', signInResponse.error)
-      return NextResponse.json({
-        error: 'Could not sign in after resetting password',
-        status: 500,
-      })
+      return NextResponse.json(
+        {
+          error: 'Could not sign in after resetting password',
+        },
+        {
+          status: 500,
+        }
+      )
     }
 
-    return NextResponse.json({
-      message: 'Password reset successfully. You are now signed in.',
-      status: 200,
-    })
+    return NextResponse.json(
+      {
+        message: 'Password reset successfully. You are now signed in.',
+      },
+      {
+        status: 200,
+      }
+    )
   } catch (error) {
     console.error('Error resetting password:', error)
-    return NextResponse.json({
-      error: 'An error occurred while resetting the password',
-      status: 500,
-    })
+    return NextResponse.json(
+      {
+        error: 'An error occurred while resetting the password',
+      },
+      {
+        status: 500,
+      }
+    )
   }
 }

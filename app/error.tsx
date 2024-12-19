@@ -1,6 +1,7 @@
 'use client'
 
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 export default function Error({
@@ -10,7 +11,7 @@ export default function Error({
   error: Error & { digest?: string }
   reset: () => void
 }) {
-  // const router = useRouter()
+  const router = useRouter()
   useEffect(() => {
     console.error(error)
   }, [error])
@@ -24,7 +25,7 @@ export default function Error({
     <div className="error-container">
       <h2 className="error-message">{errorMessage}</h2>
 
-      <button className="retry-button" onClick={() => reset()}>
+      <button className="retry-button" onClick={() => router.push('/')}>
         Try again later
       </button>
     </div>

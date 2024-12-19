@@ -3,7 +3,7 @@ const ActivationFail = () => {
   return (
     <TokenResult
       title="Activation link invalid or expired."
-      url="/token-result/resend-activation-link"
+      url="/auth/registration/token-activation/resend-activation-link"
       txt="Please request a new one."
     />
   )

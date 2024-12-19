@@ -5,7 +5,7 @@ import { useState } from 'react'
 import './form.scss'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { sanitizeEmailInput } from '@/src/services/helpers'
+import { sanitizeEmailInput } from '@/src/lib/helpers'
 
 type EmailRequestForm = {
   title: string

@@ -1,14 +1,20 @@
 'use client'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import PasswordCheckList from '@/app/auth/registration/passwordCheckList/PasswordCheckList'
-import { comparePasswords } from '@/src/services/helpers'
+import { comparePasswords } from '@/src/lib/helpers'
 import './form.scss'
-import { redirect, useParams, useRouter } from 'next/navigation'
-const NewPasswordForm = () => {
-  const { token } = useParams()
+import { redirect, useRouter } from 'next/navigation'
+import { signIn, signOut } from 'next-auth/react'
+
+interface FormProps {
+  token: string
+  email: string
+}
+
+const NewPasswordForm = ({ email, token }: FormProps) => {
   const [isLoading, setIsLoading] = useState(false)
-  const [errorSignUp, setErrorSignUp] = useState<string | null>(null)
+  const [errorSignUp, setChangePasswordError] = useState<string | null>(null)
   const [isFormValid, setIsFormValid] = useState(true)
   const [isPasswordValid, setIsPasswordValid] = useState(true)
   const [isPasswordsEqual, setIsPasswordsEqual] = useState(true)
@@ -18,6 +24,7 @@ const NewPasswordForm = () => {
     password: '',
     passwordConfirmation: '',
     token: token,
+    email: email,
   })
 
   if (!token) redirect('/auth/reset-password/send-email')
@@ -26,16 +33,16 @@ const NewPasswordForm = () => {
     event.preventDefault()
 
     if (!isPasswordValid) {
-      return setErrorSignUp('Password is not strong enough.')
+      return setChangePasswordError('Password is not strong enough.')
     }
-    setErrorSignUp('')
+    setChangePasswordError('')
     if (comparePasswords(form.password, form.passwordConfirmation))
       return setIsPasswordsEqual(false)
     if (
       Object.values(form).some((value) =>
         Array.isArray(value)
           ? value.join('').trim() === ''
-          : value.trim() === ''
+          : value?.trim() === ''
       )
     )
       return setIsFormValid(false)
@@ -51,13 +58,22 @@ const NewPasswordForm = () => {
       })
 
       if (res.ok) {
+        signIn('credentials', {
+          redirect: false,
+          email: form.email,
+          password: form.password,
+        })
         router.push('/auth/reset-password/request-result/success')
       } else {
         const errorData = await res.json()
-        setErrorSignUp(errorData.error || 'An unexpected error occurred.')
+        setChangePasswordError(
+          errorData.error || 'An unexpected error occurred.'
+        )
       }
     } catch (error) {
-      setErrorSignUp('Failed to submit the form. Please try again later.')
+      setChangePasswordError(
+        'Failed to submit the form. Please try again later.'
+      )
       console.error('Error fetch:', error)
     } finally {
       setIsLoading(false)
@@ -86,7 +102,11 @@ const NewPasswordForm = () => {
       return setIsPasswordsEqual(true)
     }
   }
-
+  useEffect(() => {
+    signOut({ redirect: false }).then(() => {
+      console.log('User signed out automatically')
+    })
+  }, [])
   return (
     <div className="sign-form-container sign-up-form-container">
       <div className="header-sign-up">
@@ -106,6 +126,7 @@ const NewPasswordForm = () => {
         }}
       >
         <div className="input-container">
+          <input type="hidden" value={email} name="username" />
           <label className="input-label" htmlFor="password_field">
             New password
           </label>
@@ -169,7 +190,7 @@ const NewPasswordForm = () => {
         {errorSignUp && <p className="form-error">{errorSignUp}</p>}
 
         <button type="submit" className="sign-btn" disabled={isLoading}>
-          <span>Sign Up</span>
+          <span>Change password</span>
         </button>
       </form>
     </div>

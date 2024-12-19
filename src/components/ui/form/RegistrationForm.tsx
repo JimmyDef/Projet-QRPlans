@@ -5,7 +5,7 @@ import {
   sanitizeEmailInput,
   sanitizeNameInput,
   sanitizePasswordInput,
-} from '@/src/services/helpers'
+} from '@/src/lib/helpers'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'

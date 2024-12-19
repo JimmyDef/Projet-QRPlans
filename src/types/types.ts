@@ -1,3 +1,4 @@
+import { useUpdateFolderName } from './../hooks/useUpdateFolderName'
 export interface User {
   id: null
   name?: string | null
@@ -28,17 +29,16 @@ export interface FolderListProps {
   setActiveFolderId: (id: string) => void
   scrollContainerRef: React.RefObject<HTMLDivElement>
 }
-export interface NewFolderInputProps {
-  newFolder: string
-  handleAddNewFolder: () => void
-  handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  handleKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void
-}
+// export interface NewFolderInputProps {
+//   newFolder: string
+//   handleAddNewFolder: () => void
+//   handleOnChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+//   handleKeyPress: (event: React.KeyboardEvent<HTMLInputElement>) => void
+// }
 export interface FolderButtonProps {
   folder: Folder
   isActive: boolean
   onClick: () => void
-  onRename: () => void
 }
 export interface ScrollArrowsProps {
   showTopArrow: boolean
@@ -56,6 +56,7 @@ export interface DashboardStore {
   addFolder: (folder: FolderStore) => void
   setActiveFolderId: (id: string | null) => void
   updateFile: (file: File) => void
+  updateFolderName: (folderId: string, newName: string) => void
   setFiles: (files: File[]) => void
   setFolders: (folders: FolderStore[]) => void
   removeAllFolders: () => void

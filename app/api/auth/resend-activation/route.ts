@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     if (userProvider) {
       return NextResponse.json(
         {
-          error: `This ccount doesn't need activation. It was created with ${userProvider.provider} as provider, please use it to sign in.`,
+          error: `This account doesn't need activation. It was created with ${userProvider.provider} as provider, please use it to sign in.`,
         },
         { status: 403 }
       )

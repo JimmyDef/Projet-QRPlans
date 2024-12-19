@@ -35,6 +35,7 @@
 
 .folder--active {
   background-color: V.$status-btn-bg-color-hover;
+  // border: 1px solid black;
   .folder__menu-icon {
     opacity: 1;
   }

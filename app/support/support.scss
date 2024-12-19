@@ -1,4 +1,6 @@
-@use './../../src/styles/abstacts/mixins.scss' as V;
+@use './../../src/styles/abstacts/mixins.scss' as M;
+@use './../../src/styles/abstacts/variables.scss' as V;
+
 .support-page__container {
   margin: 0 auto;
   max-width: fit-content;
@@ -44,7 +46,7 @@
 }
 
 .support-page__button {
-  @include sign-input-btn;
+  @include M.sign-input-btn;
   width: 100%;
   border: 0;
   background: V.$color-secondary;

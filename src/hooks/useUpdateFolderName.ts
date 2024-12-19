@@ -1,8 +1,5 @@
 import React, { useState } from 'react'
-import {
-  generateUniqueFolderName,
-  sanitizeFoldersInput,
-} from '../services/helpers'
+import { generateUniqueFolderName, sanitizeFoldersInput } from '../lib/helpers'
 import { useDashboardStore } from '../lib/store'
 import { shallow } from 'zustand/shallow'
 import { createNewFolderAction } from '@/app/actions/folders/createFolder.action'
@@ -11,30 +8,34 @@ import { updateFolderNameAction } from '@/app/actions/folders/UpdateFolderName.a
 
 export const useUpdateFolderName = () => {
   const [folderName, setFolderName] = useState('')
-  const { folders, addFolder, updateFolderId, removeFolder } =
+  const { folders, addFolder, updateFolderName, removeFolder } =
     useDashboardStore(
       (state) => ({
         folders: state.folders,
         addFolder: state.addFolder,
-        updateFolderId: state.updateFolderId,
+        updateFolderName: state.updateFolderName,
         removeFolder: state.removeFolder,
       }),
       shallow
     )
 
   const handleUpdateFolderName = async (folderId: string, newName: string) => {
-    const trimmedFolder = folderName.trim()
-    if (trimmedFolder.length === 0) return
+    const trimmedNewName = newName.trim()
+    if (trimmedNewName.length === 0) return
+    const oldFolder = folders.find((folder) => folder.id === folderId)
+    if (!oldFolder) {
+      console.error(`Dossier avec l'ID ${folderId} non trouvé`)
+      return
+    }
+    const oldFolderName = oldFolder?.name
+    const uniqueFolderName = generateUniqueFolderName(trimmedNewName, folders)
+    updateFolderName(folderId, uniqueFolderName)
 
-    const uniqueFolderName = generateUniqueFolderName(trimmedFolder, folders)
-
-    // setFolderName('')
     try {
-      const res = await updateFolderNameAction(folderId, newName)
-      // updateFolderId(tempId, res.folderName.id)
+      await updateFolderNameAction(folderId, uniqueFolderName)
       toast.success('Dossier créé avec succès')
     } catch (error) {
-      // removeFolder(tempId)
+      updateFolderName(folderId, oldFolderName)
       toast.error('Erreur lors de la création du dossier')
       console.error('Error creating folderName:', error)
     }
@@ -45,19 +46,10 @@ export const useUpdateFolderName = () => {
     setFolderName(sanitizedInput)
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Escape' && folderName.trim().length > 0) {
-      setFolderName('')
-    }
-    if (e.key === 'Enter') {
-      // handleUpdateFolderName()
-    }
-  }
   return {
     handleUpdateFolderName,
     folderName,
     setFolderName,
     handleOnChange,
-    handleKeyPress,
   }
 }

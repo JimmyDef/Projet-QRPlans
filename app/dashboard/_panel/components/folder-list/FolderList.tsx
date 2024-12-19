@@ -1,4 +1,3 @@
-// components/FolderList.jsx
 import { Tooltip } from 'react-tooltip'
 import { FolderButton } from '@/app/dashboard/_panel/components/Folder-buttons/FolderButton'
 import './folder-list.scss'
@@ -11,6 +10,11 @@ const FolderList: React.FC<FolderListProps> = ({
   setActiveFolderId,
   scrollContainerRef,
 }) => {
+  const handleOnClick = (folderId: string) => {
+    if (activeFolderId !== folderId) {
+      setActiveFolderId(folderId)
+    }
+  }
   return (
     <div className="panel__folders-wrapper" ref={scrollContainerRef}>
       <Tooltip id="tooltip-folder-menu-options" offset={13} opacity={1} />
@@ -19,11 +23,8 @@ const FolderList: React.FC<FolderListProps> = ({
           key={folder.id}
           folder={folder}
           isActive={activeFolderId === folder.id}
-          onRename={() => console.log('rename')}
           onClick={() => {
-            if (activeFolderId !== folder.id) {
-              setActiveFolderId(folder.id)
-            }
+            handleOnClick(folder.id)
           }}
         />
       ))}

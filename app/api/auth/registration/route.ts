@@ -1,7 +1,7 @@
 import prisma from '@/src/lib/prisma'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import bcrypt from 'bcrypt'
-import { capitalizeFirstLetter } from '@/src/services/helpers'
+import { capitalizeFirstLetter } from '@/src/lib/helpers'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 import { sendEmail } from '@/src/services/emailService'

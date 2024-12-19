@@ -6,18 +6,25 @@ export const updateFolderNameAction = async (
   folderId: string,
   name: string
 ) => {
-  const session = await auth()
-
-  if (!session || !session.user?.id) {
-    throw new Error('User not authenticated')
-  }
-
-  if (!folderId) {
-    throw new Error('Folder id is required')
-  }
-  const userId = session.user.id
-
   try {
+    const session = await auth()
+
+    // await new Promise((resolve, reject) => {
+    //   setTimeout(() => {
+    //     console.log('throwing error')
+    //     reject('error thrown REJECT')
+    //   }, 2000)
+    // })
+
+    if (!session || !session.user?.id) {
+      throw new Error('User not authenticated')
+    }
+
+    if (!folderId) {
+      throw new Error('Folder id is required')
+    }
+    const userId = session.user.id
+
     const folder = await prisma.folder.findUnique({
       where: { id: folderId },
     })

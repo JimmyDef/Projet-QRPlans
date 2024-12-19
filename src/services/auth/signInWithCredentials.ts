@@ -14,6 +14,7 @@ import {
   EmailNotVerifiedError,
   InvalidPasswordError,
 } from '@/src/lib/customErrors'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 const signInWithCredentials = async ({ email, password }: Form) => {
   if (!email || !password) {
@@ -58,8 +59,11 @@ const signInWithCredentials = async ({ email, password }: Form) => {
       error instanceof InvalidPasswordError
     ) {
       throw error
+    }
+    if (error instanceof PrismaClientKnownRequestError) {
+      throw new Error('Database unavailable, try again later.')
     } else {
-      throw new Error('An error occurred.')
+      throw new Error('An error occurred, please try again.')
     }
   }
 }

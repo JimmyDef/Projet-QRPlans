@@ -1,8 +1,5 @@
 import React, { use, useCallback, useEffect, useState } from 'react'
-import {
-  generateUniqueFolderName,
-  sanitizeFoldersInput,
-} from '../services/helpers'
+import { generateUniqueFolderName, sanitizeFoldersInput } from '../lib/helpers'
 import { useDashboardStore } from '../lib/store'
 import { shallow } from 'zustand/shallow'
 import { createNewFolderAction } from '@/app/actions/folders/createFolder.action'

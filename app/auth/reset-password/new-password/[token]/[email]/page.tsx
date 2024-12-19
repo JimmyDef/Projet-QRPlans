@@ -2,27 +2,23 @@
 import NewPasswordForm from '@/src/components/ui/form/NewPasswordForm'
 import { redirect } from 'next/navigation'
 import prisma from '@/src/lib/prisma'
-import { auth } from '@/src/lib/auth'
 
 const RequestResetPasswordEmail = async ({
   params,
 }: {
-  params: { token: string }
+  params: { token: string; email: string }
 }) => {
-  const session = await auth()
-
+  const { token, email } = await params
   const resetPasswordToken = await prisma.passwordResetToken.findUnique({
     where: {
-      token: params.token,
+      token: token,
     },
   })
-  if (!resetPasswordToken) {
+
+  if (!resetPasswordToken || resetPasswordToken.expiresAt < new Date()) {
     redirect('/auth/reset-password/request-result/invalid')
   }
-  if (session) {
-    redirect('/dashboard')
-  }
 
-  return <NewPasswordForm />
+  return <NewPasswordForm email={email} token={token} />
 }
 export default RequestResetPasswordEmail

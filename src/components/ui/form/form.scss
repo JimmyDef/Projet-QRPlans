@@ -180,12 +180,14 @@
     margin-top: 1px;
   }
 
-  .register {
+  .register,
+  .request-activation-link {
     margin-bottom: 15px;
     color: #8b8e98;
   }
 
-  .register-link {
+  .register-link,
+  .activation-link {
     color: V.$color-primary;
     font-weight: 600;
     text-decoration: underline;

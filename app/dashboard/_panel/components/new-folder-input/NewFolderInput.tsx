@@ -1,14 +1,24 @@
 // components/NewFolderInput.jsx
 import { FolderPlus } from 'lucide-react'
 import './new-folder-input.scss'
-import { NewFolderInputProps } from '@/src/types/types'
+// import { NewFolderInputProps } from '@/src/types/types'
+import { useAddFolder } from '@/src/hooks/useAddFolder'
 
-const NewFolderInput: React.FC<NewFolderInputProps> = ({
-  newFolder,
-  handleAddNewFolder,
-  handleOnChange,
-  handleKeyPress,
-}) => {
+const NewFolderInput = (
+  {
+    // newFolder,
+    // handleAddNewFolder,
+    // handleOnChange,
+    // handleKeyPress,
+  }
+) => {
+  const {
+    handleAddNewFolder,
+    newFolder,
+    setNewFolder,
+    handleOnChange,
+    handleKeyPress,
+  } = useAddFolder()
   return (
     <div className="panel__folder-input-group">
       <FolderPlus

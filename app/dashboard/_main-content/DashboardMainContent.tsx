@@ -1,15 +1,24 @@
 'use client'
-import { useSession } from 'next-auth/react'
+// import { useSession } from 'next-auth/react'
 
 import { Button } from '@/src/components/ui/buttons/button'
 import { SquarePlus } from 'lucide-react'
 import { useDashboardStore } from '@/src/lib/store'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { shallow } from 'zustand/shallow'
+import { useSearchParams } from 'next/navigation'
 
 export const DashboardMainContent = () => {
-  const { data: session } = useSession()
-  const { folders } = useDashboardStore()
-  useEffect(() => {}, [folders])
+  const searchParams = useSearchParams()
+  const search = searchParams.get('search')
+  const [files, setFiles] = useState([])
+  const { allFiles } = useDashboardStore(
+    (state) => ({
+      allFiles: state.files,
+    }),
+    shallow
+  )
+  useEffect(() => {}, [files])
   return (
     <section className="dashboard-content">
       <Button variant={'secondary'}>Open</Button>
@@ -17,11 +26,8 @@ export const DashboardMainContent = () => {
       {/* <DropdownFolderOptions> */}
       {/* <Button>Open</Button> */}
       {/* </DropdownFolderOptions> */}
-      <p>folders: {JSON.stringify(folders)}</p>
-      <p>
-        Session:{' '}
-        {session ? JSON.stringify(session.user) : 'No session available'}
-      </p>
+      <p>folders: {JSON.stringify(files)}</p>
+      <p></p>
     </section>
   )
 }

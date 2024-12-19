@@ -14,14 +14,6 @@ import ScrollArrows from '@/app/dashboard/_panel/components/scroll-arrows/Scroll
 import { shallow } from 'zustand/shallow'
 
 const Panel = () => {
-  const {
-    handleAddNewFolder,
-    newFolder,
-    setNewFolder,
-    handleOnChange,
-    handleKeyPress,
-  } = useAddFolder()
-
   const { folders, activeFolderId, setActiveFolderId } = useDashboardStore(
     (state) => ({
       folders: state.folders,
@@ -53,10 +45,10 @@ const Panel = () => {
       </h2>
 
       <NewFolderInput
-        newFolder={newFolder}
-        handleAddNewFolder={handleAddNewFolder}
-        handleOnChange={handleOnChange}
-        handleKeyPress={handleKeyPress}
+      // newFolder={newFolder}
+      // handleAddNewFolder={handleAddNewFolder}
+      // handleOnChange={handleOnChange}
+      // handleKeyPress={handleKeyPress}
       />
 
       <div className="panel__folders">

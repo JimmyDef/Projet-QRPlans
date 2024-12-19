@@ -1,7 +1,7 @@
 'use server'
 import { auth } from '@/src/lib/auth'
 import prisma from '@/src/lib/prisma'
-import { generateUniqueFolderName } from '@/src/services/helpers'
+import { generateUniqueFolderName } from '@/src/lib/helpers'
 import { Folder, File } from '@/src/types/types'
 
 export const createNewFolderAction = async (

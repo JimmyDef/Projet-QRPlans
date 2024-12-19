@@ -7,7 +7,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { token: string } }
 ) {
-  const { token } = params
+  const { token } = await params
 
   try {
     const activateToken = await prisma.activateToken.findUnique({
@@ -67,6 +67,7 @@ export async function GET(
       console.log('Sign in error:', signInResponse.error)
       return NextResponse.redirect(new URL('/not-found', req.url))
     }
+    console.log('User activated:', user.email)
     return NextResponse.redirect(
       new URL('/auth/registration/token-activation/success', req.url)
     )

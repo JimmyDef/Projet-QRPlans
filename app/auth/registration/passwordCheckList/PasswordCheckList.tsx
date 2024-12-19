@@ -8,7 +8,7 @@ import {
   hasSpecialCharacter,
   isValidLength,
   isPasswordStrong,
-} from '@/src/services/helpers'
+} from '@/src/lib/helpers'
 type PasswordCheckListProps = {
   password: string
   setIsPasswordValid: Dispatch<SetStateAction<boolean>>

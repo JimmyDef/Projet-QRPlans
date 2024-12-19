@@ -4,10 +4,12 @@ import '@/src/styles/main.scss'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import ClientProviders from './ClientProviders'
-// import { ToastContainer } from 'react-toastify'
-import ClientSideToastContainer from './ToastContainer'
 
-export const metadata = {
+import ClientSideToastContainer from './ToastContainer'
+import type { Metadata } from 'next'
+import SessionChecker from '@/src/components/auth/SessionChecker'
+
+export const metadata: Metadata = {
   title: 'QR Plans',
   description: 'QR Plans app',
 }
@@ -31,7 +33,9 @@ export default async function RootLayout({
           <ClientProviders>
             <Header />
             <main className="main">{children}</main>
+            <SessionChecker />
           </ClientProviders>
+
           <ClientSideToastContainer />
         </NextIntlClientProvider>
       </body>

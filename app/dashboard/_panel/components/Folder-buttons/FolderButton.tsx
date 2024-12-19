@@ -11,19 +11,31 @@ import {
   DropdownMenuTrigger,
 } from '@/src/components/ui/dropdown-menu'
 import { useRemoveFolder } from '@/src/hooks/useRemoveFolder'
+import { useUpdateFolderName } from '@/src/hooks/useUpdateFolderName'
 export const FolderButton = ({
   folder,
   isActive,
   onClick,
-
-  onRename,
 }: FolderButtonProps) => {
   const { handleRemoveFolder } = useRemoveFolder()
+  const { handleUpdateFolderName } = useUpdateFolderName()
   const [isRenaming, setIsRenaming] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const [value, setValue] = useState(folder.name)
+  const [currentFolderName, setCurrentFolderName] = useState(folder.name)
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleUpdateFolderName(folder.id, currentFolderName)
+      setIsRenaming(false)
+    }
+    if (e.key === 'Escape') {
+      setCurrentFolderName(folder.name)
+      setIsRenaming(false)
+    }
+  }
   useEffect(() => {
+    console.log('isRenaming:', isRenaming)
     if (isRenaming) {
       inputRef.current?.focus()
     }
@@ -42,9 +54,9 @@ export const FolderButton = ({
           type="text"
           className="folder__new-name"
           onBlur={() => setIsRenaming(false)}
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          // onSubmit={() => onRename(value)}
+          value={currentFolderName}
+          onChange={(e) => setCurrentFolderName(e.target.value)}
+          onKeyDown={handleKeyPress}
         />
       ) : (
         <p className="folder__name">{folder.name}</p>
@@ -71,8 +83,8 @@ export const FolderButton = ({
           <DropdownMenuItem
             onSelect={() => {
               setIsRenaming(true)
-
-              // inputRef?.current?.focus()
+              console.log('inputRef:', inputRef)
+              inputRef?.current?.focus()
             }}
           >
             <Pencil />

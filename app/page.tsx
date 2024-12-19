@@ -5,7 +5,9 @@ import { HomePage } from './HomePage'
 const Home = async () => {
   const session = await auth()
 
-  if (session) redirect('/dashboard')
+  if (session) {
+    redirect('/dashboard')
+  }
 
   return <HomePage />
 }

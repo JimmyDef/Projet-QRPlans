@@ -1,34 +1,34 @@
-// @import '@/src/styles/abstacts/variables';
-@import './../../abstacts/mixins.scss';
+@use './../../abstacts/mixins.scss' as M;
+@use './../../abstacts/variables.scss' as V;
 .token-result {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
+}
 
-  &__title {
-    font-size: clamp(24px, 5vw, 40px);
-    font-weight: 600;
-    margin-bottom: 20px;
-  }
-  &__text {
-    font-size: clamp(16px, 3vw, 24px);
-    font-weight: 400;
-    margin-bottom: 20px;
-  }
-  &__link {
-    @include main-link;
-    width: 200px;
+.token-result__title {
+  font-size: clamp(24px, 5vw, 40px);
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+.token-result__text {
+  font-size: clamp(16px, 3vw, 24px);
+  font-weight: 400;
+  margin-bottom: 20px;
+}
+.token-result__link {
+  @include M.main-link;
+  width: 200px;
+  font-size: 16px;
+  font-weight: 600;
+
+  @media (max-width: V.$notebook-width) {
     font-size: 16px;
-    font-weight: 600;
-
-    @media (max-width: $notebook-width) {
-      font-size: 16px;
-    }
-    @media (max-width: $tablet-width) {
-      width: 200px;
-      height: 40px;
-    }
+  }
+  @media (max-width: V.$tablet-width) {
+    width: 200px;
+    height: 40px;
   }
 }
