@@ -1,7 +1,6 @@
 import prisma from '@/src/lib/prisma'
 import bcrypt from 'bcrypt'
 import { NextRequest, NextResponse } from 'next/server'
-import { signIn } from '@/src/lib/auth'
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,7 +51,6 @@ export async function POST(req: NextRequest) {
     }
 
     const user = PasswordResetToken.user
-    console.log('🚀 ~ user:', user)
 
     const hashedPassword = await bcrypt.hash(password, 10)
     await prisma.user.update({
@@ -60,29 +58,38 @@ export async function POST(req: NextRequest) {
       data: { password: hashedPassword },
     })
 
-    const deleteOldPassword = await prisma.passwordResetToken.delete({
+    const usedToken = await prisma.passwordResetToken.delete({
       where: { token },
     })
 
-    console.log('🚀 ~ deleteOldPassword:', deleteOldPassword)
-
-    const signInResponse = await signIn('credentials', {
-      redirect: false,
-      email: user.email,
-      password: password,
-    })
-
-    if (signInResponse?.error) {
-      console.log('Sign in error:', signInResponse.error)
+    if (!usedToken) {
       return NextResponse.json(
         {
-          error: 'Could not sign in after resetting password',
+          error: 'Could not delete used token reset token',
         },
         {
           status: 500,
         }
       )
     }
+
+    // const signInResponse = await signIn('credentials', {
+    //   redirect: false,
+    //   email: user.email,
+    //   password: password,
+    // })
+
+    // if (signInResponse?.error) {
+    //   console.log('Sign in error:', signInResponse.error)
+    //   return NextResponse.json(
+    //     {
+    //       error: 'Could not sign in after resetting password',
+    //     },
+    //     {
+    //       status: 500,
+    //     }
+    //   )
+    // }
 
     return NextResponse.json(
       {

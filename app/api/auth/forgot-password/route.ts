@@ -61,7 +61,11 @@ export async function POST(req: NextRequest) {
       email,
       subject: 'Reset your password',
       fullName: user.name ?? '',
-      link: `${process.env.NEXT_PUBLIC_API_URL}/auth/reset-password/new-password/${token.token}/${email}`,
+      link: `${
+        process.env.NEXT_PUBLIC_API_URL
+      }/auth/reset-password/new-password/${token.token}/${encodeURIComponent(
+        email
+      )}`,
       template: PasswordResetTemplate,
     })
     return NextResponse.json({ message: 'Email sent' }, { status: 200 })

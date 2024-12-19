@@ -19,6 +19,6 @@ const RequestResetPasswordEmail = async ({
     redirect('/auth/reset-password/request-result/invalid')
   }
 
-  return <NewPasswordForm email={email} token={token} />
+  return <NewPasswordForm email={decodeURIComponent(email)} token={token} />
 }
 export default RequestResetPasswordEmail

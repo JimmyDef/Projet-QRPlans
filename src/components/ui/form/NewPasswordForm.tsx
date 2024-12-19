@@ -58,7 +58,9 @@ const NewPasswordForm = ({ email, token }: FormProps) => {
       })
 
       if (res.ok) {
-        signIn('credentials', {
+        console.log('res', res)
+        console.log('form', form.email, form.password)
+        await signIn('credentials', {
           redirect: false,
           email: form.email,
           password: form.password,
@@ -102,11 +104,11 @@ const NewPasswordForm = ({ email, token }: FormProps) => {
       return setIsPasswordsEqual(true)
     }
   }
-  useEffect(() => {
-    signOut({ redirect: false }).then(() => {
-      console.log('User signed out automatically')
-    })
-  }, [])
+  // useEffect(() => {
+  //   signOut({ redirect: false }).then(() => {
+  //     console.log('User signed out automatically')
+  //   })
+  // }, [])
   return (
     <div className="sign-form-container sign-up-form-container">
       <div className="header-sign-up">
@@ -126,7 +128,7 @@ const NewPasswordForm = ({ email, token }: FormProps) => {
         }}
       >
         <div className="input-container">
-          <input type="hidden" value={email} name="username" />
+          <input type="text" name="username" autoComplete="username" hidden />
           <label className="input-label" htmlFor="password_field">
             New password
           </label>
