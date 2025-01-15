@@ -2,12 +2,12 @@ import { ChevronUp, ChevronDown } from 'lucide-react'
 import './scroll-arrows.scss'
 import { ScrollArrowsProps } from '@/src/types/types'
 
-const ScrollArrows: React.FC<ScrollArrowsProps> = ({
+const ScrollArrows = ({
   showTopArrow,
   showBottomArrow,
   handleScrollUp,
   handleScrollDown,
-}) => {
+}: ScrollArrowsProps) => {
   return (
     <>
       {showTopArrow && (

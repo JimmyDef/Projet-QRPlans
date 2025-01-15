@@ -3,7 +3,7 @@ import { sendEmail } from '@/src/services/emailService'
 import { NextResponse } from 'next/server'
 import { randomUUID } from 'crypto'
 import prisma from '@/src/lib/prisma'
-import EmailVerificationTemplate from '@/src/templates/EmailVerificationTemplate'
+import EmailVerificationTemplate from '@/src/templates/validateEmailCodeTemplate'
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json()

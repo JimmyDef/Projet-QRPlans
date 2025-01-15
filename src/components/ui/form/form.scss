@@ -5,7 +5,9 @@
   width: 100%;
   grid-area: form;
 }
-
+.header-auth-form {
+  margin-bottom: 15px;
+}
 .sign-form-container {
   @include M.box-modal;
   color: V.$color-primary;
@@ -71,6 +73,11 @@
     }
 
     &--sign-in {
+    }
+    &--provider {
+      line-height: 25px;
+      font-weight: 700;
+      // color: #8b8e98;
     }
   }
 

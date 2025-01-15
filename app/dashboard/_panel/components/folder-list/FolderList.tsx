@@ -4,12 +4,12 @@ import './folder-list.scss'
 import { Folder } from '@/src/types/types'
 import { FolderListProps } from '@/src/types/types'
 
-const FolderList: React.FC<FolderListProps> = ({
+const FolderList = ({
   folders,
   activeFolderId,
   setActiveFolderId,
   scrollContainerRef,
-}) => {
+}: FolderListProps) => {
   const handleOnClick = (folderId: string) => {
     if (activeFolderId !== folderId) {
       setActiveFolderId(folderId)

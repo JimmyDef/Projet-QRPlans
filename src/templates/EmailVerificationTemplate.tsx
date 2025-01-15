@@ -7,10 +7,10 @@ interface EmailVerificationProps {
   link: string
 }
 
-const EmailVerificationTemplate: React.FC<EmailVerificationProps> = ({
+const EmailVerificationTemplate = ({
   fullName,
   link,
-}) => {
+}: EmailVerificationProps) => {
   return (
     <Html lang="en">
       <div

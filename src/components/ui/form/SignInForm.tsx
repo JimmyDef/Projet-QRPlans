@@ -1,14 +1,17 @@
 'use client'
 import Loader from '@/src/components/ui/loader/Loader'
 import signInWithCredentials from '@/src/services/auth/signInWithCredentials'
+import { signIn } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useState } from 'react'
 import { AuthProviders } from './components/AuthProviders'
+import { Footer } from './components/signInForm/Footer'
+
 import './form.scss'
-import { signIn, useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { Header } from './components/HeaderAuthForm'
+import { Separator } from './components/signInForm/Separator'
 
 interface Form {
   email: string
@@ -16,8 +19,6 @@ interface Form {
 }
 
 const SignIn = () => {
-  const router = useRouter()
-  const session = useSession()
   const [isLoading, setIsLoading] = useState(false)
   const [isFormValid, setIsFormValid] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -25,24 +26,6 @@ const SignIn = () => {
     email: '',
     password: '',
   })
-  const [subtitle, setSubtitle] = useState(
-    'Get access to your dashboard by using credentials or providers.'
-  )
-  const [subtitleClassName, setSubtitleClassName] = useState('subtitle')
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-  useEffect(() => {
-    if (
-      pathname === '/auth/sign-in' &&
-      searchParams.get('error') === 'OAuthAccountNotLinked'
-    ) {
-      setSubtitle(
-        'To confirm your identity, sign in with the same account you used originally.'
-      )
-      setSubtitleClassName('subtitle subtitle--oauth-account-not-linked')
-      return
-    }
-  }, [pathname, searchParams, session.status, router])
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>,
@@ -83,14 +66,8 @@ const SignIn = () => {
         className="sign-form"
         onSubmit={(event) => handleSubmit(event, form)}
       >
-        <div className="logo-container"></div>
-        <div className="title-container">
-          <p className="title">Login to your Account</p>
-          <div className="subtitle-wrapper">
-            <p className={subtitleClassName}>{subtitle}</p>
-          </div>
-        </div>
-        <br />
+        <Header title="Login to your Account" />
+
         <div className="input-container">
           <label className="input-label" htmlFor="email">
             Email
@@ -171,32 +148,10 @@ const SignIn = () => {
           {isLoading ? <Loader /> : <span>Sign In</span>}
         </button>
       </form>
-
-      <div className="separator">
-        <hr className="line" />
-        <span>Or</span>
-        <hr className="line" />
-      </div>
+      <Separator />
       <AuthProviders isLoading={isLoading} setIsLoading={setIsLoading} />
 
-      <div className="footer">
-        <p className="register">
-          Connect your account with providers above or{' '}
-          <Link className="register-link" href="/auth/registration">
-            register.
-          </Link>
-        </p>
-        <p className="request-activation-link">
-          Request a new{' '}
-          <Link
-            className="activation-link"
-            href="/auth/registration/token-activation/resend-activation-link"
-          >
-            activation link.
-          </Link>
-        </p>
-        <p className="note">Terms of use &amp; Conditions</p>
-      </div>
+      <Footer />
     </div>
   )
 }

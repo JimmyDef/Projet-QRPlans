@@ -3,14 +3,18 @@ import { NextResponse } from 'next/server'
 import { transporter } from '@/src/lib/mailTransporter'
 import { render } from '@react-email/components'
 
+type TemplateProps = {
+  fullName: string
+  link: string
+}
+type EmailTemplate = (props: TemplateProps) => JSX.Element
 type Email = {
   email: string
   subject: string
   fullName: string
   link: string
-  template: React.FC<{ fullName: string; link: string }>
+  template: EmailTemplate
 }
-
 export const sendEmail = async ({
   email,
   subject,

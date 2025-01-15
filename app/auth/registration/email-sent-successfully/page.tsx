@@ -5,17 +5,18 @@ import { redirect } from 'next/navigation'
 
 const EmailConfirmation = async () => {
   const session = await auth()
-  if (session) {
+  if (session?.user.active) {
     redirect('/dashboard')
   }
 
   return (
     <div className="email__container">
-      <h1 className="email__title">Email de Confirmation Envoyé</h1>
+      <h1 className="email__title">Email de validation envoyé</h1>4556
       <p className="email__text">
-        Merci de vous être inscrit ! Un email de validation a été envoyé à votre
-        adresse email. Veuillez vérifier votre boîte de réception et suivre les
-        instructions pour valider votre compte.
+        Merci de vous être inscrit ! Un email contenant un code
+        d&apos;activation a été envoyé à votre adresse email. Veuillez vérifier
+        votre boîte de réception et suivre les instructions pour valider votre
+        compte.
       </p>
       <p className="email__text">
         Si vous ne trouvez pas l&apos;email, veuillez vérifier votre dossier de
@@ -27,7 +28,7 @@ const EmailConfirmation = async () => {
           className="email__link  email__link--resend"
           href="/auth/registration/token-activation/resend-activation-link"
         >
-          réenvoyer l&apos;email de validation
+          redemander code d&apos;activation
         </Link>
         .
       </p>

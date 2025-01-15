@@ -1,3 +1,4 @@
+import { EmailNotVerifiedError } from './customErrors'
 import NextAuth from 'next-auth'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import prisma from '@/src/lib/prisma'
@@ -46,9 +47,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               `Account were created with ${userProvider.provider} as provider, please use it.`
             )
           }
-          if (user.active === false) {
-            throw new Error('Email is not verified.')
-          }
+          // if (user.active === false) {
+          //   throw new Error('Email is not verified.')
+          // }
           const isPasswordValid =
             user.password &&
             (await bcrypt.compare(parsedPassword, user.password))
@@ -66,13 +67,44 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     jwt({ token, user }) {
       if (user) {
         token.id = user.id
+        token.active = user.active
       }
       return token
     },
     session({ session, token }) {
       session.user.id = token.id as string
+      session.user.active = token.active as boolean
 
       return session
+    },
+    async signIn({ user, account, profile }) {
+      const email = user.email
+      if (!email)
+        return '/auth/sign-in?error=' + encodeURIComponent('NoEmailFound')
+
+      const existingUser = await prisma.user.findUnique({
+        where: { email },
+        include: { Accounts: true },
+      })
+
+      if (existingUser) {
+        // Vérifier si le provider d'origine est différent
+        const existingAccount = existingUser.Accounts[0]
+        if (
+          existingAccount &&
+          account &&
+          existingAccount.provider !== account.provider
+        ) {
+          // Au lieu de retourner false, on redirige avec un message personnalisé
+          return (
+            '/auth/sign-in?error=' +
+            encodeURIComponent(`AccountCreatedWith_${existingAccount.provider}`)
+          )
+        }
+      }
+
+      // Si pas de problème, continuer normalement
+      return true
     },
   },
   pages: {

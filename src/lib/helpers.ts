@@ -21,7 +21,9 @@ export const sanitizeEmailInput = (email: string) => {
 }
 export const sanitizePasswordInput = (password: string) => {
   const forbiddenCharacters = /[<>]/g
-  return password.replace(forbiddenCharacters, '')
+  const sanitized = password.replace(forbiddenCharacters, '')
+  password.replace(forbiddenCharacters, '')
+  return sanitized.replace(/\s+/g, '')
 }
 
 export const hasLowercase = (password: string) => /[a-z]/.test(password)
@@ -78,4 +80,8 @@ export const generateUniqueFolderName = (
   }
 
   return uniqueName
+}
+
+export const isNum = (key: string) => {
+  return /^[0-9]$/.test(key)
 }

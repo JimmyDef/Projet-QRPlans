@@ -1,5 +1,5 @@
 'use client'
-import PasswordCheckList from '@/app/auth/registration/passwordCheckList/PasswordCheckList'
+import PasswordCheckList from '@/src/components/auth/passwordCheckList/PasswordCheckList'
 import {
   comparePasswords,
   sanitizeEmailInput,
@@ -13,6 +13,9 @@ import './form.scss'
 
 import { useRouter } from 'next/navigation'
 import { AuthProviders } from './components/AuthProviders'
+import { Header } from './components/HeaderAuthForm'
+import { Separator } from '@radix-ui/react-dropdown-menu'
+import signInWithCredentials from '@/src/services/auth/signInWithCredentials'
 
 const RegistrationForm = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -57,6 +60,10 @@ const RegistrationForm = () => {
         body: JSON.stringify(updatedForm),
       })
       if (res.ok) {
+        await signInWithCredentials({
+          email: form.email,
+          password: form.password,
+        })
         router.push('/auth/registration/email-sent-successfully')
       } else {
         if (res.status === 409) {
@@ -118,23 +125,11 @@ const RegistrationForm = () => {
 
   return (
     <div className="sign-form-container sign-up-form-container">
-      <div className="header-sign-up">
-        <div className="logo-container"></div>
-        <div className="title-container">
-          <p className="title">Create your Account</p>
-          <span className="subtitle">
-            Get started with our app, just create an account and enjoy the
-            experience.
-          </span>
-        </div>
-      </div>
+      <Header />
+
       <AuthProviders isLoading={isLoading} setIsLoading={setIsLoading} />
 
-      <div className="separator">
-        <hr className="line" />
-        <span>Or</span>
-        <hr className="line" />
-      </div>
+      <Separator />
 
       <form
         className="sign-form"

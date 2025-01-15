@@ -6,10 +6,7 @@ interface PasswordResetProps {
   link: string
 }
 
-const PasswordResetTemplate: React.FC<PasswordResetProps> = ({
-  fullName,
-  link,
-}) => {
+const PasswordResetTemplate = ({ fullName, link }: PasswordResetProps) => {
   return (
     <Html lang="en">
       <div

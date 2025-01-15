@@ -1,13 +1,10 @@
 import RegistrationForm from '@/src/components/ui/form/RegistrationForm'
 
-import { auth } from '@/src/lib/auth'
-import { redirect } from 'next/navigation'
-const Registration = async () => {
-  const session = await auth()
+import { HandleSessionRedirect } from '@/src/lib/SessionCheckerServer'
 
-  if (session) {
-    redirect('/dashboard')
-  }
+const Registration = async () => {
+  await HandleSessionRedirect('/dashboard')
+
   return <RegistrationForm />
 }
 export default Registration

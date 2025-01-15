@@ -6,7 +6,9 @@ const Home = async () => {
   const session = await auth()
 
   if (session) {
-    redirect('/dashboard')
+    session?.user.active === true
+      ? redirect('/dashboard')
+      : redirect('/auth/registration/validateEmailCode')
   }
 
   return <HomePage />

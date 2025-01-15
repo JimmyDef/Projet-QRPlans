@@ -5,19 +5,30 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 const SessionChecker = () => {
-  const { status } = useSession()
+  const { status, data } = useSession()
+
   const router = useRouter()
   const pathname = usePathname()
 
   useEffect(() => {
-    console.log('🚀 ~ sessionStatus:', status)
     if (pathname === '/auth/sign-in') {
-      status === 'authenticated' ? router.push('/dashboard') : null
+      if (status === 'authenticated')
+        !data?.user.active
+          ? router.push('/auth/registration/validateEmailCode')
+          : router.push('/dashboard')
     }
+    if (pathname === '/auth/registration/validateEmailCode') {
+      if (data?.user.active || status === 'unauthenticated')
+        router.push('/auth/sign-in')
+    }
+
     if (pathname === '/dashboard') {
       status === 'unauthenticated' ? router.push('/auth/sign-in') : null
+      status === 'authenticated' && data?.user.active === false
+        ? router.push('/auth/registration/validateEmailCode')
+        : null
     }
-  }, [status, router, pathname])
+  }, [status, router, pathname, data?.user.active])
 
   return null
 }

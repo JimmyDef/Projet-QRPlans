@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
-import PasswordCheckList from '@/app/auth/registration/passwordCheckList/PasswordCheckList'
+import PasswordCheckList from '@/src/components/auth/passwordCheckList/PasswordCheckList'
 import { comparePasswords } from '@/src/lib/helpers'
 import './form.scss'
 import { redirect, useRouter } from 'next/navigation'

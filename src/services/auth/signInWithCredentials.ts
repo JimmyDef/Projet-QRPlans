@@ -38,9 +38,9 @@ const signInWithCredentials = async ({ email, password }: Form) => {
       )
     }
 
-    if (user.active === false) {
-      throw new EmailNotVerifiedError('Email is not verified.')
-    }
+    // if (user.active === false) {
+    //   throw new EmailNotVerifiedError('Email is not verified.')
+    // }
 
     const isPasswordValid =
       user.password && (await bcrypt.compare(password, user.password))
