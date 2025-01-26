@@ -85,3 +85,8 @@ export const generateUniqueFolderName = (
 export const isNum = (key: string) => {
   return /^[0-9]$/.test(key)
 }
+
+export const generateOTP = () => {
+  const otp = Math.floor(100000 + Math.random() * 900000)
+  return otp.toString()
+}

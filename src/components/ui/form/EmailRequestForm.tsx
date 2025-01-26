@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
-import './form.scss'
+import './auth-forms.scss'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { sanitizeEmailInput } from '@/src/lib/helpers'

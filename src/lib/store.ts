@@ -1,9 +1,6 @@
-import { set } from 'zod'
-import { create } from 'zustand'
+import { DashboardStore, File, FolderStore } from '@/src/types/types'
+import { createJSONStorage, persist } from 'zustand/middleware'
 import { createWithEqualityFn } from 'zustand/traditional'
-import { persist, createJSONStorage } from 'zustand/middleware'
-import { DashboardStore, FolderStore } from '@/src/types/types'
-import { Folder, File } from '@/src/types/types'
 
 // export const useUserStore = create<UserStore>()(
 //   persist(

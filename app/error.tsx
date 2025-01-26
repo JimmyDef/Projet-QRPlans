@@ -18,15 +18,15 @@ export default function Error({
 
   const errorMessage =
     error.message.includes('prisma') || error.message.includes('database')
-      ? 'Failed to connect to database'
-      : 'An error occurred'
+      ? 'Failed to connect to database, please try again later.'
+      : 'An error occurred, please try again.'
 
   return (
     <div className="error-container">
       <h2 className="error-message">{errorMessage}</h2>
 
       <button className="retry-button" onClick={() => router.push('/')}>
-        Try again later
+        Reload
       </button>
     </div>
   )

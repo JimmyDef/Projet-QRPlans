@@ -12,8 +12,12 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const session = await auth()
+
+  console.log('🚀 ~ session:', session)
+
   if (!session) return redirect('/auth/sign-in')
-  if (!session.user.active) return redirect('/auth/otp')
+  if (session.user.provider === 'credentials' && !session.user.active)
+    return redirect('/auth/registration/validateEmailOTP')
 
   const userId = session?.user?.id
   const folders = await prisma.folder.findMany({

@@ -1,34 +1,55 @@
 'use client'
 
+import { auth } from '@/src/lib/auth'
 import { useSession } from 'next-auth/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 const SessionChecker = () => {
   const { status, data } = useSession()
-
   const router = useRouter()
   const pathname = usePathname()
 
   useEffect(() => {
+    console.log('🚀 ~ SessionCheker status:', status)
+    const isUserCredentialsActive =
+      data?.user.provider === 'credentials' && data?.user.active === false
+    // Page SIGN-IN ------------
+    // -------------------------------
     if (pathname === '/auth/sign-in') {
-      if (status === 'authenticated')
-        !data?.user.active
-          ? router.push('/auth/registration/validateEmailCode')
-          : router.push('/dashboard')
-    }
-    if (pathname === '/auth/registration/validateEmailCode') {
-      if (data?.user.active || status === 'unauthenticated')
-        router.push('/auth/sign-in')
+      if (status === 'authenticated') {
+        if (isUserCredentialsActive)
+          return router.push('/auth/registration/validateEmailOTP')
+        return router.push('/dashboard')
+      }
     }
 
-    if (pathname === '/dashboard') {
-      status === 'unauthenticated' ? router.push('/auth/sign-in') : null
-      status === 'authenticated' && data?.user.active === false
-        ? router.push('/auth/registration/validateEmailCode')
-        : null
+    // Page validateEmailOTP ------------
+    // --------------------------------
+    if (pathname === '/auth/registration/validateEmailOTP') {
+      if (status === 'unauthenticated' || data?.user.active)
+        return router.push('/auth/sign-in')
     }
-  }, [status, router, pathname, data?.user.active])
+    // Page DASHBOARD ------------
+    // ----------------------------
+    if (pathname === '/dashboard') {
+      if (status === 'unauthenticated') return router.push('/auth/sign-in')
+
+      if (status === 'authenticated') {
+        if (isUserCredentialsActive)
+          return router.push('/auth/registration/validateEmailOTP')
+      }
+    }
+    // Page REGISTRATION ------------
+    // ----------------------------
+    if (pathname === '/auth/registration') {
+      if (status === 'authenticated') {
+        if (isUserCredentialsActive)
+          return router.push('/auth/registration/validateEmailOTP')
+        return router.push('/dashboard')
+      }
+    }
+  }, [status, router, pathname, data?.user.active, data?.user.provider])
 
   return null
 }

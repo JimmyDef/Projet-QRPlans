@@ -15,14 +15,13 @@ model User {
   emailVerified     DateTime?
   image             String?
   Sessions          Session[]
-  Accounts          Account[]             // Modifié pour prendre en charge plusieurs comptes si nécessaire
+  Accounts          Account[]             
   password          String?
-  active            Boolean               @default(false)
-  activateTokens    ActivateToken[]
-  passwordResetTokens PasswordResetToken?
-  Authenticators    Authenticator[]       // Nom au pluriel pour correspondre à une collection
-  files       File[]
-  folders     Folder[]
+  active            Boolean               @default(false) 
+  Authenticators    Authenticator[]       
+  otps              UserOtp[]              
+  files             File[]
+  folders           Folder[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -71,28 +70,25 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model ActivateToken {
+
+
+model UserOtp {
   id          Int       @id @default(autoincrement())
-  token       String    @unique
+  otp         String    @db.Char(6)
   createdAt   DateTime  @default(now())
   activatedAt DateTime?
-  userId      String
+  purpose     OtpPurpose
+  userId      String 
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
 
-model PasswordResetToken {
-  id          Int       @id @default(autoincrement())
-  token       String    @unique
-  createdAt   DateTime  @default(now())
-  expiresAt   DateTime
-  redeemedAt  DateTime? @updatedAt
-  userId      String    @unique
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
+enum OtpPurpose {
+  RESET_PASSWORD
+  REGISTRATION
 }
+
 
 model Authenticator {
   credentialID         String  @unique
@@ -121,6 +117,7 @@ model File {
   folderId    String
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 }
 
 model Folder {
@@ -131,6 +128,7 @@ model Folder {
   files     File[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
   
 
   @@unique([userId, name])

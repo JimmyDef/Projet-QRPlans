@@ -5,27 +5,27 @@ import { render } from '@react-email/components'
 
 type TemplateProps = {
   fullName: string
-  link: string
+  otp: string
 }
 type EmailTemplate = (props: TemplateProps) => JSX.Element
 type Email = {
   email: string
   subject: string
   fullName: string
-  link: string
+  otp: string
   template: EmailTemplate
 }
 export const sendEmail = async ({
   email,
   subject,
   fullName,
-  link,
+  otp,
   template,
 }: Email) => {
   const emailHtml = render(
     React.createElement(template, {
       fullName,
-      link,
+      otp,
     })
   )
   const options = {

@@ -38,10 +38,6 @@ const signInWithCredentials = async ({ email, password }: Form) => {
       )
     }
 
-    // if (user.active === false) {
-    //   throw new EmailNotVerifiedError('Email is not verified.')
-    // }
-
     const isPasswordValid =
       user.password && (await bcrypt.compare(password, user.password))
     if (!isPasswordValid) {
@@ -49,6 +45,7 @@ const signInWithCredentials = async ({ email, password }: Form) => {
     }
 
     // Authentification réussie
+    console.log('🚀 ~ useEEEEr:', user)
     return { status: 'success' }
   } catch (error) {
     if (

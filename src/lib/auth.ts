@@ -47,16 +47,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               `Account were created with ${userProvider.provider} as provider, please use it.`
             )
           }
-          // if (user.active === false) {
-          //   throw new Error('Email is not verified.')
-          // }
+
           const isPasswordValid =
             user.password &&
             (await bcrypt.compare(parsedPassword, user.password))
           if (!isPasswordValid) {
             throw new Error('Password is invalid')
           }
-          return user
+          const userWithProvider = { ...user, provider: 'credentials' }
+          return userWithProvider
         } catch (error) {
           return null
         }
@@ -68,19 +67,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (user) {
         token.id = user.id
         token.active = user.active
+        token.provider = user.provider
       }
       return token
     },
     session({ session, token }) {
       session.user.id = token.id as string
       session.user.active = token.active as boolean
+      session.user.provider = token.provider as string
 
       return session
     },
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       const email = user.email
-      if (!email)
+      if (!email) {
         return '/auth/sign-in?error=' + encodeURIComponent('NoEmailFound')
+      }
 
       const existingUser = await prisma.user.findUnique({
         where: { email },
@@ -90,6 +92,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (existingUser) {
         // Vérifier si le provider d'origine est différent
         const existingAccount = existingUser.Accounts[0]
+
         if (
           existingAccount &&
           account &&
@@ -99,6 +102,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           return (
             '/auth/sign-in?error=' +
             encodeURIComponent(`AccountCreatedWith_${existingAccount.provider}`)
+          )
+        }
+
+        if (account?.provider !== 'credentials' && !existingAccount) {
+          return (
+            '/auth/sign-in?error=' +
+            encodeURIComponent('AccountCreatedWith_email')
           )
         }
       }

@@ -9,13 +9,6 @@ export const updateFolderNameAction = async (
   try {
     const session = await auth()
 
-    // await new Promise((resolve, reject) => {
-    //   setTimeout(() => {
-    //     console.log('throwing error')
-    //     reject('error thrown REJECT')
-    //   }, 2000)
-    // })
-
     if (!session || !session.user?.id) {
       throw new Error('User not authenticated')
     }

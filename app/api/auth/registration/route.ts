@@ -1,11 +1,11 @@
 import prisma from '@/src/lib/prisma'
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 import bcrypt from 'bcrypt'
-import { capitalizeFirstLetter } from '@/src/lib/helpers'
+import { capitalizeFirstLetter, generateOTP } from '@/src/lib/helpers'
 import { NextResponse } from 'next/server'
-import { randomUUID } from 'crypto'
+
 import { sendEmail } from '@/src/services/emailService'
-import EmailVerificationTemplate from '@/src/templates/validateEmailCodeTemplate'
+import { EmailOTPTemplate } from '@/src/templates/EmailOTPTemplate'
 
 export async function POST(req: Request) {
   try {
@@ -33,22 +33,24 @@ export async function POST(req: Request) {
       throw new Error('User not created')
     }
 
-    const token = await prisma.activateToken.create({
+    const otp = generateOTP()
+    const userOtp = await prisma.userOtp.create({
       data: {
         userId: user.id,
-        token: `${randomUUID()}${randomUUID()}`.replace(/-/g, ''),
+        otp: otp,
+        purpose: 'REGISTRATION',
       },
     })
-    if (!token) {
-      throw new Error('Token not created')
+    if (!userOtp) {
+      throw new Error('OTP not created')
     }
 
     sendEmail({
       email,
       subject: 'Activate your account',
-      fullName: user.name ?? '',
-      link: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/activate/${token.token}`,
-      template: EmailVerificationTemplate,
+      fullName: user.name ?? 'new user',
+      otp: otp,
+      template: EmailOTPTemplate,
     })
 
     return NextResponse.json({ message: 'User created' }, { status: 201 })
