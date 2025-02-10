@@ -1,4 +1,4 @@
-import { EmailNotVerifiedError } from './customErrors'
+// import { EmailNotVerifiedError } from './customErrors'
 import NextAuth from 'next-auth'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import prisma from '@/src/lib/prisma'

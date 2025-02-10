@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { JSX } from 'react'
 import { NextResponse } from 'next/server'
 import { transporter } from '@/src/lib/mailTransporter'
 import { render } from '@react-email/components'
@@ -22,7 +22,7 @@ export const sendEmail = async ({
   otp,
   template,
 }: Email) => {
-  const emailHtml = render(
+  const emailHtml = await render(
     React.createElement(template, {
       fullName,
       otp,

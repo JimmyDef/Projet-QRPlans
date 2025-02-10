@@ -8,16 +8,14 @@ import {
 } from '@/src/lib/helpers'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './../auth-forms.scss'
+
 import { Separator } from '@radix-ui/react-dropdown-menu'
+import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { AuthProviders } from '../components/AuthProviders'
 import { Header } from './Header'
-import { signIn } from 'next-auth/react'
-import { toast } from 'react-toastify'
-import createUserAction from '@/app/actions/auth/createUser.action'
-import testaction from '@/app/actions/testaction.action'
 
 const RegistrationForm = () => {
   const [isLoading, setIsLoading] = useState(false)
@@ -34,21 +32,25 @@ const RegistrationForm = () => {
     firstName: '',
     lastName: '',
   })
-
+  // const formSubmissionStatus = { message: null, succes: false }
+  // const [error, registrationAction, isPending] = useActionState(
+  //   RegistrationAction,
+  //   formSubmissionStatus
+  // )
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    setFormError('')
-    if (Object.values(form).some((value) => value.trim() === '')) {
-      setFormError('Please fill out all fields.')
-      setIsFormValid(false)
-      return
+    if (!isPasswordValid) {
+      return setFormError('Password is not strong enough.')
     }
-    if (!isPasswordValid) return setFormError('Password is not strong enough.')
+    setFormError('')
+    if (Object.values(form).some((value) => value.trim() === ''))
+      return setIsFormValid(false)
+
     if (comparePasswords(form.password, form.passwordConfirmation))
       return setIsPasswordsEqual(false)
 
-    const { passwordConfirmation, ...updatedForm } = {
+    const updatedForm = {
       ...form,
       email: form.email.trim(),
       firstName: form.firstName.trim(),
@@ -57,28 +59,30 @@ const RegistrationForm = () => {
 
     try {
       setIsLoading(true)
-      const { message, success, isNewUser } =
-        await createUserAction(updatedForm)
+      const res = await fetch('/api/auth/registration', {
+        method: 'POST',
+        body: JSON.stringify(updatedForm),
+      })
 
-      if (success) {
+      if (res.ok) {
         await signIn('credentials', {
           email: form.email,
           password: form.password,
         })
-        // router.push('/auth/registration/validateEmailOTP')
-      }
-      return
-      if (!isNewUser) {
-        setIsPasswordForgotten(true)
-        setFormError(message)
-        return
-      }
-      if (!success) {
-        setFormError(message)
-        throw new Error(message)
+        router.push('/auth/registration/validateEmailOTP')
+      } else {
+        if (res.status === 409) {
+          setIsPasswordForgotten(true)
+        } else if (res.status === 400) {
+          setFormError('Missing required fields. Please fill out all fields.')
+        } else {
+          setFormError('An unexpected error occurred. Please try again.')
+        }
       }
     } catch (error) {
+      setFormError('Failed to submit the form. Please try again later.')
       console.error('Error fetch:', error)
+    } finally {
       setIsLoading(false)
     }
   }
@@ -122,17 +126,6 @@ const RegistrationForm = () => {
       password: sanitizePasswordInput(e.target.value),
     })
   }
-  useEffect(() => {
-    if (formError) {
-      console.log('🚀 ~ formError:', formError)
-
-      toast.error(formError)
-    }
-  }, [formError])
-  useEffect(() => {
-    testaction('test99')
-    console.log('🚀 ~ getAction:')
-  }, [])
 
   return (
     <div className="sign-form-container sign-up-form-container">
@@ -266,40 +259,25 @@ const RegistrationForm = () => {
             id="lastName"
           />
         </div>
-        {/* {!isFormValid && <p className="form-error">Please fill all fields.</p>} */}
+        {!isFormValid && <p className="form-error">Please fill all fields.</p>}
+        {formError && <p className="form-error">{formError}</p>}
+        {isPasswordForgotten && (
+          <p className="form-error">
+            Email already exists{' '}
+            <Link
+              href="/auth/reset-password/send-email"
+              className="form-password-error--registration"
+            >
+              Forgot password?
+            </Link>
+          </p>
+        )}
 
         <button type="submit" className="sign-btn" disabled={isLoading}>
           <span>Sign Up</span>
         </button>
-        <div className="form-error-container">
-          {formError && (
-            <p className="form-error">
-              {formError}{' '}
-              {isPasswordForgotten && (
-                <Link
-                  href="/auth/reset-password/send-email"
-                  className="form-password-error--registration"
-                >
-                  Forgot password?
-                </Link>
-              )}
-            </p>
-          )}
-          {/* {isPasswordForgotten && (
-            <p className="form-error">
-              Email already exists{' '}
-              <Link
-                href="/auth/reset-password/send-email"
-                className="form-password-error--registration"
-              >
-                Forgot password?
-              </Link>
-            </p>
-          )} */}
-        </div>
       </form>
-
-      <p className="form-use-and-conditions">Terms of use &amp; Conditions</p>
+      <p className="note">Terms of use &amp; Conditions</p>
     </div>
   )
 }

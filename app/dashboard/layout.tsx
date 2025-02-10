@@ -13,8 +13,6 @@ export default async function RootLayout({
 }) {
   const session = await auth()
 
-  console.log('🚀 ~ session:', session)
-
   if (!session) return redirect('/auth/sign-in')
   if (session.user.provider === 'credentials' && !session.user.active)
     return redirect('/auth/registration/validateEmailOTP')
@@ -25,7 +23,7 @@ export default async function RootLayout({
       userId: userId,
     },
     include: {
-      files: true, // Inclut les fichiers dans chaque dossier
+      files: true,
     },
     orderBy: { name: 'asc' },
   })

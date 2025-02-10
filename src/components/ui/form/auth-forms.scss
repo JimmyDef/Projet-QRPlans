@@ -124,6 +124,9 @@
   .sign-btn {
     @include M.sign-input-btn;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 0;
     background: V.$color-secondary;
     margin-bottom: 0;
@@ -175,7 +178,7 @@
     }
   }
 
-  .note {
+  .form-use-and-conditions {
     font-size: 0.75rem;
     color: #8b8e98;
     text-decoration: underline;
@@ -201,12 +204,15 @@
     cursor: pointer;
   }
 
+  .form-error-container {
+    height: 20px;
+    margin: 15px auto 0px;
+  }
   .form-error {
-    margin: 10px auto 15px;
     text-align: center;
     color: red;
-    font-weight: 600;
-    font-size: 18px;
+    font-weight: 500;
+    font-size: 1.125rem;
   }
 
   .form-password-error--registration {

@@ -1,16 +1,14 @@
 import { Otp } from '@/src/components/auth/otp/Otp'
-import Link from 'next/link'
-import React from 'react'
 import { auth } from '@/src/lib/auth'
 import { redirect } from 'next/navigation'
 const validateEmailOTP = async () => {
   const session = await auth()
 
   console.log('🚀 ~ session:', session)
-  if (!session || session.user.provider !== 'credentials')
-    return redirect('/auth/sign-in')
+  if (!session) return redirect('/auth/sign-in')
+  if (session.user.provider !== 'credentials') return redirect('/dashboard')
   if (session?.user.provider === 'credentials' && session?.user.active === true)
-    return redirect('/auth/sign-in')
+    return redirect('/dashboard')
 
   return (
     <div style={{ maxWidth: '400px', margin: '0 auto', textAlign: 'center' }}>
@@ -24,7 +22,7 @@ const validateEmailOTP = async () => {
 
       <p style={{ marginTop: '1rem' }}>
         Vous n&apos;avez pas reçu le code ?{' '}
-        <Link href="#">Renvoyer l&apos;e-mail</Link>
+        {/* <button onClick={() => {}}>Renvoyer l&apos;e-mail</button> */}
       </p>
     </div>
   )

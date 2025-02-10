@@ -1,5 +1,7 @@
 import { object, string } from 'zod'
-export const signInSchema = object({
+
+// Schéma de base : email + password avec restrictions fortes
+const baseSchema = object({
   email: string({ required_error: 'Email is required' })
     .min(1, 'Email is required')
     .email('Invalid email'),
@@ -23,8 +25,20 @@ export const signInSchema = object({
       'Password must contain at least one special character (!@#$%^&*)'
     ),
 })
-export const credentialsSchema = object({
-  email: string({ required_error: 'Email is required' })
-    .min(1, 'Email is required')
-    .email('Invalid email'),
+
+// Schéma pour le sign-in : on reprend baseSchema (email + password)
+export const signInSchema = baseSchema
+
+// Schéma pour la registration : on étend baseSchema
+// en ajoutant les champs firstName et lastName obligatoires
+export const registrationSchema = baseSchema.extend({
+  firstName: string({ required_error: 'First name is required' }).min(
+    2,
+    'First name must be at least 2 characters'
+  ),
+  lastName: string({ required_error: 'Last name is required' }).min(
+    2,
+    'Last name must be at least 2 characters'
+  ),
+  confirmPassword: string().optional(),
 })

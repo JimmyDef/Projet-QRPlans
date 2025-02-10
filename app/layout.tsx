@@ -1,15 +1,14 @@
+import SessionChecker from '@/src/components/auth/SessionChecker'
 import Header from '@/src/components/layout/header/Header'
 import '@/src/styles/globals.scss'
 import '@/src/styles/main.scss'
+import type { Metadata } from 'next'
+import { SessionProvider } from 'next-auth/react'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
-// import ClientProviders from './ClientProviders'
-
 import { ReactNode } from 'react'
-import { SessionProvider } from 'next-auth/react'
 import ClientSideToastContainer from './ToastContainer'
-import type { Metadata } from 'next'
-import SessionChecker from '@/src/components/auth/SessionChecker'
+import ThemeToggle from './ThemeToggle'
 
 export const metadata: Metadata = {
   title: 'QR Plans',
@@ -41,7 +40,7 @@ export default async function RootLayout({
             <main className="main">{children}</main>
             <SessionChecker />
           </ClientProviders>
-
+          <ThemeToggle />
           <ClientSideToastContainer />
         </NextIntlClientProvider>
       </body>

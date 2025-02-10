@@ -145,7 +145,11 @@ const SignIn = () => {
           className="sign-btn"
           disabled={isLoading}
         >
-          {isLoading ? <Loader /> : <span>Sign In</span>}
+          {isLoading ? (
+            <Loader extraClass="loader-spinner-var-form-button" />
+          ) : (
+            <span>Sign In</span>
+          )}
         </button>
       </form>
       <Separator />

@@ -6,7 +6,7 @@ const Home = async () => {
   const session = await auth()
 
   if (session) {
-    session?.user.active === false && session?.user.provider === 'credentials'
+    session?.user.provider === 'credentials' && session?.user.active === false
       ? redirect('/dashboard')
       : redirect('/auth/registration/validateEmailOTP')
   }

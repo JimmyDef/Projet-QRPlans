@@ -1,24 +1,28 @@
-import { DashboardStore, File, FolderStore } from '@/src/types/types'
+import {
+  DashboardStore,
+  File,
+  FolderStore,
+  themeState,
+} from '@/src/types/types'
+import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { createWithEqualityFn } from 'zustand/traditional'
 
-// export const useUserStore = create<UserStore>()(
-//   persist(
-//     (set) => ({
-//       user: null,
-//       setUser: (user: User | null) => set({ user }),
-//       clearUser: () => {
-//         console.log('Clearing user from store')
-//         set({ user: null })
-//       },
-//     }),
-//     {
-//       name: 'user-session-storage',
-//       storage: createJSONStorage(() => sessionStorage),
-//     }
-//   )
-// )
-
+export const useThemeStore = create<themeState>()(
+  persist(
+    (set) => ({
+      theme: 'light',
+      toggleTheme: () =>
+        set((state) => ({
+          theme: state.theme === 'light' ? 'dark' : 'light',
+        })),
+    }),
+    {
+      name: 'theme-storage',
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+)
 export const useDashboardStore = createWithEqualityFn<DashboardStore>()(
   persist(
     (set) => ({

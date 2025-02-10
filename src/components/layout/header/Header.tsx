@@ -25,7 +25,7 @@ const Header = () => {
     <header className="header">
       <div className="header__container">
         <Link href="/" className="header__link--title" onClick={handleClick}>
-          <h1 className="header__title"> QR-Plans</h1>
+          <p className="header__brand"> QR-Plans</p>
         </Link>
         <nav className="header__nav">
           <LocaleSwitcher

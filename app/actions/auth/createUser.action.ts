@@ -1,5 +1,4 @@
-// app/api/auth/register/route.ts
-import { NextResponse } from 'next/server'
+'use server'
 import prisma from '@/src/lib/prisma'
 import {
   PrismaClientKnownRequestError,
@@ -13,18 +12,16 @@ import { registrationSchema } from '@/src/lib/zod'
 import { z } from 'zod'
 
 type RegistrationInput = z.infer<typeof registrationSchema>
-
-export async function POST(request: Request) {
+const createUserAction = async (data: RegistrationInput) => {
+  // throw new Error('Not implemented')
   try {
-    const body: RegistrationInput = await request.json()
     const { email, password, firstName, lastName } =
-      registrationSchema.parse(body)
+      registrationSchema.parse(data)
 
     const pwHash = await bcrypt.hash(password, 10)
     const cleanedFirstname = capitalizeFirstLetter(firstName).trim()
     const cleanedLastname = capitalizeFirstLetter(lastName).trim()
 
-    // Création de l'utilisateur
     const user = await prisma.user.create({
       data: {
         email,
@@ -33,80 +30,69 @@ export async function POST(request: Request) {
       },
     })
 
-    // Gestion de l'OTP
     const otp = generateOTP()
-    await prisma.userOtp.upsert({
-      where: {
-        userId_purpose: {
-          userId: user.id,
-          purpose: 'REGISTRATION',
-        },
-      },
-      create: {
+    await prisma.userOtp.create({
+      data: {
         userId: user.id,
         otp: otp,
         purpose: 'REGISTRATION',
       },
-      update: {
-        otp: otp,
-        createdAt: new Date(),
-      },
     })
 
-    // Envoi d'email
-    const sendEmailAction = async () => {
-      await sendEmail({
+    const emailSender = () =>
+      sendEmail({
         email,
         subject: 'Activate your account',
         fullName: user.name ?? 'new user',
         otp: otp,
         template: EmailOTPTemplate,
       })
-    }
 
     if (process.env.NODE_ENV === 'development') {
-      await sendEmailAction()
+      await emailSender()
     } else {
-      sendEmailAction()
+      emailSender()
     }
 
-    return NextResponse.json(
-      { message: 'User created successfully', success: true },
-      { status: 201 }
-    )
+    return { message: 'User created', success: true, isNewUser: true }
   } catch (error) {
-    // console.log('Registration error:', error)
-
+    // console.error('Error createUserAction:', error)
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
-        return NextResponse.json(
-          { message: 'User already exists', success: false },
-          { status: 409 }
-        )
+        // Code P2002 indique une violation de la contrainte unique
+        return {
+          message: 'User already exist.',
+          success: false,
+          isNewUser: false,
+        }
+      } else {
+        return {
+          message: 'An unexpected error occurred. Please try again.',
+          success: false,
+          isNewUser: true,
+        }
       }
-      return NextResponse.json(
-        { message: 'Database error', success: false },
-        { status: 500 }
-      )
     }
 
     if (error instanceof PrismaClientInitializationError) {
-      return NextResponse.json(
-        { message: 'Database connection error', success: false },
-        { status: 503 }
-      )
+      return {
+        message: 'Database unreachable. Please try again later.',
+        success: false,
+        isNewUser: true,
+      }
     }
-
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { message: error.errors[0].message, success: false },
-        { status: 400 }
-      )
+      return {
+        message: error.errors[0].message,
+        success: false,
+        isNewUser: true,
+      }
     }
-
-    return NextResponse.json(
-      { message: 'Internal server error', success: false },
-      { status: 500 }
-    )
+    return {
+      message: 'An unexpected error occurred. Please try again.',
+      success: false,
+      isNewUser: true,
+    }
   }
 }
+export default createUserAction

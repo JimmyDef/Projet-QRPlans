@@ -9,33 +9,31 @@ import {
 } from 'react'
 import './otp.scss'
 import { isNum } from '@/src/lib/helpers'
-import testaction from '@/app/actions/folders/testaction.action'
+import OTPValidationAction from '@/app/actions/otp/OtpValidation.action'
 import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
+import Loader from '@/src/components/ui/loader/Loader'
 
 type OtpProps = {
   length?: number
 }
 export const Otp = ({ length = 6 }: OtpProps) => {
-  const initialState = { message: '' }
+  const router = useRouter()
   const [codes, setCodes] = useState<string[]>(() => Array(6).fill(''))
   const inputsRef = useRef<Array<HTMLInputElement | null>>([])
-  const [messages, onCompletionAction, isPending] = useActionState(
-    testaction,
-    initialState
+  const [error, onCompletionAction, isPending] = useActionState(
+    OTPValidationAction,
+    {
+      message: '',
+      success: false,
+    }
   )
-  const OTPInvalidMessage = 'Code expiré ou invalide.'
-
+  const OTPInvalidMessage = error.message ? 'Code invalide ou expiré.' : ''
   const updateCodesAtIndex = (index: number, value: string) => {
     const updatedCodes = [...codes]
     updatedCodes[index] = value
     setCodes(updatedCodes)
   }
-
-  // const handleOtpCompletion = useCallback(async () => {
-  //   startTransition(async () => {
-  //     onCompletionAction(codes.join(''))
-  //   })
-  // }, [codes, onCompletionAction])
 
   const checkCompletion = useCallback(
     (codes: string[]) => {
@@ -44,6 +42,7 @@ export const Otp = ({ length = 6 }: OtpProps) => {
         startTransition(async () => {
           onCompletionAction(codes.join(''))
         })
+        setCodes(Array(6).fill(''))
       }
     },
     [onCompletionAction]
@@ -103,40 +102,52 @@ export const Otp = ({ length = 6 }: OtpProps) => {
   }, [codes, checkCompletion])
 
   useEffect(() => {
-    if (!messages.message) return
+    if (!OTPInvalidMessage) return
 
-    if (!isPending && messages.message === 'Code expiré ou invalide.') {
+    if (!isPending && OTPInvalidMessage) {
       setCodes(Array(6).fill(''))
       toast.error('Code expiré ou invalide.')
       return
     }
-  }, [messages.message, isPending])
+    if (error.success) {
+      router.push('/dashboard?otp=success')
+    }
+  }, [OTPInvalidMessage, isPending])
   return (
     <div className="otp-container">
       <div className="otp-input-wrapper">
         {codes.map((val, idx) => (
-          <input
-            disabled={isPending}
-            aria-label={`OTP digit ${idx + 1} sur ${length}`}
-            spellCheck={false}
-            ref={(el) => {
-              inputsRef.current[idx] = el
-            }}
-            readOnly
-            autoComplete="off"
-            className="otp-slot"
+          <div
             key={idx}
-            type="text"
-            value={val}
-            onKeyDown={(e) => handleKeyDown(idx, e)}
-            onPaste={handlePaste}
-            maxLength={1}
+            className="otp-slot-wrapper"
             style={{ order: idx * 2 }}
-          />
+          >
+            <input
+              disabled={isPending}
+              aria-label={`OTP digit ${idx + 1} sur ${length}`}
+              spellCheck={false}
+              ref={(el) => {
+                inputsRef.current[idx] = el
+              }}
+              readOnly
+              autoComplete="off"
+              className="otp-slot"
+              key={idx}
+              type="text"
+              value={val}
+              onKeyDown={(e) => handleKeyDown(idx, e)}
+              onPaste={handlePaste}
+              maxLength={1}
+            />
+
+            {isPending && <Loader extraClass="loader-spinner-var-otp-input" />}
+          </div>
         ))}
+
         <div className="otp-separator"></div>
       </div>
-      <p className="otp-message">{messages.message}</p>
+
+      <p className="otp-message">{OTPInvalidMessage}</p>
     </div>
   )
 }

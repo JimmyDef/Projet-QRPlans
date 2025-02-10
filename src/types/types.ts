@@ -63,6 +63,10 @@ export interface DashboardStore {
   removeFolder: (folderId: string) => void
 }
 
+export type themeState = {
+  theme: 'light' | 'dark'
+  toggleTheme: () => void
+}
 export interface DashboardDataProviderProps {
   files: File[]
   folders: FolderStore[]

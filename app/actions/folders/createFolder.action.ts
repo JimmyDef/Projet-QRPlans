@@ -9,7 +9,6 @@ export const createNewFolderAction = async (
   tempId: string
 ) => {
   const session = await auth()
-  console.log('🚀 ~ session:', session)
 
   if (!session) {
     throw new Error('User not authenticated')

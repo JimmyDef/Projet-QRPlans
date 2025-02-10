@@ -3,7 +3,6 @@ import { redirect } from 'next/navigation'
 
 export const HandleSessionRedirect = async () => {
   const session = await auth()
-
   if (session) {
     if (
       session.user.provider === 'credentials' &&
