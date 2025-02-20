@@ -2,19 +2,21 @@
 
 import { auth } from '@/src/lib/auth'
 import prisma from '@/src/lib/prisma'
+import { redirect } from 'next/navigation'
+import { Router } from 'next/router'
 
 interface OTPValidationResult {
   message: string
   success: boolean
 }
-const OTPValidationAction = async (
+export const OTPValidationAction = async (
   previouState: OTPValidationResult,
   otp: string
 ) => {
   const session = await auth()
   if (!session) {
-    // return { message: 'Code expiré ou invalide.', success: false }
-    throw new Error('OTP, User not authenticated')
+    return { message: 'Code expiré ou invalide.', success: false }
+    // throw new Error('OTP, User not authenticated')
   }
 
   const userOTP = await prisma.userOtp.findFirst({
@@ -49,6 +51,7 @@ const OTPValidationAction = async (
       purpose: 'REGISTRATION',
     },
   })
-  return { message: 'OTP_SUCCESS', success: true }
+
+  return { message: 'Code accepted.', success: true }
 }
 export default OTPValidationAction

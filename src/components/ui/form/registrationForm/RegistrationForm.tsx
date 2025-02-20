@@ -65,16 +65,18 @@ const RegistrationForm = () => {
           email: form.email,
           password: form.password,
         })
-        // router.push('/auth/registration/validateEmailOTP')
+        router.push('/auth/registration/validateEmailOTP')
       }
-      return
+
       if (!isNewUser) {
         setIsPasswordForgotten(true)
         setFormError(message)
+        setIsLoading(false)
         return
       }
       if (!success) {
         setFormError(message)
+        setIsLoading(false)
         throw new Error(message)
       }
     } catch (error) {
@@ -129,10 +131,6 @@ const RegistrationForm = () => {
       toast.error(formError)
     }
   }, [formError])
-  useEffect(() => {
-    testaction('test99')
-    console.log('🚀 ~ getAction:')
-  }, [])
 
   return (
     <div className="sign-form-container sign-up-form-container">

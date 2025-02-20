@@ -1,15 +1,11 @@
 import { auth } from '@/src/lib/auth'
 import { redirect } from 'next/navigation'
 import { HomePage } from './HomePage'
+import prisma from '@/src/lib/prisma'
+import { HandleSessionRedirect } from '@/src/lib/SessionCheckerServer'
 
 const Home = async () => {
-  const session = await auth()
-
-  if (session) {
-    session?.user.provider === 'credentials' && session?.user.active === false
-      ? redirect('/dashboard')
-      : redirect('/auth/registration/validateEmailOTP')
-  }
+  await HandleSessionRedirect()
 
   return <HomePage />
 }

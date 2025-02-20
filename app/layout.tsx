@@ -9,6 +9,11 @@ import { getLocale, getMessages } from 'next-intl/server'
 import { ReactNode } from 'react'
 import ClientSideToastContainer from './ToastContainer'
 import ThemeToggle from './ThemeToggle'
+import { auth } from '@/src/lib/auth'
+import prisma from '@/src/lib/prisma'
+import { redirect } from 'next/navigation'
+import path from 'path'
+import { headers } from 'next/headers'
 
 export const metadata: Metadata = {
   title: 'QR Plans',
@@ -22,7 +27,20 @@ export default async function RootLayout({
 }) {
   const locale = await getLocale()
   const messages = await getMessages()
+  const headersList = await headers()
 
+  const session = await auth()
+  let isUserActive = false
+  if (session) {
+    const userDb = await prisma.user.findUnique({
+      where: { id: session?.user.id },
+    })
+    isUserActive = !!userDb?.active
+
+    if (!userDb) {
+      console.log('userDb', userDb)
+    }
+  }
   const ClientProviders = ({ children }: { children: ReactNode }) => (
     <SessionProvider>{children}</SessionProvider>
   )
@@ -38,7 +56,7 @@ export default async function RootLayout({
           <ClientProviders>
             <Header />
             <main className="main">{children}</main>
-            <SessionChecker />
+            <SessionChecker isActiveInitial={isUserActive} />
           </ClientProviders>
           <ThemeToggle />
           <ClientSideToastContainer />

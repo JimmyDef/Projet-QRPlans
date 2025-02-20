@@ -7,7 +7,12 @@ import {
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { createWithEqualityFn } from 'zustand/traditional'
+import { AuthStore } from '../types/store.types'
 
+export const useAuthStore = create<AuthStore>((set) => ({
+  isUserActive: false,
+  setUserActive: (isUserActive: boolean) => set({ isUserActive }),
+}))
 export const useThemeStore = create<themeState>()(
   persist(
     (set) => ({

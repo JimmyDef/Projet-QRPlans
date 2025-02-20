@@ -1,19 +1,29 @@
 'use client'
 
 import { auth } from '@/src/lib/auth'
+import { useAuthStore } from '@/src/lib/store'
 import { useSession } from 'next-auth/react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
-const SessionChecker = () => {
-  const { status, data } = useSession()
+interface SessionCheckerProps {
+  isActiveInitial: boolean
+}
+const SessionChecker = ({ isActiveInitial }: SessionCheckerProps) => {
+  const { status, data: session } = useSession()
+  const isUserActive = useAuthStore((state) => state.isUserActive)
+  // const setUserActive = useAuthStore((state) => state.setUserActive)
   const router = useRouter()
   const pathname = usePathname()
 
+  // useEffect(() => {
+  //   // Au montage, on synchronise la valeur “active”
+  //   setUserActive(isActiveInitial)
+  // }, [isActiveInitial, setUserActive])
+
   useEffect(() => {
-    console.log('🚀 ~ SessionCheker status:', status)
     const isUserCredentialsActive =
-      data?.user.provider === 'credentials' && data?.user.active === false
+      session?.user.provider === 'credentials' && isUserActive
     // Page SIGN-IN ------------
     // -------------------------------
     if (pathname === '/auth/sign-in') {
@@ -27,7 +37,7 @@ const SessionChecker = () => {
     // Page validateEmailOTP ------------
     // --------------------------------
     if (pathname === '/auth/registration/validateEmailOTP') {
-      if (status === 'unauthenticated' || data?.user.active)
+      if (status === 'unauthenticated' || session?.user.active)
         return router.push('/auth/sign-in')
     }
     // Page DASHBOARD ------------
@@ -49,7 +59,7 @@ const SessionChecker = () => {
         return router.push('/dashboard')
       }
     }
-  }, [status, router, pathname, data?.user.active, data?.user.provider])
+  }, [status, router, pathname, session?.user.active, session?.user.provider])
 
   return null
 }

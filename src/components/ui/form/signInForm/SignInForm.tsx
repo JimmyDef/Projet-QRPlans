@@ -5,13 +5,14 @@ import { signIn } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AuthProviders } from '../components/AuthProviders'
 import { Footer } from './Footer'
 
 import './../auth-forms.scss'
 import { Header } from '../signInForm/Header'
 import { Separator } from '../components/Separator'
+import { toast } from 'react-toastify'
 
 interface Form {
   email: string
@@ -51,15 +52,24 @@ const SignIn = () => {
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message)
+        toast.error(err.message)
         console.log('setError', err)
       } else {
-        setError('An error occurred, please try again.')
+        const errorMessage = 'An error occurred, please try again.'
+        setError(errorMessage)
+        toast.error(errorMessage)
       }
-    } finally {
+
       setIsLoading(false)
     }
   }
+  // useEffect(() => {
+  //   if (formError) {
+  //     console.log('🚀 ~ formError:', formError)
 
+  //     toast.error(formError)
+  //   }
+  // }, [formError])
   return (
     <div className="sign-form-container">
       <form
@@ -125,19 +135,6 @@ const SignIn = () => {
           </Link>
         </div>
         {!isFormValid && <p className="form-error">Please fill all fields.</p>}
-        {error && (
-          <p className="form-error">
-            {error}{' '}
-            {error === 'Email is not verified.' ? (
-              <Link
-                className="unverified-email-link"
-                href="/auth/registration/token-activation/resend-activation-link"
-              >
-                Request activation link?
-              </Link>
-            ) : null}
-          </p>
-        )}
 
         <button
           title="Sign In"
@@ -151,6 +148,7 @@ const SignIn = () => {
             <span>Sign In</span>
           )}
         </button>
+        {error && <p className="form-error">{error} </p>}
       </form>
       <Separator />
       <AuthProviders isLoading={isLoading} setIsLoading={setIsLoading} />

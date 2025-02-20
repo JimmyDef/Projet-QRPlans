@@ -10,7 +10,6 @@ import Credentials from 'next-auth/providers/credentials'
 import bcrypt from 'bcrypt'
 import { signInSchema } from './zod'
 
-// import { credentialsSchema } from '@/src/lib/zod'
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: 'jwt' },
   adapter: PrismaAdapter(prisma),
@@ -66,14 +65,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.active = user.active
+        // token.active = user.active
         token.provider = user.provider
       }
+
       return token
     },
     session({ session, token }) {
       session.user.id = token.id as string
-      session.user.active = token.active as boolean
+      // session.user.active = token.active as boolean
       session.user.provider = token.provider as string
 
       return session
