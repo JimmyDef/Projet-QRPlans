@@ -3,12 +3,14 @@ import { useRouter } from 'next/navigation'
 import './app-error.scss'
 
 export const AppError = ({ error }: { error?: string }) => {
+  console.log('🚀 ~ APPERROR:', error)
+
   const router = useRouter()
   const isDatabaseError =
     error?.includes('prisma') || error?.includes('database')
   const errorMessage = isDatabaseError
-    ? 'Database Connection Issue'
-    : 'Unexpected Error Occurred'
+    ? 'Database Connection Issue.'
+    : 'Unexpected Error Occurred.'
 
   return (
     <div className="app-error-container">

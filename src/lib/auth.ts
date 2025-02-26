@@ -113,7 +113,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         }
       }
 
-      // Si pas de problème, continuer normalement
       return true
     },
   },

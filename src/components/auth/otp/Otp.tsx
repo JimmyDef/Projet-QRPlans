@@ -1,57 +1,39 @@
 'use client'
-import {
-  startTransition,
-  useActionState,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
-import './otp.scss'
-import { isNum } from '@/src/lib/helpers'
-import OTPValidationAction from '@/app/actions/otp/validateRegistrationOtp.action'
-import { toast } from 'react-toastify'
-import { useRouter } from 'next/navigation'
 import Loader from '@/src/components/ui/loader/Loader'
-import { useSession } from 'next-auth/react'
+import { isNum } from '@/src/lib/helpers'
 import { useAuthStore } from '@/src/lib/store'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import './otp.scss'
 
 type OtpProps = {
   length?: number
+  onComplete: (code: string) => void
+  isPending: boolean
+  setInputRef?: (ref: HTMLInputElement | null) => void
 }
-export const Otp = ({ length = 6 }: OtpProps) => {
-  // const { data: session, update } = useSession()
-  // const isUserActive = useAuthStore((state) => state.isUserActive)
-  const setUserActive = useAuthStore((state) => state.setUserActive)
-  // const router = useRouter()
+export const Otp = ({
+  length = 6,
+  onComplete,
+  isPending,
+  setInputRef,
+}: OtpProps) => {
   const [codes, setCodes] = useState<string[]>(() => Array(6).fill(''))
   const inputsRef = useRef<Array<HTMLInputElement | null>>([])
-  const [error, onCompletionAction, isPending] = useActionState(
-    OTPValidationAction,
-    {
-      message: '',
-      success: false,
-    }
-  )
-  const OTPInvalidMessage = error.message ? 'Code invalide ou expiré.' : ''
+
   const updateCodesAtIndex = (index: number, value: string) => {
     const updatedCodes = [...codes]
     updatedCodes[index] = value
     setCodes(updatedCodes)
   }
 
-  const checkCompletion = useCallback(
-    (codes: string[]) => {
-      const isCodeCompleted = !codes.includes('')
-      if (isCodeCompleted) {
-        startTransition(async () => {
-          onCompletionAction(codes.join(''))
-        })
-        setCodes(Array(6).fill(''))
-      }
-    },
-    [onCompletionAction]
-  )
+  const checkCompletion = useCallback((codes: string[]) => {
+    const isCodeCompleted = !codes.includes('')
+    if (isCodeCompleted) {
+      onComplete(codes.join(''))
+
+      setCodes(Array(6).fill(''))
+    }
+  }, [])
 
   const handleKeyDown = (
     idx: number,
@@ -105,21 +87,11 @@ export const Otp = ({ length = 6 }: OtpProps) => {
   useEffect(() => {
     checkCompletion(codes)
   }, [codes, checkCompletion])
-
   useEffect(() => {
-    if (error.success) {
-      setUserActive(true)
-      // router.push('/dashboard')
-      return
+    if (setInputRef) {
+      setInputRef(inputsRef.current[0])
     }
-    if (!OTPInvalidMessage) return
-
-    if (!isPending && OTPInvalidMessage) {
-      setCodes(Array(6).fill(''))
-      toast.error('Code expiré ou invalide.')
-      return
-    }
-  }, [OTPInvalidMessage, isPending])
+  }, [])
   return (
     <div className="otp-container">
       <div className="otp-input-wrapper">
@@ -153,8 +125,6 @@ export const Otp = ({ length = 6 }: OtpProps) => {
 
         <div className="otp-separator"></div>
       </div>
-
-      <p className="otp-message">{OTPInvalidMessage}</p>
     </div>
   )
 }

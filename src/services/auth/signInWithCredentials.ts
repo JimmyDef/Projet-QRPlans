@@ -1,20 +1,23 @@
 'use server'
 
+import {
+  AccountProviderError,
+  EmailNotVerifiedError,
+  InvalidPasswordError,
+  MissingCredentialsError,
+  UserNotFoundError,
+} from '@/src/lib/customErrors'
 import prisma from '@/src/lib/prisma'
+import {
+  PrismaClientInitializationError,
+  PrismaClientKnownRequestError,
+} from '@prisma/client/runtime/library'
 import bcrypt from 'bcrypt'
 
 type Form = {
   email: string
   password: string
 }
-import {
-  MissingCredentialsError,
-  UserNotFoundError,
-  AccountProviderError,
-  EmailNotVerifiedError,
-  InvalidPasswordError,
-} from '@/src/lib/customErrors'
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
 
 const signInWithCredentials = async ({ email, password }: Form) => {
   if (!email || !password) {
@@ -44,8 +47,6 @@ const signInWithCredentials = async ({ email, password }: Form) => {
       throw new InvalidPasswordError('Invalid password')
     }
 
-    // Authentification réussie
-    console.log('🚀 ~ useEEEEr:', user)
     return { status: 'success' }
   } catch (error) {
     if (
@@ -55,9 +56,13 @@ const signInWithCredentials = async ({ email, password }: Form) => {
       error instanceof EmailNotVerifiedError ||
       error instanceof InvalidPasswordError
     ) {
+      console.log('errorINSTANCEOF', error)
       throw error
     }
     if (error instanceof PrismaClientKnownRequestError) {
+      throw new Error('Database unavailable, try again later.')
+    }
+    if (error instanceof PrismaClientInitializationError) {
       throw new Error('Database unavailable, try again later.')
     } else {
       throw new Error('An error occurred, please try again.')

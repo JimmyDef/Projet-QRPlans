@@ -20,7 +20,7 @@ export const resendRegistrationOtp = async (
 ) => {
   try {
     const otp = generateOTP()
-    const FIVE_MINUTES = 5 * 60 * 1000
+    const TWO_MINUTES = 2 * 60 * 1000
     const { userId, email, fullName } = payload
     const user = await prisma.user.findUnique({
       where: {
@@ -45,9 +45,16 @@ export const resendRegistrationOtp = async (
     if (existing) {
       const now = new Date().getTime()
       const createdAt = existing.createdAt.getTime()
-      if (now - createdAt < FIVE_MINUTES) {
+      if (now - createdAt < TWO_MINUTES) {
+        const timeLeftMs = TWO_MINUTES - (now - createdAt)
+        const minutes = Math.floor(timeLeftMs / 60000)
+        const seconds = Math.ceil((timeLeftMs % 60000) / 1000)
+        const timeLeft =
+          minutes > 0
+            ? `${minutes} minute and ${seconds} seconds`
+            : `${seconds} seconds`
         return {
-          message: 'Please wait before requesting another verification code.',
+          message: `Please wait ${timeLeft} before requesting another verification code.`,
           success: false,
         }
       }

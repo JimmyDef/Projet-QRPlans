@@ -5,16 +5,17 @@ import { signIn } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { AuthProviders } from '../components/AuthProviders'
 import { Footer } from './Footer'
 
-import './../auth-forms.scss'
-import { Header } from '../signInForm/Header'
-import { Separator } from '../components/Separator'
 import { toast } from 'react-toastify'
+import { Separator } from '../components/Separator'
+import { Header } from '../signInForm/Header'
+import './../auth-forms.scss'
+import { InputField } from '@/src/components/ui/form/components/InputField'
 
-interface Form {
+export interface IForm {
   email: string
   password: string
 }
@@ -22,110 +23,82 @@ interface Form {
 const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isFormValid, setIsFormValid] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [form, setForm] = useState<Form>({
+  const [error, setError] = useState<string | undefined>(undefined)
+  const [form, setForm] = useState<IForm>({
     email: '',
     password: '',
   })
 
-  const handleSubmit = async (
-    event: React.FormEvent<HTMLFormElement>,
-    form: Form
-  ) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+
+    // Réinitialiser les états
     setIsFormValid(true)
+    setError(undefined)
     setIsLoading(true)
-    if (Object.values(form).some((value) => value.trim() === '')) {
+
+    // Validation du formulaire
+    const hasEmptyFields = Object.values(form).some((value) => !value.trim())
+    if (hasEmptyFields) {
       setIsFormValid(false)
       setIsLoading(false)
+      toast.error('Veuillez remplir tous les champs')
       return
     }
 
     try {
+      // Tentative de connexion
       const res = await signInWithCredentials(form)
+
       if (res.status === 'success') {
         await signIn('credentials', {
           email: form.email,
           password: form.password,
+          redirect: true,
+          callbackUrl: '/dashboard',
         })
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message)
-        toast.error(err.message)
-        console.log('setError', err)
-      } else {
-        const errorMessage = 'An error occurred, please try again.'
-        setError(errorMessage)
-        toast.error(errorMessage)
-      }
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Une erreur est survenue, veuillez réessayer.'
 
+      setError(errorMessage)
+      toast.error(errorMessage)
       setIsLoading(false)
     }
   }
-  // useEffect(() => {
-  //   if (formError) {
-  //     console.log('🚀 ~ formError:', formError)
 
-  //     toast.error(formError)
-  //   }
-  // }, [formError])
   return (
     <div className="sign-form-container">
-      <form
-        className="sign-form"
-        onSubmit={(event) => handleSubmit(event, form)}
-      >
+      <form className="sign-form" onSubmit={handleSubmit}>
         <Header />
 
-        <div className="input-container">
-          <label className="input-label" htmlFor="email">
-            Email
-          </label>
+        <InputField
+          label="Email"
+          name="email"
+          type="email"
+          value={form.email}
+          icon="email"
+          placeholder="name@mail.com"
+          autoComplete="email"
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          required
+          isFormValid={isFormValid}
+        />
 
-          <Image
-            className="icon-credential"
-            width={30}
-            height={30}
-            src="/icons/email.svg"
-            alt="email icon"
-          />
-          <input
-            value={form.email}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            placeholder="name@mail.com"
-            name="email"
-            type="email"
-            className={`input-field ${
-              !isFormValid && !form.email ? 'input-error' : ''
-            } `}
-            id="email_field"
-            autoComplete="email"
-            required
-          />
-        </div>
         <div className="input-container">
-          <label className="input-label" htmlFor="password">
-            Password
-          </label>
-          <Image
-            className="icon-credential"
-            width={30}
-            height={30}
-            src="/icons/password.svg"
-            alt="password icon"
-          />
-          <input
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-            placeholder="Password"
+          <InputField
+            label="Password"
             name="password"
             type="password"
-            className={`input-field input-field--password-sign-in ${
-              !isFormValid && !form.password ? 'input-error' : ''
-            } `}
-            id="password_field"
+            value={form.password}
+            icon="password"
+            placeholder="Password"
             autoComplete="current-password"
+            extraClassName="input-field--password-sign-in"
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
           />
           <Link
             href="/auth/reset-password/send-email"
@@ -148,7 +121,7 @@ const SignIn = () => {
             <span>Sign In</span>
           )}
         </button>
-        {error && <p className="form-error">{error} </p>}
+        <p className="form-error">{error} </p>
       </form>
       <Separator />
       <AuthProviders isLoading={isLoading} setIsLoading={setIsLoading} />

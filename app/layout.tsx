@@ -1,5 +1,7 @@
 import SessionChecker from '@/src/components/auth/SessionChecker'
 import Header from '@/src/components/layout/header/Header'
+import { auth } from '@/src/lib/auth'
+import prisma from '@/src/lib/prisma'
 import '@/src/styles/globals.scss'
 import '@/src/styles/main.scss'
 import type { Metadata } from 'next'
@@ -7,13 +9,8 @@ import { SessionProvider } from 'next-auth/react'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { ReactNode } from 'react'
-import ClientSideToastContainer from './ToastContainer'
 import ThemeToggle from './ThemeToggle'
-import { auth } from '@/src/lib/auth'
-import prisma from '@/src/lib/prisma'
-import { redirect } from 'next/navigation'
-import path from 'path'
-import { headers } from 'next/headers'
+import ClientSideToastContainer from './ToastContainer'
 
 export const metadata: Metadata = {
   title: 'QR Plans',
@@ -27,20 +24,26 @@ export default async function RootLayout({
 }) {
   const locale = await getLocale()
   const messages = await getMessages()
-  const headersList = await headers()
-
-  const session = await auth()
+  let session = null
   let isUserActive = false
-  if (session) {
-    const userDb = await prisma.user.findUnique({
-      where: { id: session?.user.id },
-    })
-    isUserActive = !!userDb?.active
+  try {
+    session = await auth()
+    if (session) {
+      const userDb = await prisma.user.findUnique({
+        where: { id: session.user.id },
+      })
 
-    if (!userDb) {
-      console.log('userDb', userDb)
+      if (!userDb) {
+        console.log('User not found in database')
+      }
+
+      isUserActive = !!userDb?.active
     }
+  } catch (error) {
+    console.error('Database error:', error)
+    isUserActive = false
   }
+
   const ClientProviders = ({ children }: { children: ReactNode }) => (
     <SessionProvider>{children}</SessionProvider>
   )

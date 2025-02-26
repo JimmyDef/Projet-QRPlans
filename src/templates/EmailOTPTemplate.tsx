@@ -37,23 +37,22 @@ export const EmailOTPTemplate = ({
             color: '#fff',
             backgroundColor: colors.secondary,
             borderRadius: '5px',
-            margin: '40px 0',
+            margin: '25px 0',
             fontWeight: 'bold',
             letterSpacing: '4px',
           }}
         >
           {otp}
         </p>
+        <p>This code expire in 5 minutes</p>
         <p>
           Copy this code into the verification field in our app to complete your
           registration.
-        </p>
-        <p>If you did not sign up for our service, please ignore this email.</p>
-        <p>
-          Thank you,
           <br />
-          The Team
+          If you did not sign up for our service, please ignore this email.
         </p>
+        <p>Thank you, The Team.</p>
+
         <a href={process.env.SUPPORT_LINK}></a>
       </div>
     </Html>
