@@ -1,9 +1,11 @@
 import createNextIntlPlugin from 'next-intl/plugin'
+import path from 'path'
 const withNextIntl = createNextIntlPlugin()
 
 const nextConfig = {
   sassOptions: {
     silenceDeprecations: ['legacy-js-api'],
+    includePaths: [path.join(__dirname, 'src/styles')],
   },
   reactStrictMode: false,
   images: {

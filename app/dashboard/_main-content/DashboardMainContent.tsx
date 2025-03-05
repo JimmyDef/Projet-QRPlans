@@ -1,7 +1,7 @@
 'use client'
 // import { useSession } from 'next-auth/react'
 
-import { Button } from '@/src/components/ui/buttons/button'
+import { ButtonTW } from '@/src/components/ui/buttons/buttonTW'
 import { SquarePlus } from 'lucide-react'
 import { useDashboardStore } from '@/src/lib/store'
 import { useEffect, useState } from 'react'
@@ -21,7 +21,8 @@ export const DashboardMainContent = () => {
   useEffect(() => {}, [files])
   return (
     <section className="dashboard-content">
-      <Button variant={'secondary'}>Open</Button>
+      <h1>Dashboard</h1>
+      <ButtonTW variant={'secondary'}>Open</ButtonTW>
       <SquarePlus />
       {/* <DropdownFolderOptions> */}
       {/* <Button>Open</Button> */}

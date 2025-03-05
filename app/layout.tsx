@@ -1,4 +1,4 @@
-import SessionChecker from '@/src/components/auth/SessionChecker'
+import AuthRedirectHandler from '@/src/components/auth/AuthRedirectHandler'
 import Header from '@/src/components/layout/header/Header'
 import { auth } from '@/src/lib/auth'
 import prisma from '@/src/lib/prisma'
@@ -24,10 +24,9 @@ export default async function RootLayout({
 }) {
   const locale = await getLocale()
   const messages = await getMessages()
-  let session = null
+  const session = await auth()
   let isUserActive = false
   try {
-    session = await auth()
     if (session) {
       const userDb = await prisma.user.findUnique({
         where: { id: session.user.id },
@@ -59,7 +58,7 @@ export default async function RootLayout({
           <ClientProviders>
             <Header />
             <main className="main">{children}</main>
-            <SessionChecker isActiveInitial={isUserActive} />
+            <AuthRedirectHandler isActiveInitial={isUserActive} />
           </ClientProviders>
           <ThemeToggle />
           <ClientSideToastContainer />

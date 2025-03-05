@@ -1,6 +1,6 @@
 'use client'
 
-import { AppError } from '@/src/components/layout/app-error/App-error'
+import { AppError } from '@/src/components/app-error/App-error'
 import { useSearchParams } from 'next/navigation'
 
 const AuthErrorPage = () => {

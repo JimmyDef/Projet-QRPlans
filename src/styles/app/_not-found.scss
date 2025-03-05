@@ -1,5 +1,5 @@
-@use '../abstacts/variables' as V;
-@use '../abstacts/mixins';
+@use 'abstracts/variables' as V;
+@use 'abstracts/mixins';
 
 .not-found-wrapper {
   display: flex;
@@ -14,9 +14,10 @@
   }
   a {
     width: 200px;
-    color: V.$color-primary;
+    color: V.$primary-color;
     font-weight: 600;
-    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px,
+    box-shadow:
+      rgba(0, 0, 0, 0.19) 0px 10px 20px,
       rgba(0, 0, 0, 0.23) 0px 6px 6px;
     @include mixins.main-link;
   }

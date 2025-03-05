@@ -1,0 +1,35 @@
+@use 'abstracts/variables' as V;
+@use 'abstracts/mixins' as M;
+
+.submit-btn {
+  @include M.auth-form-inputs-base;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: V.$secondary-color;
+  color: #ffffff;
+
+  &:hover {
+    background: V.$secondary-color-dark;
+    box-shadow: none;
+    &:focus {
+      background: V.$secondary-color-dark;
+    }
+  }
+  &:focus {
+    background: V.$secondary-color;
+    border: none;
+  }
+}
+
+.submit-btn.submit-btn--auth-form {
+}
+
+// .register-link,
+// .activation-link {
+//   color: V.$primary-color;
+//   font-weight: 600;
+//   text-decoration: underline;
+//   cursor: pointer;
+// }

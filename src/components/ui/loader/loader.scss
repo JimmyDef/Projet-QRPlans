@@ -1,9 +1,9 @@
-@use './../../../styles/abstacts/variables.scss' as V;
+@use 'abstracts/variables' as V;
 .loader-spinner {
   transform: rotate(0deg);
   animation: spin 2.4s linear infinite;
 }
-.loader-spinner.loader-spinner-var-form-button {
+.loader-spinner.loader-spinner-submit-btn {
   width: 30px;
   height: 30px;
 }
@@ -15,7 +15,7 @@
   left: 7px;
 }
 .loader-spinner line {
-  // stroke: V.$color-secondary;
+  // stroke: V.$secondary-color;
   stroke: black;
   stroke-width: 4;
   stroke-linecap: round;

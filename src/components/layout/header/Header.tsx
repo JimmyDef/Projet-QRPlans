@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import LocaleSwitcher from '@/src/components/layout/header/localeSwitcher/LocaleSwitcher'
+import LocaleSwitcher from '@/src/components/layout/header/locale-switcher/LocaleSwitcher'
 import './header.scss'
 import { ConnexionButtons } from './navbar/ConnexionButtons'
 import { usePathname } from 'next/navigation'

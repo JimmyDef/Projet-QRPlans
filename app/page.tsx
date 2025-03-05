@@ -2,10 +2,10 @@ import { auth } from '@/src/lib/auth'
 import { redirect } from 'next/navigation'
 import { HomePage } from './HomePage'
 import prisma from '@/src/lib/prisma'
-import { HandleSessionRedirect } from '@/src/lib/SessionCheckerServer'
+import { checkAuthAndRedirect } from '@/src/lib/authRedirectGuard'
 
 const Home = async () => {
-  await HandleSessionRedirect()
+  await checkAuthAndRedirect()
 
   return <HomePage />
 }

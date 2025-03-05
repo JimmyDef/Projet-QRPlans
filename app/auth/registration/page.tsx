@@ -1,9 +1,9 @@
-import RegistrationForm from '@/src/components/ui/form/registrationForm/RegistrationForm'
+import RegistrationForm from '@/src/components/ui/form/registration-form/RegistrationForm'
 
-import { HandleSessionRedirect } from '@/src/lib/SessionCheckerServer'
+import { checkAuthAndRedirect } from '@/src/lib/authRedirectGuard'
 
 const Registration = async () => {
-  await HandleSessionRedirect()
+  await checkAuthAndRedirect()
 
   return <RegistrationForm />
 }

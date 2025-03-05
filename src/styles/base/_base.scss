@@ -1,4 +1,4 @@
-@use '../abstacts/variables' as V;
+@use 'abstracts/variables' as V;
 
 *,
 *::after,
@@ -13,7 +13,7 @@
 }
 
 body {
-  color: V.$color-primary;
+  color: V.$primary-color;
   font-family: 'Montserrat', sans-serif;
 }
 // body.light {
@@ -27,7 +27,7 @@ body {
 
 a {
   text-decoration: none;
-  color: V.$color-primary;
+  color: V.$primary-color;
   &:hover {
     cursor: pointer;
   }
@@ -46,4 +46,10 @@ ul {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
 }

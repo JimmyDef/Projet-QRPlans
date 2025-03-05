@@ -1,8 +1,7 @@
-@use './../../../../../src/styles/abstacts/variables.scss' as V;
+@use 'abstracts/variables' as V;
 
 .folder {
   width: 100%;
-
   display: flex;
   align-items: center;
   gap: 10px;
@@ -63,10 +62,10 @@
   color: #6d6d6d;
   flex-shrink: 0;
   &:hover {
-    color: V.$color-secondary;
+    color: V.$secondary-color;
   }
   &:focus {
-    color: V.$color-secondary;
+    color: V.$secondary-color;
     opacity: 1;
   }
 }
@@ -81,7 +80,7 @@
   text-decoration: underline;
   &:focus {
     .folder__menu-icon {
-      color: V.$color-secondary;
+      color: V.$secondary-color;
       opacity: 1;
     }
   }

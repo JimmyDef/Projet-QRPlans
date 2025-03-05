@@ -1,0 +1,54 @@
+@use 'abstracts/mixins' as M;
+@use 'abstracts/variables' as V;
+
+.form-input-field__container {
+  width: 100%;
+  margin-bottom: 20px;
+  height: fit-content;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-input-field__label {
+  font-size: 0.75rem;
+  color: #8b8e98;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.form-input-field__input {
+  @include M.auth-form-inputs;
+
+  padding: 0 0 0 40px;
+
+  &--error {
+    border: 1px solid red;
+  }
+
+  &--password-sign-in {
+    margin-bottom: 0px;
+  }
+}
+
+.form-input-field__icon {
+  width: 20px;
+  height: auto;
+  position: absolute;
+  z-index: 99;
+  left: 12px;
+  top: 28px;
+  pointer-events: none;
+}
+
+.form-input-field__password-confirmation-error {
+  &::after {
+    position: absolute;
+    right: 0;
+    content: 'Passwords do not match';
+    color: red;
+    font-size: 14px;
+    font-weight: 500;
+  }
+}

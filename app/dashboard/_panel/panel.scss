@@ -1,4 +1,4 @@
-@use './../../../src/styles/abstacts/variables.scss' as V;
+@use 'abstracts/variables' as V;
 // @use './../../../../src/styles/abstacts/mixins';
 
 .panel {
@@ -6,7 +6,9 @@
   height: calc(100vh - 70px);
   background-color: V.$background-color-light-grey;
   padding: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.1); /* Ombre uniquement sur les côtés et en bas */
+  box-shadow:
+    2px 0 5px rgba(0, 0, 0, 0.1),
+    0 5px 5px rgba(0, 0, 0, 0.1); /* Ombre uniquement sur les côtés et en bas */
   position: fixed;
   top: 90px;
   left: 0;
@@ -49,7 +51,6 @@
 }
 
 .panel__action-icon {
-  cursor: pointer;
   color: V.$color-dark-grey-2;
   transition: color 0.3s ease;
 

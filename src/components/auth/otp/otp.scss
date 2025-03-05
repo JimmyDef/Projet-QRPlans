@@ -1,4 +1,4 @@
-@use './../../../../src/styles/abstacts/variables.scss' as V;
+@use 'abstracts/variables' as V;
 .otp-container {
   display: flex;
   flex-direction: column;

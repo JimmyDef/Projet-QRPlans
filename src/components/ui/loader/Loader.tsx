@@ -3,7 +3,7 @@ import './loader.scss'
 type LoaderProps = {
   extraClass: string
 }
-const Loader = ({ extraClass }: LoaderProps) => {
+export const Loader = ({ extraClass }: LoaderProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -100,5 +100,3 @@ const Loader = ({ extraClass }: LoaderProps) => {
     </svg>
   )
 }
-
-export default Loader

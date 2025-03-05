@@ -1,5 +1,5 @@
-@use './../../../styles/abstacts/variables.scss' as V;
-@use './../../../styles/abstacts//mixins.scss' as *;
+@use 'abstracts/variables' as V;
+@use 'abstracts/mixins' as *;
 
 .header {
   z-index: 1000;
@@ -15,7 +15,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: V.$color-primary;
+  color: V.$primary-color;
   padding: 10px 20px;
   font-size: 20px;
   font-weight: bold;
@@ -39,16 +39,15 @@
 }
 
 .header__link {
-  cursor: pointer;
   text-decoration: none;
   &:hover {
     text-decoration: underline;
   }
   &--sign-in,
   &--sign-out {
-    border: 2px solid V.$color-secondary;
+    border: 2px solid V.$secondary-color;
     background-color: V.$color-white;
-    color: V.$color-primary;
+    color: V.$primary-color;
     font-weight: bold;
     &:hover {
       @include gradient-grey-blue;

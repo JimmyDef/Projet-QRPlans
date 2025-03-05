@@ -1,0 +1,56 @@
+@use 'abstracts/variables' as V;
+
+.auth-form__header {
+  margin-bottom: 15px;
+}
+
+.auth-form__header-logo-container {
+  margin: 0 auto 15px;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(
+    180deg,
+    rgba(248, 248, 248, 0) 50%,
+    #f8f8f888 100%
+  );
+  border: 1px solid #f7f7f8;
+  filter: drop-shadow(0px 0.5px 0.5px #efefef)
+    drop-shadow(0px 1px 0.5px rgba(239, 239, 239, 0.5));
+  border-radius: 11px;
+}
+
+.auth-form__header-title-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.auth-form__header-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.auth-form__header-subtitle {
+  margin: auto;
+  border-radius: 11px;
+  font-size: 1rem;
+  max-width: 85%;
+  text-align: center;
+  color: #8b8e98;
+
+  &--oauth-account-not-linked {
+    padding: 15px 7px;
+    color: red;
+    background-color: V.$background-color-light-grey;
+  }
+
+  &--provider {
+    line-height: 25px;
+    font-weight: 700;
+  }
+}

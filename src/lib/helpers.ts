@@ -35,20 +35,20 @@ export const isValidLength = (password: string) =>
   password.length >= 8 && password.length <= 20
 
 export const isPasswordStrong = (password: string) => {
-  const isStrong =
+  return (
     hasLowercase(password) &&
     hasUppercase(password) &&
     hasNumber(password) &&
     hasSpecialCharacter(password) &&
     isValidLength(password)
-  return isStrong
+  )
 }
 
-export const comparePasswords = (
+export const arePasswordsEqual = (
   password: string,
   passwordConfirmation: string
 ) => {
-  return password !== passwordConfirmation
+  return password === passwordConfirmation
 }
 
 export const escapeRegExp = (string: string) => {

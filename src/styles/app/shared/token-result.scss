@@ -1,5 +1,5 @@
-@use './../../abstacts/mixins.scss' as M;
-@use './../../abstacts/variables.scss' as V;
+@use 'abstracts/mixins' as M;
+@use 'abstracts/variables' as V;
 .token-result {
   display: flex;
   flex-direction: column;

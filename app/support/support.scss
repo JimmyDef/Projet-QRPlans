@@ -1,5 +1,5 @@
-@use './../../src/styles/abstacts/mixins.scss' as M;
-@use './../../src/styles/abstacts/variables.scss' as V;
+@use 'abstracts/mixins' as M;
+@use 'abstracts/variables' as V;
 
 .support-page__container {
   margin: 0 auto;
@@ -46,23 +46,23 @@
 }
 
 .support-page__button {
-  @include M.sign-input-btn;
+  @include M.auth-form-inputs;
   width: 100%;
   border: 0;
-  background: V.$color-secondary;
+  background: V.$secondary-color;
   margin-bottom: 0;
   color: #ffffff;
   cursor: pointer;
   font-weight: 600;
   &:hover {
-    background: V.$color-secondary-darker;
+    background: V.$secondary-color-dark;
     box-shadow: none;
     &:focus {
-      background: V.$color-secondary-darker;
+      background: V.$secondary-color-dark;
     }
   }
   &:focus {
-    background: V.$color-secondary;
+    background: V.$secondary-color;
   }
   &:disabled {
     background: #cccccc;

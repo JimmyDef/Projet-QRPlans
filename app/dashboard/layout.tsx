@@ -22,8 +22,9 @@ export default async function RootLayout({
   }
 
   const isUserActive = !!userDb?.active
+
   if (session.user.provider === 'credentials' && !isUserActive) {
-    redirect('/auth/registration/validateEmailOTP')
+    redirect('/auth/registration/validate-email-otp')
   }
 
   const userId = session?.user?.id
@@ -55,7 +56,6 @@ export default async function RootLayout({
 
   return (
     <div className="dashboard-layout">
-      {/* <SessionChecker /> */}
       <DashboardDataProvider files={files} folders={folders} />
       <Panel />
       {children}

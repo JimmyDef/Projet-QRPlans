@@ -1,0 +1,89 @@
+@use './variables.scss' as V;
+
+@mixin main-link {
+  width: 145px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: V.$secondary-color;
+  color: V.$color-white;
+  transition: background-color 0.2s;
+  border-radius: 5px;
+  cursor: pointer;
+  &:focus-visible {
+    // transition: none;
+  }
+
+  &:hover {
+    text-decoration: none;
+    background-color: V.$secondary-color-dark;
+  }
+  @media (max-width: V.$notebook-width) {
+    font-size: 16px;
+  }
+  @media (max-width: V.$tablet-width) {
+    width: 110px;
+    height: 40px;
+    // font-size: 14px;
+  }
+}
+@mixin box-shadow-light-color {
+  box-shadow: 3px 3px 4px 1px #14213d;
+}
+@mixin box-shadow-light-black {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+@mixin box-modal {
+  box-shadow:
+    0px 106px 42px rgba(0, 0, 0, 0.01),
+    0px 59px 36px rgba(0, 0, 0, 0.05),
+    0px 26px 26px rgba(0, 0, 0, 0.09),
+    0px 7px 15px rgba(0, 0, 0, 0.1),
+    0px 0px 0px rgba(0, 0, 0, 0.1);
+}
+
+@mixin auth-form-inputs-base {
+  height: 40px;
+  border-radius: V.$border-radius-large;
+  font-weight: 600;
+  transition: V.$default-transition;
+  &:disabled {
+    background: #cccccc;
+    color: #666666;
+    cursor: progress;
+  }
+}
+@mixin auth-form-inputs {
+  @include auth-form-inputs-base;
+  width: auto;
+  border: 2px solid #e5e5e5;
+  background-color: white;
+  &::placeholder {
+    font-weight: 400;
+  }
+  &:hover {
+    background-color: V.$background-color-auth-form-inputs;
+    &:focus {
+      background: white;
+    }
+  }
+
+  &:focus {
+    box-shadow: 0px 0px 0px 2px #242424;
+    background-color: white;
+    border: 2px solid #e5e5e5;
+  }
+  &:hover:focus {
+  }
+}
+
+@mixin gradient-orange-blue {
+  background: rgb(252, 163, 17);
+  background: linear-gradient(
+    163deg,
+    rgba(252, 163, 17, 0.6643032212885154) 9%,
+    rgba(20, 33, 61, 0.4514180672268907) 93%
+  );
+}

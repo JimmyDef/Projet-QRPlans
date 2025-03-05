@@ -1,5 +1,5 @@
 'use client'
-import Loader from '@/src/components/ui/loader/Loader'
+import { Loader } from '@/src/components/ui/loader/Loader'
 import { isNum } from '@/src/lib/helpers'
 import { useAuthStore } from '@/src/lib/store'
 import { useCallback, useEffect, useRef, useState } from 'react'

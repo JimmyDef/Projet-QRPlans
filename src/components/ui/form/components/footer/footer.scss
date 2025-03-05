@@ -1,0 +1,30 @@
+@use 'abstracts/variables' as V;
+
+.auth-form__footer {
+  text-align: center;
+  margin-top: -5px;
+}
+
+.auth-form__register {
+  // font-size: 0.75rem;
+  // color: #8b8e98;
+}
+
+.auth-form__register {
+  margin-bottom: 15px;
+  // color: #8b8e98;
+}
+
+.auth-form__register-link {
+  color: V.$primary-color;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.auth-form__use-and-conditions {
+  // font-size: 0.75rem;
+  color: #8b8e98;
+  text-decoration: underline;
+  text-align: center;
+}
