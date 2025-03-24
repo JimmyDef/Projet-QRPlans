@@ -6,21 +6,21 @@ import {
   hasUppercase,
   hasNumber,
   hasSpecialCharacter,
-  isValidLength,
+  isPasswordLengthValid,
   isPasswordStrong,
 } from '@/src/lib/helpers'
 type PasswordCheckListProps = {
   password: string
-  setIsPasswordValid: Dispatch<SetStateAction<boolean>>
+  setIsPasswordStrong: (isStrong: boolean) => void
 }
 
 const PasswordCheckList = ({
   password,
-  setIsPasswordValid,
+  setIsPasswordStrong,
 }: PasswordCheckListProps) => {
   useEffect(() => {
-    setIsPasswordValid(isPasswordStrong(password))
-  }, [password, setIsPasswordValid])
+    setIsPasswordStrong(isPasswordStrong(password))
+  }, [password])
 
   const getIcon = (isValid: boolean): string =>
     isValid ? '/icons/check.svg' : '/icons/dot.svg'
@@ -73,7 +73,7 @@ const PasswordCheckList = ({
             className="PasswordCheckList__icon"
             width={20}
             height={20}
-            src={getIcon(isValidLength(password))}
+            src={getIcon(isPasswordLengthValid(password))}
             alt="icon"
           />
           Between 8 to 20 characters

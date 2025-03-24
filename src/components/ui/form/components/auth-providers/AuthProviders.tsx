@@ -4,7 +4,7 @@ import Image from 'next/image'
 import './auth-providers.scss'
 interface AuthProvidersProps {
   isLoading: boolean
-  setIsLoading: Dispatch<SetStateAction<boolean>>
+  setIsLoading: (isloading: boolean) => void
 }
 
 export const AuthProviders = ({

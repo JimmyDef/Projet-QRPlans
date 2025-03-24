@@ -14,7 +14,7 @@ const SignOutButton = ({ className }: SignOutButtonProps) => {
       className={className}
       onClick={() => {
         console.log('Signing out')
-        // setUser(null)
+        localStorage.setItem('isUserActive', JSON.stringify(false))
         signOut({ callbackUrl: '/auth/sign-in' })
       }}
     >

@@ -1,51 +1,64 @@
-// Typo-color
+// =========================
+// 🎨 Couleurs
+// =========================
+
+// ✅ Palette principale
 $primary-color: #14213d;
 $secondary-color: #fca311;
 $secondary-color-dark: #ce8600;
-$color-black: #000000;
-$color-white: white;
-$color-grey: #8b8e98;
-$color-light-blue: #8ecae6;
-$color-green: #219653;
-$color-red: #e63946;
-$color-yellow: #ffb703;
-$color-blue-grey: #adb5bd;
 
-$background-color-light-grey: #f4f4f4;
+// ✅ Neutres
+$black-color: #000000;
+$white-color: #ffffff;
+$grey-color: #8b8e98;
+$dark-grey-color: #333;
+$medium-grey-color: #666;
+$light-grey-color: #f4f4f4;
+$light-grey-color: #e5e5e5;
+$white-grey-border-color: #ccc;
 
-// Background-color
-$color-bg: #ffffff;
-$background-color-auth-form-inputs: rgba(9, 9, 121, 0.2);
-// Border-radius
-$border-small: 5px;
+// ✅ Autres couleurs
+$blue-grey-color: #adb5bd;
+$light-blue-color: #8ecae6;
+$green-color: #219653;
+$red-color: #e63946;
+$yellow-color: #ffb703;
+
+// =========================
+// 🖼️ Backgrounds
+// =========================
+$background-color: #ffffff;
+$auth-input-bg-color: rgba(9, 9, 121, 0.2);
+$status-btn-bg: #e0e0e0;
+$status-btn-bg-hover: #d4d4d4;
+
+// =========================
+// 🎭 Icones & Statuts
+// =========================
+$icon-color: #6e1111;
+$error-color: #e63946;
+
+// =========================
+// 🔲 Bordures & Radius
+// =========================
+$border-radius-small: 5px;
 $border-radius-medium: 10px;
 $border-radius-large: 20px;
 
-// Media queries size
-$smartphone-width: 500px;
-$tablet-width: 768px;
-$notebook-width: 1024px;
-$desktop-width: 1440px;
-
-// header
+// =========================
+// 📏 Tailles et Layout
+// =========================
 $header-height: 76px;
 
-// Dashboard Panel
+// =========================
+// 📱 Breakpoints
+// =========================
+$breakpoint-smartphone: 500px;
+$breakpoint-tablet: 768px;
+$breakpoint-notebook: 1024px;
+$breakpoint-desktop: 1440px;
 
-// typo:
-$color-dark-grey: #333;
-$color-dark-grey-2: #666;
-
-// icon-color
-$icon-color: #6e1111;
-
-// Background-color
-$status-btn-bg-color: #e0e0e0;
-$status-btn-bg-color-hover: #d4d4d4;
-
-// Bg + border
-$color-bg-border-white-grey: #ccc;
-$color-error: #e63946;
-
-// Transition
-$default-transition: all 0.2s cubic-bezier(0.15, 0.83, 0.66, 1);
+// =========================
+// 🎞️ Transitions
+// =========================
+$default-transition: 0.2s cubic-bezier(0.15, 0.83, 0.66, 1);

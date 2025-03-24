@@ -15,3 +15,7 @@ bun dev
 ## Build the docker Database
 
 docker compose -p qrplans up -d
+
+## Links
+
+[Icons bank ](https://lucide.dev/icons/)

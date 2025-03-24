@@ -42,3 +42,9 @@ export const registrationSchema = baseSchema.extend({
   ),
   confirmPassword: string().optional(),
 })
+
+export const emailSchema = object({
+  email: string({ required_error: 'Email is required' }).email(
+    'Invalid email format.'
+  ),
+})

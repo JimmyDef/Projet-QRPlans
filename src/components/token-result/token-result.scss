@@ -24,10 +24,10 @@
   font-size: 16px;
   font-weight: 600;
 
-  @media (max-width: V.$notebook-width) {
+  @media (max-width: V.$breakpoint-notebook) {
     font-size: 16px;
   }
-  @media (max-width: V.$tablet-width) {
+  @media (max-width: V.$breakpoint-tablet) {
     width: 200px;
     height: 40px;
   }

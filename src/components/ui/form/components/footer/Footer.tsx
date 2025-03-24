@@ -12,8 +12,9 @@ export const Footer = ({ isRegistration = false }: FooterProps) => {
         <p className="auth-form__register">
           Connect your account with providers above or{' '}
           <Link className="auth-form__register-link" href="/auth/registration">
-            register.
+            register
           </Link>
+          .
         </p>
       ) : null}
 

@@ -5,29 +5,39 @@ import { render } from '@react-email/components'
 
 type TemplateProps = {
   fullName: string
-  otp: string
+  verificationItem: string
 }
 type EmailTemplate = (props: TemplateProps) => JSX.Element
-type Email = {
+type EmailWithOtp = { otp: string; link?: never }
+type EmailWithLink = { link: string; otp?: never }
+
+type EmailBase = {
   email: string
   subject: string
   fullName: string
-  otp: string
   template: EmailTemplate
 }
+
+type Email = EmailBase & (EmailWithOtp | EmailWithLink)
+
 export const sendEmail = async ({
   email,
   subject,
   fullName,
   otp,
+  link,
   template,
 }: Email) => {
+  // Utilisation de la logique pour déterminer verificationItem (soit otp soit link)
+  const verificationItem = otp ? otp : link || 'no-link-provided'
+
   const emailHtml = await render(
     React.createElement(template, {
       fullName,
-      otp,
+      verificationItem, // Ce sera soit otp soit link
     })
   )
+
   const options = {
     from: 'QR-Plans <qrplans@gmail.com>',
     to: [email],
@@ -42,6 +52,9 @@ export const sendEmail = async ({
     return NextResponse.json({ message: 'Success: email was sent' })
   } catch (error) {
     console.log(error)
-    NextResponse.json({ message: 'COULD NOT SEND MESSAGE' }, { status: 500 })
+    return NextResponse.json(
+      { message: 'COULD NOT SEND MESSAGE' },
+      { status: 500 }
+    )
   }
 }

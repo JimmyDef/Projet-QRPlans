@@ -1,38 +1,41 @@
-import '@/src/styles/app/shared/email-sent-success.scss'
+import './security-email-sent.scss'
 import Link from 'next/link'
 import { auth } from '@/src/lib/auth'
 import { redirect } from 'next/navigation'
-const EmailConfirmation = async () => {
+const SecurityEmailSent = async () => {
   const session = await auth()
   if (session) {
     redirect('/dashboard')
   }
 
   return (
-    <div className="email__container">
-      <h1 className="email__title">Email de sécurité Envoyé</h1>
-      <p className="email__text">
+    <div className="security-email__container">
+      <h1 className="security-email__title">Email de sécurité envoyé</h1>
+      <p className="security-email__text">
         Un email de sécurité a été envoyé à votre adresse. Veuillez vérifier
         votre boîte de réception et suivre les instructions pour réinitialiser
         votre mot de passe.
       </p>
-      <p className="email__text">
+      <p className="security-email__text">
         Si vous ne trouvez pas l&apos;email, veuillez vérifier votre dossier de
         spam ou de courrier indésirable.
       </p>
-      <p className="email__text">
+      <p className="security-email__text">
         Si vous n&apos;avez toujours pas reçu l&apos;email, vous pouvez{' '}
         <Link
-          className="email__link  email__link--resend"
-          href="/auth/reset-password/send-email"
+          className="security-email__link  security-email__link--resend"
+          href="/auth/reset-password"
         >
-          réenvoyer l&apos;email de sécurité
+          renvoyer l&apos;email de sécurité
         </Link>
         .
       </p>
-      <p className="email__text">
+      <p className="security-email__text">
         Besoin d&apos;aide ?{' '}
-        <Link href="/support" className="email__link  email__link--support">
+        <Link
+          href="/support"
+          className="security-email__link  security-email__link--support"
+        >
           Contactez le support
         </Link>
         .
@@ -40,4 +43,4 @@ const EmailConfirmation = async () => {
     </div>
   )
 }
-export default EmailConfirmation
+export default SecurityEmailSent

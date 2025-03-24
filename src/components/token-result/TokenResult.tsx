@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import '@/src/styles/app/shared/token-result.scss'
+
+import './token-result.scss'
 type TokenResultProps = {
   title: string
   url: string

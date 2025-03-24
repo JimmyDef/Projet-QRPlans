@@ -2,8 +2,6 @@
 
 import { auth } from '@/src/lib/auth'
 import prisma from '@/src/lib/prisma'
-import { redirect } from 'next/navigation'
-import { Router } from 'next/router'
 
 interface OTPValidationResult {
   message: string

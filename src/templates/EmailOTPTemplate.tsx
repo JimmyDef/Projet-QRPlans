@@ -3,12 +3,12 @@ import { borderRadius, colors } from '@/variables'
 
 interface EmailVerificationOTPProps {
   fullName: string
-  otp: string
+  verificationItem: string
 }
 
 export const EmailOTPTemplate = ({
   fullName,
-  otp,
+  verificationItem,
 }: EmailVerificationOTPProps) => {
   return (
     <Html lang="en">
@@ -42,7 +42,7 @@ export const EmailOTPTemplate = ({
             letterSpacing: '4px',
           }}
         >
-          {otp}
+          {verificationItem}
         </p>
         <p>This code expire in 5 minutes</p>
         <p>

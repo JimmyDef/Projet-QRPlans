@@ -31,7 +31,7 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [isFormValid, setIsFormValid] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [form, setForm] = useState<SignInFormFields>(initialFormState)
+  const [formData, setFormData] = useState<SignInFormFields>(initialFormState)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -42,7 +42,9 @@ const SignIn = () => {
     setIsLoading(true)
 
     // Validation du formulaire
-    const emptyFields = Object.entries(form).find(([_, value]) => !value.trim())
+    const emptyFields = Object.entries(formData).find(
+      ([_, value]) => !value.trim()
+    )
     if (emptyFields) {
       const errorMessage = 'Please fill all fields.'
       setIsFormValid(false)
@@ -63,12 +65,13 @@ const SignIn = () => {
 
     try {
       // Tentative de connexion
-      const res = await signInWithCredentials(form)
+      const res = await signInWithCredentials(formData)
 
       if (res.status === 'success') {
         await signIn('credentials', {
-          email: form.email,
-          password: form.password,
+          email: formData.email,
+          password: formData.password,
+          callbackUrl: '/dashboard',
         })
       }
     } catch (err) {
@@ -90,7 +93,7 @@ const SignIn = () => {
 
   const handleInputChange = useCallback(
     (field: keyof SignInFormFields, value: string) => {
-      setForm((prev) => ({ ...prev, [field]: value }))
+      setFormData((prev) => ({ ...prev, [field]: value }))
     },
     []
   )
@@ -109,7 +112,7 @@ const SignIn = () => {
   )
   return (
     <div className="auth-form__container">
-      <Header />
+      <Header authContext="signIn" />
 
       <AuthProviders isLoading={isLoading} setIsLoading={setIsLoading} />
       <Separator />
@@ -120,7 +123,7 @@ const SignIn = () => {
           label="Email"
           name="email"
           type="email"
-          value={form.email}
+          value={formData.email}
           icon="email"
           placeholder="name@mail.com"
           autoComplete="email"
@@ -133,7 +136,7 @@ const SignIn = () => {
           label="Password"
           name="password"
           type="password"
-          value={form.password}
+          value={formData.password}
           icon="password"
           placeholder="Password"
           autoComplete="current-password"
@@ -143,8 +146,12 @@ const SignIn = () => {
         />
         <div className="auth-form__forgot-password-link-container">
           <Link
-            href="/auth/reset-password/send-email"
             className="auth-form__forgot-password-link"
+            href={`/auth/reset-password/${
+              formData.email
+                ? `?email=${encodeURIComponent(formData.email)}`
+                : ''
+            }`}
           >
             Forgot password?
           </Link>

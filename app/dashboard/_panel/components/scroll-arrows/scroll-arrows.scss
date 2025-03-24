@@ -7,7 +7,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: V.$background-color-light-grey;
+  background-color: V.$light-grey-color;
   cursor: pointer;
   &--top {
     top: 0;
@@ -21,10 +21,10 @@
   width: 40px;
   height: 40px;
 
-  color: V.$color-dark-grey-2;
+  color: V.$medium-grey-color;
   transition: color 0.3s ease;
 
   &:hover {
-    color: V.$color-dark-grey;
+    color: V.$dark-grey-color;
   }
 }

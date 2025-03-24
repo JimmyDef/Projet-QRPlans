@@ -8,7 +8,7 @@
 }
 
 .panel__status-button {
-  background-color: V.$status-btn-bg-color;
+  background-color: V.$status-btn-bg;
   border: none;
   padding: 10px 15px;
   border-radius: 4px;
@@ -19,6 +19,6 @@
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: V.$status-btn-bg-color-hover;
+    background-color: V.$status-btn-bg;
   }
 }

@@ -11,8 +11,12 @@ import { AuthStore } from '../types/store.types'
 
 export const useAuthStore = create<AuthStore>((set) => ({
   isUserActive: false,
-  setUserActive: (isUserActive: boolean) => set({ isUserActive }),
+  setUserActive: (isUserActive: boolean) => {
+    set({ isUserActive })
+    localStorage.setItem('isUserActive', JSON.stringify(isUserActive))
+  },
 }))
+
 export const useThemeStore = create<themeState>()(
   persist(
     (set) => ({

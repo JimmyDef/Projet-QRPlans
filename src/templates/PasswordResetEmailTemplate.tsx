@@ -3,10 +3,13 @@ import { Html } from '@react-email/components'
 
 interface PasswordResetProps {
   fullName: string
-  link: string
+  verificationItem: string
 }
 
-const PasswordResetTemplate = ({ fullName, link }: PasswordResetProps) => {
+const PasswordResetEmailTemplate = ({
+  fullName,
+  verificationItem,
+}: PasswordResetProps) => {
   return (
     <Html lang="en">
       <div
@@ -18,10 +21,10 @@ const PasswordResetTemplate = ({ fullName, link }: PasswordResetProps) => {
       >
         <h1 style={{ color: colors.primary }}>Hello, {fullName}</h1>
         <p>We received a request to reset your password.</p>
-        <p>You can reset your password by clicking the link below:</p>
+
         <p>
           <a
-            href={link}
+            href={verificationItem}
             style={{
               display: 'inline-block',
               padding: '10px 20px',
@@ -31,19 +34,22 @@ const PasswordResetTemplate = ({ fullName, link }: PasswordResetProps) => {
               textDecoration: 'none',
               borderRadius: '5px',
             }}
+            target="_self"
           >
             Reset Password
           </a>
         </p>
+        <p>This link expire in 5 minutes</p>
         <p>
           If the button above does not work, copy and paste the following URL
           into your web browser:
         </p>
         <p>
-          <a href={link} style={{ color: '#007bff' }}>
-            {link}
+          <a href={verificationItem} style={{ color: '#007bff' }}>
+            {verificationItem}
           </a>
         </p>
+
         <p>
           If you did not request a password reset, please ignore this email or
           contact support if you have questions.
@@ -58,4 +64,4 @@ const PasswordResetTemplate = ({ fullName, link }: PasswordResetProps) => {
   )
 }
 
-export default PasswordResetTemplate
+export default PasswordResetEmailTemplate

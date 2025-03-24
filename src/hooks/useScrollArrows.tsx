@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 // Définition du type de retour du hook
 
 interface ScrollArrowsHook {
-  scrollContainerRef: React.RefObject<HTMLDivElement>
+  scrollContainerRef: React.RefObject<HTMLDivElement | null>
   showTopArrow: boolean
   showBottomArrow: boolean
   handleScrollUp: () => void

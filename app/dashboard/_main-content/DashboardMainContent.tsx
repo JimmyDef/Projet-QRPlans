@@ -7,10 +7,12 @@ import { useDashboardStore } from '@/src/lib/store'
 import { useEffect, useState } from 'react'
 import { shallow } from 'zustand/shallow'
 import { useSearchParams } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 export const DashboardMainContent = () => {
   const searchParams = useSearchParams()
   const search = searchParams.get('search')
+  const toastParams = searchParams.get('toast')
   const [files, setFiles] = useState([])
   const { allFiles } = useDashboardStore(
     (state) => ({
@@ -19,6 +21,14 @@ export const DashboardMainContent = () => {
     shallow
   )
   useEffect(() => {}, [files])
+
+  useEffect(() => {
+    if (toastParams) {
+      if (toastParams === 'new-password-ok') {
+        toast.success('New password set successfully.')
+      }
+    }
+  }, [toastParams])
   return (
     <section className="dashboard-content">
       <h1>Dashboard</h1>

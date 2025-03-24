@@ -3,6 +3,7 @@
 import { useAuthStore } from '@/src/lib/store'
 import { useSession } from 'next-auth/react'
 import { usePathname, useRouter } from 'next/navigation'
+import path from 'path'
 import { useEffect } from 'react'
 
 interface AuthRedirectHandlerProps {
@@ -11,27 +12,33 @@ interface AuthRedirectHandlerProps {
 const AuthRedirectHandler = ({ isActiveInitial }: AuthRedirectHandlerProps) => {
   const { status, data: session } = useSession()
   const isUserActive = useAuthStore((state) => state.isUserActive)
-
   const setUserActive = useAuthStore((state) => state.setUserActive)
   const router = useRouter()
   const pathname = usePathname()
   const isUserCredentialsActive =
     session?.user.provider === 'credentials' && isUserActive
+
+  useEffect(() => {
+    // Empeche les flashs si utilisation du bouton "back" de la souris ou du clavier
+    // (utile si plusieur onglet ouvert)
+    window.history.scrollRestoration = 'manual'
+  }, [])
+
   useEffect(() => {
     // Au montage, on synchronise la valeur "active"
     setUserActive(isActiveInitial)
   }, [isActiveInitial, setUserActive])
 
   useEffect(() => {
-    console.log('🚀 ~ isUserActive:', isUserActive)
+    if (status === 'loading') return
     // Page SIGN-IN  / REGISTRATION
     if (pathname === '/auth/sign-in' || pathname === '/auth/sign-up') {
       if (status === 'authenticated') {
         if (!isUserCredentialsActive) {
-          router.push('/auth/registration/validate-email-otp')
+          router.replace('/auth/registration/validate-email-otp')
           return
         }
-        router.push('/dashboard')
+        router.replace('/dashboard')
         return
       }
     }
@@ -39,7 +46,7 @@ const AuthRedirectHandler = ({ isActiveInitial }: AuthRedirectHandlerProps) => {
     // Page validate-email-otp
     if (pathname === '/auth/registration/validate-email-otp') {
       if (status === 'unauthenticated' || isUserActive) {
-        router.push('/auth/sign-in')
+        router.replace('/auth/sign-in')
         return
       }
     }
@@ -47,7 +54,7 @@ const AuthRedirectHandler = ({ isActiveInitial }: AuthRedirectHandlerProps) => {
     // Page DASHBOARD
     if (pathname === '/dashboard') {
       if (status === 'unauthenticated') {
-        router.push('/auth/sign-in')
+        router.replace('/auth/sign-in')
         return
       }
 
@@ -56,7 +63,38 @@ const AuthRedirectHandler = ({ isActiveInitial }: AuthRedirectHandlerProps) => {
         session.user.provider === 'credentials' &&
         !isUserActive
       ) {
-        router.push('/auth/registration/validate-email-otp')
+        router.replace('/auth/registration/validate-email-otp')
+        return
+      }
+    }
+    // Page RESET-PASSWORD
+    if (pathname === '/auth/reset-password') {
+      if (status === 'authenticated' && isUserCredentialsActive) {
+        router.replace('/dashboard')
+        return
+      }
+      if (status === 'authenticated' && !isUserCredentialsActive) {
+        router.replace('/auth/registration/validate-email-otp')
+        return
+      }
+    }
+    // Page RESET-PASSWORD-REQUEST-RESULT/INVALID
+    // &&
+    // RESET-PASSWORD/SECURITY-EMAIL-SENT
+    if (
+      pathname === '/auth/reset-password/request-result/invalid' ||
+      pathname === '/auth/reset-password/security-email-sent'
+    ) {
+      if (
+        status === 'authenticated' &&
+        (isUserCredentialsActive || session?.user.provider !== 'credentials')
+      ) {
+        router.replace('/dashboard')
+        return
+      }
+
+      if (status === 'authenticated' && !isUserCredentialsActive) {
+        router.replace('/auth/registration/validate-email-otp')
         return
       }
     }

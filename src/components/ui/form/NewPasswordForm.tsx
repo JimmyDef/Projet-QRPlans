@@ -1,199 +1,223 @@
 'use client'
 import PasswordCheckList from '@/src/components/auth/password-check-list/PasswordCheckList'
-import {} from '@/src/lib/helpers'
 import { signIn } from 'next-auth/react'
-import Image from 'next/image'
-import { redirect, useRouter } from 'next/navigation'
-import { useState } from 'react'
-import './../auth-forms.scss'
+import { useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify'
+import { SubmitButton } from '../buttons/submit-button/SubmitButton'
+import './auth-forms.scss'
+import { ErrorMessage } from './components/error-message/ErrorMessage'
+import { Header } from './components/header/Header'
+import { FormInputField } from './components/input-field/InputField'
 
-interface FormProps {
+import { useRouter } from 'next/navigation'
+
+interface NewPasswordFormFields {
   token: string
   email: string
 }
-
-const NewPasswordForm = ({ email, token }: FormProps) => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorSignUp, setChangePasswordError] = useState<string | null>(null)
-  const [isFormValid, setIsFormValid] = useState(true)
-  const [isPasswordValid, setIsPasswordValid] = useState(true)
-  const [isPasswordsEqual, setIsPasswordsEqual] = useState(true)
+interface NewPasswordFormData {
+  password: string
+  passwordConfirmation: string
+  token: string
+  email: string
+}
+interface FormError {
+  type: 'password' | 'confirmation'
+  message: string
+}
+const defaultFormData: NewPasswordFormData = {
+  password: '',
+  passwordConfirmation: '',
+  token: '',
+  email: '',
+}
+const NewPasswordForm = ({ email, token }: NewPasswordFormFields) => {
   const router = useRouter()
+  const passwordInputRef = useRef<HTMLInputElement>(null)
+  const passwordConfirmationInputRef = useRef<HTMLInputElement>(null)
 
-  const [form, setForm] = useState({
-    password: '',
-    passwordConfirmation: '',
-    token: token,
-    email: email,
+  const [uiState, setUiState] = useState({
+    isLoading: false,
+    errorMessage: null as string | null,
+    isFormValid: true,
+    isPassWordStrong: true,
+    isPasswordVisible: false,
+  })
+  const [formData, setFormData] = useState<NewPasswordFormData>({
+    ...defaultFormData,
+    token,
+    email,
   })
 
-  if (!token) redirect('/auth/reset-password/send-email')
+  const validateForm = (
+    password: string,
+    confirmationPassword: string
+  ): FormError | null => {
+    if (!password.trim())
+      return {
+        type: 'password',
+        message: 'Please fill the new password field.',
+      }
+    if (!uiState.isPassWordStrong)
+      return {
+        type: 'password',
+        message: 'Password is not strong enough.',
+      }
+    if (!confirmationPassword.trim())
+      return {
+        type: 'confirmation',
+        message: 'Please fill the password confirmation field.',
+      }
+    if (password !== confirmationPassword)
+      return {
+        type: 'confirmation',
+        message: 'Passwords do not match.',
+      }
+    return null
+  }
+  const handleFieldFocus = (focus: 'password' | 'confirmation') => {
+    if (focus === 'password') passwordInputRef.current?.focus()
+    if (focus === 'confirmation') passwordConfirmationInputRef.current?.focus()
+  }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setUiState((prev) => ({ ...prev, errorMessage: null }))
 
-    if (!isPasswordValid) {
-      return setChangePasswordError('Password is not strong enough.')
-    }
-    setChangePasswordError('')
-    if (comparePasswords(form.password, form.passwordConfirmation))
-      return setIsPasswordsEqual(false)
-    if (
-      Object.values(form).some((value) =>
-        Array.isArray(value)
-          ? value.join('').trim() === ''
-          : value?.trim() === ''
-      )
+    const formError = validateForm(
+      formData.password,
+      formData.passwordConfirmation
     )
-      return setIsFormValid(false)
+    if (formError) {
+      setUiState((prev) => ({
+        ...prev,
+        errorMessage: formError.message,
+        isFormValid: false,
+      }))
+      setFormData((prev) => ({ ...prev, passwordConfirmation: '' }))
+      handleFieldFocus(formError.type)
+      return
+    }
 
     try {
-      setIsLoading(true)
+      setUiState((prev) => ({ ...prev, isLoading: true }))
       const res = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(formData),
       })
-
-      if (res.ok) {
-        console.log('res', res)
-        console.log('form', form.email, form.password)
-        await signIn('credentials', {
-          redirect: false,
-          email: form.email,
-          password: form.password,
-        })
-        router.push('/auth/reset-password/request-result/success')
-      } else {
+      if (!res.ok) {
         const errorData = await res.json()
-        setChangePasswordError(
-          errorData.error || 'An unexpected error occurred.'
-        )
+        setUiState((prev) => ({
+          ...prev,
+          errorMessage: errorData.error || 'An unexpected error occurred.',
+          isLoading: false,
+        }))
+        return
       }
+
+      await signIn('credentials', {
+        callbackUrl: '/dashboard?toast=new-password-ok',
+        email: formData.email,
+        password: formData.password,
+      })
     } catch (error) {
-      setChangePasswordError(
-        'Failed to submit the form. Please try again later.'
-      )
-      console.error('Error fetch:', error)
-    } finally {
-      setIsLoading(false)
+      setUiState((prev) => ({
+        ...prev,
+        errorMessage: 'Failed to submit the form. Please try again later.',
+        isLoading: false,
+      }))
     }
   }
 
-  const handlePasswordMismatch = () => {
-    if (comparePasswords(form.password, form.passwordConfirmation)) {
-      setForm({ ...form, passwordConfirmation: '' })
-      console.log(form)
-      return setIsPasswordsEqual(false)
+  const handleInputChange =
+    (field: 'password' | 'passwordConfirmation') =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      setFormData((prev) => ({ ...prev, [field]: value }))
     }
-    return setIsPasswordsEqual(true)
-  }
-  const handlePasswordConfirmationChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const updatedPasswordConfirmation = e.target.value
 
-    setForm({
-      ...form,
-      passwordConfirmation: updatedPasswordConfirmation,
-    })
-    if (form.password === updatedPasswordConfirmation) {
-      console.log('form', updatedPasswordConfirmation)
-      return setIsPasswordsEqual(true)
+  useEffect(() => {
+    if (uiState.errorMessage) {
+      toast.error(uiState.errorMessage)
     }
-  }
-  // useEffect(() => {
-  //   signOut({ redirect: false }).then(() => {
-  //     console.log('User signed out automatically')
-  //   })
-  // }, [])
+  }, [uiState.errorMessage])
+  useEffect(() => {
+    setTimeout(
+      () => {
+        router.push('/auth/reset-password?timer=expired')
+      },
+      1 * 60 * 1000
+    )
+  }, [])
+
   return (
-    <div className="sign-form-container sign-up-form-container">
-      <div className="header-sign-up">
-        <div className="logo-container"></div>
-        <div className="title-container">
-          <p className="title">Create new password</p>
-          <span className="subtitle">
-            Fill in the form to create a new password.
-          </span>
-        </div>
-      </div>
-
+    <div className="auth-form__container">
+      <Header authContext="resetPassword" />
       <form
-        className="sign-form"
+        className="auth-form"
         onSubmit={(e) => {
           handleSubmit(e)
         }}
       >
-        <div className="input-container">
-          <input type="text" name="username" autoComplete="username" hidden />
-          <label className="input-label" htmlFor="password_field">
-            New password
-          </label>
-          <Image
-            className="icon-credential"
-            width={30}
-            height={30}
-            src="/icons/password.svg"
-            alt="email icon"
-          />
-          <input
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-            value={form.password}
-            placeholder="Password"
+        <div className="form-input-wrapper">
+          <FormInputField
+            ref={passwordInputRef}
+            label="Password"
             name="password"
-            type="password"
-            className={`input-field ${
-              !isFormValid && form.password === '' ? 'input-error' : ''
-            } `}
-            id="password_field"
+            type={uiState.isPasswordVisible ? 'text' : 'password'}
+            value={formData.password}
+            icon="password"
+            placeholder="Password"
             autoComplete="new-password"
+            onChange={handleInputChange('password')}
+            isValid={uiState.isFormValid}
+            isPassword={true}
+            togglePasswordVisibility={() =>
+              setUiState((prev) => ({
+                ...prev,
+                isPasswordVisible: !prev.isPasswordVisible,
+              }))
+            }
+            isPasswordVisible={uiState.isPasswordVisible}
           />
           <PasswordCheckList
-            password={form.password}
-            setIsPasswordValid={setIsPasswordValid}
-          />
-        </div>
-        <div className="input-container">
-          <label className="input-label" htmlFor="password_confirmation_field">
-            New password confirmation
-            {!isPasswordsEqual && (
-              <span className="password-confirmation-error"></span>
-            )}
-          </label>
-          <Image
-            className="icon-credential"
-            width={30}
-            height={30}
-            src="/icons/password.svg"
-            alt="email icon"
-          />
-          <input
-            value={form.passwordConfirmation}
-            onChange={handlePasswordConfirmationChange}
-            onBlur={handlePasswordMismatch}
-            placeholder="Password"
-            name="passwordConfirmation"
-            type="password"
-            className={`input-field ${
-              (!isFormValid && form.passwordConfirmation === '') ||
-              !isPasswordsEqual
-                ? 'input-error'
-                : ''
-            } `}
-            id="password_confirmation_field"
-            autoComplete="none"
+            password={formData.password}
+            setIsPasswordStrong={(isStrong) =>
+              setUiState((prev) => ({ ...prev, isPassWordStrong: isStrong }))
+            }
           />
         </div>
 
-        {!isFormValid && <p className="form-error">Please fill all fields.</p>}
-        {errorSignUp && <p className="form-error">{errorSignUp}</p>}
+        <FormInputField
+          ref={passwordConfirmationInputRef}
+          label="Password confirmation"
+          name="passwordConfirmation"
+          type={uiState.isPasswordVisible ? 'text' : 'password'}
+          value={formData.passwordConfirmation}
+          icon="password"
+          placeholder="Confirm your password"
+          autoComplete="new-password"
+          onChange={handleInputChange('passwordConfirmation')}
+          isValid={uiState.isFormValid}
+          isPassword={true}
+          togglePasswordVisibility={() =>
+            setUiState((prev) => ({
+              ...prev,
+              isPasswordVisible: !prev.isPasswordVisible,
+            }))
+          }
+          isPasswordVisible={uiState.isPasswordVisible}
+        />
 
-        <button type="submit" className="sign-btn" disabled={isLoading}>
-          <span>Change password</span>
-        </button>
+        <SubmitButton
+          isLoading={uiState.isLoading}
+          text="Change password"
+          className="submit-btn submit-btn--auth-form"
+        />
+        <ErrorMessage message={uiState.errorMessage} />
       </form>
     </div>
   )

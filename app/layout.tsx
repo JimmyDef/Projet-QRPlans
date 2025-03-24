@@ -11,6 +11,7 @@ import { getLocale, getMessages } from 'next-intl/server'
 import { ReactNode } from 'react'
 import ThemeToggle from './ThemeToggle'
 import ClientSideToastContainer from './ToastContainer'
+import AuthSync from '@/src/components/auth/AuthSync'
 
 export const metadata: Metadata = {
   title: 'QR Plans',
@@ -56,6 +57,7 @@ export default async function RootLayout({
       <body>
         <NextIntlClientProvider messages={messages}>
           <ClientProviders>
+            <AuthSync />
             <Header />
             <main className="main">{children}</main>
             <AuthRedirectHandler isActiveInitial={isUserActive} />

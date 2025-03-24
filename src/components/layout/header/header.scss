@@ -3,7 +3,7 @@
 
 .header {
   z-index: 1000;
-  background-color: V.$color-white;
+  background-color: V.$white-color;
   position: sticky;
   top: 0;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -11,7 +11,7 @@
 .header__container {
   margin: 0 auto 20px;
   height: 70px;
-  max-width: V.$desktop-width;
+  max-width: V.$breakpoint-desktop;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -46,11 +46,11 @@
   &--sign-in,
   &--sign-out {
     border: 2px solid V.$secondary-color;
-    background-color: V.$color-white;
+    background-color: V.$white-color;
     color: V.$primary-color;
     font-weight: bold;
     &:hover {
-      @include gradient-grey-blue;
+      background-color: V.$auth-input-bg-color;
     }
     .exit-icon {
       display: none;
@@ -89,7 +89,7 @@
   margin-right: 10px;
 }
 
-@media (max-width: V.$notebook-width) {
+@media (max-width: V.$breakpoint-notebook) {
   .header__brand {
     // width: 100%;
     font-size: 1.6rem;
@@ -98,7 +98,7 @@
     margin-left: 20px;
   }
 }
-@media (max-width: V.$tablet-width) {
+@media (max-width: V.$breakpoint-tablet) {
   .header__container {
     padding: 10px 10px;
   }
@@ -135,7 +135,7 @@
     }
   }
 }
-// @media (max-width: V.$smartphone-width) {
+// @media (max-width: V.$breakpoint-smartphone) {
 //   .header__link {
 //     &--user-img {
 //       width: 35px;

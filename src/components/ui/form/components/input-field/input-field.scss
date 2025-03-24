@@ -20,13 +20,10 @@
 
 .form-input-field__input {
   @include M.auth-form-inputs;
-
   padding: 0 0 0 40px;
-
   &--error {
     border: 1px solid red;
   }
-
   &--password-sign-in {
     margin-bottom: 0px;
   }
@@ -39,7 +36,25 @@
   z-index: 99;
   left: 12px;
   top: 28px;
+
   pointer-events: none;
+}
+.form-input-field__show-password-icon {
+  width: 20px;
+  height: auto;
+}
+
+.form-input-field__password-toggle {
+  border-radius: 0 20px 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 52px;
+  height: 40px;
+  position: absolute;
+  z-index: 99;
+  right: 0;
+  top: 19px;
 }
 
 .form-input-field__password-confirmation-error {

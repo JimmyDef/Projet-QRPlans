@@ -8,7 +8,7 @@ type AuthButtonProps = PropsWithChildren<{
   title: string
   className?: string
   isLoading: boolean
-  setIsLoading: Dispatch<SetStateAction<boolean>>
+  setIsLoading: (isLoadind: boolean) => void
 }>
 
 export const AuthButton = ({
@@ -27,7 +27,6 @@ export const AuthButton = ({
       })
     } catch (error) {
       console.log('handleSignIn:', error)
-
       setIsLoading(false)
     }
   }

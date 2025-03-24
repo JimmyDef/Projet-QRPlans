@@ -21,7 +21,7 @@
       rgba(0, 0, 0, 0.23) 0px 6px 6px;
     @include mixins.main-link;
   }
-  @media screen and (max-width: V.$desktop-width) {
+  @media screen and (max-width: V.$breakpoint-desktop) {
     img {
       height: 440px;
     }
@@ -29,7 +29,7 @@
       width: 150px;
     }
   }
-  @media screen and (max-width: V.$tablet-width) {
+  @media screen and (max-width: V.$breakpoint-tablet) {
     img {
       height: 350px;
     }

@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     if (!PasswordResetToken) {
       return NextResponse.json(
         {
-          error: 'Invalid or expired password reset token',
+          error: 'Invalid or expired password reset token.',
         },
         {
           status: 400,
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const user = PasswordResetToken.user
+    // const user = PasswordResetToken.user
 
     const hashedPassword = await bcrypt.hash(password, 10)
     await prisma.user.update({
@@ -63,9 +63,10 @@ export async function POST(req: NextRequest) {
     })
 
     if (!usedToken) {
+      // If the token could not be deleted, return an error response
       return NextResponse.json(
         {
-          error: 'Could not delete used token reset token',
+          error: 'Could not delete used password reset token',
         },
         {
           status: 500,
@@ -73,27 +74,9 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // const signInResponse = await signIn('credentials', {
-    //   redirect: false,
-    //   email: user.email,
-    //   password: password,
-    // })
-
-    // if (signInResponse?.error) {
-    //   console.log('Sign in error:', signInResponse.error)
-    //   return NextResponse.json(
-    //     {
-    //       error: 'Could not sign in after resetting password',
-    //     },
-    //     {
-    //       status: 500,
-    //     }
-    //   )
-    // }
-
     return NextResponse.json(
       {
-        message: 'Password reset successfully. You are now signed in.',
+        message: 'Password reset successfully.',
       },
       {
         status: 200,
@@ -103,7 +86,7 @@ export async function POST(req: NextRequest) {
     console.error('Error resetting password:', error)
     return NextResponse.json(
       {
-        error: 'An error occurred while resetting the password',
+        error: 'An error occurred while resetting the password.',
       },
       {
         status: 500,

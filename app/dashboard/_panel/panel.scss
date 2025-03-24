@@ -4,7 +4,7 @@
 .panel {
   width: 250px;
   height: calc(100vh - 70px);
-  background-color: V.$background-color-light-grey;
+  background-color: V.$light-grey-color;
   padding: 20px;
   box-shadow:
     2px 0 5px rgba(0, 0, 0, 0.1),
@@ -20,17 +20,17 @@
   font-size: 16px;
   font-weight: bold;
   margin-bottom: 10px;
-  color: V.$color-dark-grey;
+  color: V.$dark-grey-color;
   line-height: 16px;
 }
 .panel__folders-count {
   transform: scale(50%);
-  color: V.$color-dark-grey-2;
+  color: V.$medium-grey-color;
 }
 
 .panel__divider {
   height: 1px;
-  background-color: V.$color-bg-border-white-grey;
+  background-color: V.$white-grey-border-color;
   margin: 20px 0;
 }
 
@@ -51,7 +51,7 @@
 }
 
 .panel__action-icon {
-  color: V.$color-dark-grey-2;
+  color: V.$medium-grey-color;
   transition: color 0.3s ease;
 
   &:hover {

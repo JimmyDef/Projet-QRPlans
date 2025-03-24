@@ -13,6 +13,6 @@ body {
 }
 .main {
   margin: 0 auto;
-  max-width: variables.$desktop-width;
+  max-width: variables.$breakpoint-desktop;
   padding: 0 20px 0px;
 }

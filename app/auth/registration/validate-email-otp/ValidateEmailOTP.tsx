@@ -13,14 +13,14 @@ export const ValidateEmailOTP = () => {
   const router = useRouter()
 
   const setUserActive = useAuthStore((state) => state.setUserActive)
-  const [error, onCompletionAction, isPending] = useActionState(
+  const [response, onCompletionAction, isPending] = useActionState(
     OTPValidationAction,
     {
       message: '',
       success: false,
     }
   )
-  const OTPInvalidMessage = error.message ? 'Code invalide ou expiré.' : ''
+  const OTPInvalidMessage = response.message ? 'Code invalide ou expiré.' : ''
 
   const handleOtpOncomplete = (code: string) => {
     startTransition(async () => {
@@ -32,7 +32,7 @@ export const ValidateEmailOTP = () => {
     childInputRef.current = ref
   }
   useEffect(() => {
-    if (error.success) {
+    if (response.success) {
       setUserActive(true)
       router.push('/dashboard')
       return

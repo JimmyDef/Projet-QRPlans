@@ -1,14 +1,15 @@
 'use server'
-import prisma from '@/src/lib/prisma'
-import {
-  PrismaClientKnownRequestError,
-  PrismaClientInitializationError,
-} from '@prisma/client/runtime/library'
-import bcrypt from 'bcrypt'
 import { capitalizeFirstLetter, generateOTP } from '@/src/lib/helpers'
+import prisma from '@/src/lib/prisma'
+import { registrationSchema } from '@/src/lib/zod'
 import { sendEmail } from '@/src/services/emailService'
 import { EmailOTPTemplate } from '@/src/templates/EmailOTPTemplate'
-import { registrationSchema } from '@/src/lib/zod'
+import {
+  PrismaClientInitializationError,
+  PrismaClientKnownRequestError,
+  PrismaClientValidationError,
+} from '@prisma/client/runtime/library'
+import bcrypt from 'bcrypt'
 import { z } from 'zod'
 
 type RegistrationInput = z.infer<typeof registrationSchema>
@@ -19,10 +20,30 @@ const createUserAction = async (data: RegistrationInput) => {
       registrationSchema.parse(data)
 
     const pwHash = await bcrypt.hash(password, 10)
-    const cleanedFirstname = capitalizeFirstLetter(firstName).trim()
-    const cleanedLastname = capitalizeFirstLetter(lastName).trim()
+    const cleanedFirstname = capitalizeFirstLetter(firstName)
+      .replace(/\s+/g, ' ')
+      .trim()
+    const cleanedLastname = capitalizeFirstLetter(lastName)
+      .replace(/\s+/g, ' ')
+      .trim()
 
-    const user = await prisma.user.create({
+    const checkExistingUser = await prisma.user.findUnique({
+      where: { email },
+      include: { Accounts: true },
+    })
+
+    if (checkExistingUser) {
+      const provider = checkExistingUser.Accounts?.[0]?.provider
+      return {
+        message:
+          provider && provider !== 'credentials'
+            ? `Email already registered with ${provider} as provider. Please use it.`
+            : `Email already registered with credentials. Please use it.`,
+        success: false,
+      }
+    }
+
+    const createNewUser = await prisma.user.create({
       data: {
         email,
         password: pwHash,
@@ -33,65 +54,49 @@ const createUserAction = async (data: RegistrationInput) => {
     const otp = generateOTP()
     await prisma.userOtp.create({
       data: {
-        userId: user.id,
+        userId: createNewUser.id,
         otp: otp,
         purpose: 'REGISTRATION',
       },
     })
 
-    const emailSender = () =>
-      sendEmail({
-        email,
-        subject: 'Activate your account',
-        fullName: user.name ?? 'new user',
-        otp: otp,
-        template: EmailOTPTemplate,
-      })
+    sendEmail({
+      email,
+      subject: 'Activate your account',
+      fullName: createNewUser.name ?? 'new user',
+      otp: otp,
+      template: EmailOTPTemplate,
+    }).catch((err) => {
+      console.error('Failed to send email', err)
+    })
 
-    if (process.env.NODE_ENV === 'development') {
-      await emailSender()
-    } else {
-      emailSender()
+    return {
+      message: 'User created',
+      success: true,
     }
-
-    return { message: 'User created', success: true, isNewUser: true }
   } catch (error) {
-    // console.error('Error createUserAction:', error)
-    if (error instanceof PrismaClientKnownRequestError) {
-      if (error.code === 'P2002') {
-        // Code P2002 indique une violation de la contrainte unique
-        return {
-          message: 'User already exist.',
-          success: false,
-          isNewUser: false,
-        }
-      } else {
-        return {
-          message: 'An unexpected error occurred. Please try again.',
-          success: false,
-          isNewUser: true,
-        }
-      }
-    }
-
+    console.log('🚀 ~ error:', error)
     if (error instanceof PrismaClientInitializationError) {
       return {
         message: 'Database unreachable. Please try again later.',
         success: false,
-        isNewUser: true,
       }
+    }
+    if (error instanceof PrismaClientValidationError) {
+      return { message: 'Database validation error.', success: false }
+    }
+    if (error instanceof PrismaClientKnownRequestError) {
+      return { message: 'Database request error.', success: false }
     }
     if (error instanceof z.ZodError) {
       return {
         message: error.errors[0].message,
         success: false,
-        isNewUser: true,
       }
     }
     return {
       message: 'An unexpected error occurred. Please try again.',
       success: false,
-      isNewUser: true,
     }
   }
 }

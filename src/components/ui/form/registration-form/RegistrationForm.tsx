@@ -1,9 +1,9 @@
 'use client'
 import createUserAction from '@/app/actions/auth/createUser.action'
 import PasswordCheckList from '@/src/components/auth/password-check-list/PasswordCheckList'
+import '@/src/components/ui/form/auth-forms.scss'
 import { FormInputField } from '@/src/components/ui/form/components/input-field/InputField'
 import {
-  arePasswordsEqual,
   sanitizeEmailInput,
   sanitizeNameInput,
   sanitizePasswordInput,
@@ -13,14 +13,14 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
+import { SubmitButton } from '../../buttons/submit-button/SubmitButton'
 import { AuthProviders } from '../components/auth-providers/AuthProviders'
 import { ErrorMessage } from '../components/error-message/ErrorMessage'
 import { Footer } from '../components/footer/Footer'
 import { Header } from '../components/header/Header'
 import { Separator } from '../components/separator-line/Separator'
-import { SubmitButton } from '../../buttons/submit-button/SubmitButton'
-import '@/src/components/ui/form/auth-forms.scss'
-
+import { set } from 'zod'
+// import { isPasswordStrong } from '@/src/lib/helpers'
 export interface RegistrationFormFields {
   email: string
   password: string
@@ -42,27 +42,35 @@ const RegistrationForm = () => {
   const passwordConfirmationInputRef = useRef<HTMLInputElement>(null)
   const firstNameInputRef = useRef<HTMLInputElement>(null)
   const lastNameInputRef = useRef<HTMLInputElement>(null)
+  const [forgotPasswordLink, setForgotPasswordLink] = useState(false)
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [forgotPassword, setForgotPassword] = useState(false)
-  const [isFormValid, setIsFormValid] = useState(true)
-  const [isPasswordValid, setIsPasswordValid] = useState(true)
-  const [isPasswordsEqual, setIsPasswordsEqual] = useState(true)
+  const [uiState, setUiState] = useState({
+    isLoading: false,
+    errorMessage: null as string | null,
+    isFormValid: true,
+    isPassWordStrong: true,
+    isPasswordVisible: false,
+  })
   const [formData, setFormData] =
     useState<RegistrationFormFields>(initialFormState)
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-
-    setErrorMessage(null)
+    setUiState((prev) => ({ ...prev, errorMessage: null }))
+    console.log('forgotPasswordLink', forgotPasswordLink)
+    // Vérification des champs vides
     if (Object.values(formData).some((value) => value.trim() === '')) {
       const emptyField = Object.entries(formData).find(
         ([_, value]) => !value.trim()
       )
-      setErrorMessage('Please fill all fields.')
-      setIsFormValid(false)
+      // Mise a jour du state pour le display de l'erreur
+      setUiState((prev) => ({
+        ...prev,
+        errorMessage: 'Please fill all fields.',
+        isFormValid: false,
+      }))
 
+      // Focus sur le premier champ vide
       if (emptyField) {
         const [fieldName] = emptyField
         const refMap = {
@@ -77,14 +85,22 @@ const RegistrationForm = () => {
       return
     }
 
-    if (!isPasswordValid) {
-      setErrorMessage('Password is not strong enough.')
+    if (!uiState.isPassWordStrong) {
+      setUiState((prev) => ({
+        ...prev,
+        errorMessage: 'Password is not strong enough.',
+      }))
+      setFormData((prev) => ({ ...prev, passwordConfirmation: '' }))
       passwordInputRef.current?.focus()
       return
     }
 
-    if (!arePasswordsEqual(formData.password, formData.passwordConfirmation)) {
-      setIsPasswordsEqual(false)
+    if (formData.password !== formData.passwordConfirmation) {
+      setUiState((prev) => ({
+        ...prev,
+        errorMessage: 'Passwords do not match.',
+      }))
+      setFormData((prev) => ({ ...prev, passwordConfirmation: '' }))
       passwordConfirmationInputRef.current?.focus()
       return
     }
@@ -97,10 +113,9 @@ const RegistrationForm = () => {
     }
 
     try {
-      setIsLoading(true)
-      const { message, success, isNewUser } =
-        await createUserAction(updatedForm)
-
+      setUiState((prev) => ({ ...prev, isLoading: true }))
+      const { message, success } = await createUserAction(updatedForm)
+      console.log('🚀 ~ message00:', message)
       if (success) {
         await signIn('credentials', {
           email: formData.email,
@@ -109,36 +124,20 @@ const RegistrationForm = () => {
         router.push('/auth/registration/validateEmailOTP')
       }
 
-      if (!isNewUser) {
-        setForgotPassword(true)
-        setErrorMessage(message)
-        setIsLoading(false)
-        return
-      }
       if (!success) {
-        setErrorMessage(message)
-        setIsLoading(false)
-        throw new Error(message)
+        setUiState((prev) => ({
+          ...prev,
+          errorMessage: message,
+          isLoading: false,
+        }))
       }
     } catch (error) {
-      console.error('Error fetch:', error)
-      setIsLoading(false)
+      setUiState((prev) => ({
+        ...prev,
+        errorMessage: 'Failed to submit the form. Please try again later.',
+        isLoading: false,
+      }))
     }
-  }
-  const validatePasswords = () => {
-    const passwordsMatch = arePasswordsEqual(
-      formData.password,
-      formData.passwordConfirmation
-    )
-
-    if (!passwordsMatch) {
-      setFormData((prev) => ({ ...prev, passwordConfirmation: '' }))
-      setIsPasswordsEqual(false)
-      setErrorMessage('Passwords do not match.')
-      return
-    }
-
-    setIsPasswordsEqual(true)
   }
 
   const handleInputChange =
@@ -155,17 +154,32 @@ const RegistrationForm = () => {
               : sanitizeNameInput(value),
       }))
     }
-
+  const handleTogglePasswordVisibility = () => {
+    setUiState((prev) => ({
+      ...prev,
+      isPasswordVisible: !prev.isPasswordVisible,
+    }))
+  }
   useEffect(() => {
-    if (errorMessage) {
-      toast.error(errorMessage)
+    if (uiState.errorMessage) {
+      toast.error(uiState.errorMessage)
     }
-  }, [errorMessage])
+    if (uiState.errorMessage?.includes('credentials')) {
+      setForgotPasswordLink(true)
+    } else {
+      setForgotPasswordLink(false)
+    }
+  }, [uiState.errorMessage])
 
   return (
     <div className="auth-form__container">
-      <Header isRegistration={true} />
-      <AuthProviders isLoading={isLoading} setIsLoading={setIsLoading} />
+      <Header authContext="registration" />
+      <AuthProviders
+        isLoading={uiState.isLoading}
+        setIsLoading={(isLoading) =>
+          setUiState((prev) => ({ ...prev, isLoading }))
+        }
+      />
       <Separator />
 
       <form className="auth-form" onSubmit={handleSubmit}>
@@ -179,7 +193,7 @@ const RegistrationForm = () => {
           placeholder="name@mail.com"
           autoComplete="email"
           onChange={handleInputChange('email')}
-          isValid={isFormValid}
+          isValid={uiState.isFormValid}
         />
 
         <div className="form-input-wrapper">
@@ -187,17 +201,21 @@ const RegistrationForm = () => {
             ref={passwordInputRef}
             label="Password"
             name="password"
-            type="password"
             value={formData.password}
             icon="password"
             placeholder="Password"
             autoComplete="new-password"
             onChange={handleInputChange('password')}
-            isValid={isFormValid}
+            isValid={uiState.isFormValid}
+            type={uiState.isPasswordVisible ? 'text' : 'password'}
+            isPassword={true}
+            togglePasswordVisibility={handleTogglePasswordVisibility}
           />
           <PasswordCheckList
             password={formData.password}
-            setIsPasswordValid={setIsPasswordValid}
+            setIsPasswordStrong={(isStrong) =>
+              setUiState((prev) => ({ ...prev, isPassWordStrong: isStrong }))
+            }
           />
         </div>
 
@@ -205,14 +223,16 @@ const RegistrationForm = () => {
           ref={passwordConfirmationInputRef}
           label="Password confirmation"
           name="passwordConfirmation"
-          type="password"
           value={formData.passwordConfirmation}
           icon="password"
           placeholder="Confirm your password"
           autoComplete="new-password"
           onChange={handleInputChange('passwordConfirmation')}
-          onBlur={validatePasswords}
-          isValid={isFormValid && isPasswordsEqual}
+          isValid={uiState.isFormValid}
+          type={uiState.isPasswordVisible ? 'text' : 'password'}
+          isPassword={true}
+          togglePasswordVisibility={handleTogglePasswordVisibility}
+          isPasswordVisible={uiState.isPasswordVisible}
         />
 
         <FormInputField
@@ -224,7 +244,7 @@ const RegistrationForm = () => {
           placeholder="John"
           autoComplete="given-name"
           onChange={handleInputChange('firstName')}
-          isValid={isFormValid}
+          isValid={uiState.isFormValid}
         />
 
         <FormInputField
@@ -236,20 +256,26 @@ const RegistrationForm = () => {
           placeholder="Wick"
           autoComplete="family-name"
           onChange={handleInputChange('lastName')}
-          isValid={isFormValid}
+          isValid={uiState.isFormValid}
         />
 
         <SubmitButton
-          isLoading={isLoading}
+          isLoading={uiState.isLoading}
           text="Sign up"
           className="submit-btn submit-btn--auth-form"
         />
 
         <ErrorMessage
-          message={errorMessage}
+          message={uiState.errorMessage}
           children={
-            forgotPassword && (
-              <Link href="/auth/reset-password/send-email">
+            forgotPasswordLink && (
+              <Link
+                href={`/auth/reset-password/${
+                  formData.email
+                    ? `?email=${encodeURIComponent(formData.email)}`
+                    : ''
+                }`}
+              >
                 Forgot password?
               </Link>
             )

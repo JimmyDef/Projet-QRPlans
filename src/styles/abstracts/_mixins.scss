@@ -8,7 +8,7 @@
   justify-content: center;
   text-align: center;
   background-color: V.$secondary-color;
-  color: V.$color-white;
+  color: V.$white-color;
   transition: background-color 0.2s;
   border-radius: 5px;
   cursor: pointer;
@@ -20,10 +20,10 @@
     text-decoration: none;
     background-color: V.$secondary-color-dark;
   }
-  @media (max-width: V.$notebook-width) {
+  @media (max-width: V.$breakpoint-notebook) {
     font-size: 16px;
   }
-  @media (max-width: V.$tablet-width) {
+  @media (max-width: V.$breakpoint-tablet) {
     width: 110px;
     height: 40px;
     // font-size: 14px;
@@ -48,7 +48,7 @@
   height: 40px;
   border-radius: V.$border-radius-large;
   font-weight: 600;
-  transition: V.$default-transition;
+  transition: background-color V.$default-transition;
   &:disabled {
     background: #cccccc;
     color: #666666;
@@ -58,13 +58,14 @@
 @mixin auth-form-inputs {
   @include auth-form-inputs-base;
   width: auto;
-  border: 2px solid #e5e5e5;
+  border: 2px solid V.$light-grey-color;
   background-color: white;
   &::placeholder {
     font-weight: 400;
   }
   &:hover {
-    background-color: V.$background-color-auth-form-inputs;
+    border: 2px solid transparent;
+    background-color: V.$auth-input-bg-color;
     &:focus {
       background: white;
     }
@@ -73,7 +74,8 @@
   &:focus {
     box-shadow: 0px 0px 0px 2px #242424;
     background-color: white;
-    border: 2px solid #e5e5e5;
+    border: 2px solid transparent;
+    // border: none;
   }
   &:hover:focus {
   }

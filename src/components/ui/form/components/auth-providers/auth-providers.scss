@@ -12,8 +12,6 @@
 .auth-provider__brand {
   @include M.auth-form-inputs;
   width: 100%;
-  // margin-bottom: 0;
-  // cursor: pointer;
   position: relative;
   font-weight: 600;
   color: V.$primary-color;

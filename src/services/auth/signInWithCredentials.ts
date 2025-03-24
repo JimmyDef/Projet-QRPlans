@@ -56,13 +56,12 @@ const signInWithCredentials = async ({ email, password }: Form) => {
       error instanceof EmailNotVerifiedError ||
       error instanceof InvalidPasswordError
     ) {
-      console.log('errorINSTANCEOF', error)
       throw error
     }
-    if (error instanceof PrismaClientKnownRequestError) {
-      throw new Error('Database unavailable, try again later.')
-    }
-    if (error instanceof PrismaClientInitializationError) {
+    if (
+      error instanceof PrismaClientKnownRequestError ||
+      error instanceof PrismaClientInitializationError
+    ) {
       throw new Error('Database unavailable, try again later.')
     } else {
       throw new Error('An error occurred, please try again.')

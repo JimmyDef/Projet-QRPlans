@@ -1,3 +1,5 @@
+import crypto from 'crypto'
+
 export const capitalizeFirstLetter = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
@@ -16,8 +18,8 @@ export const sanitizeFoldersInput = (input: string) => {
   return input.replace(/[^a-zA-ZÀ-ÖØ-öø-ÿ0-9-' ]/g, '')
 }
 export const sanitizeEmailInput = (email: string) => {
-  const forbiddenCharacters = /[(),:;<>[\]\\]/g
-  return email.replace(forbiddenCharacters, '')
+  const forbiddenCharacters = /[(),:;<>[\]\\\s]/g // Supprime espaces, tabulations, etc.
+  return email.trim().replace(forbiddenCharacters, '').toLowerCase()
 }
 export const sanitizePasswordInput = (password: string) => {
   const forbiddenCharacters = /[<>]/g
@@ -26,30 +28,37 @@ export const sanitizePasswordInput = (password: string) => {
   return sanitized.replace(/\s+/g, '')
 }
 
-export const hasLowercase = (password: string) => /[a-z]/.test(password)
-export const hasUppercase = (password: string) => /[A-Z]/.test(password)
-export const hasNumber = (password: string) => /\d/.test(password)
-export const hasSpecialCharacter = (password: string) =>
-  /[!@#$%^&*]/.test(password)
-export const isValidLength = (password: string) =>
-  password.length >= 8 && password.length <= 20
-
+/** -----------------------------------------------------
+ * Checks if the given password is strong based on several criteria.
+ *
+ * A strong password must:
+ * - Contain at least one lowercase letter
+ * - Contain at least one uppercase letter
+ * - Contain at least one number
+ * - Contain at least one special character
+ * - Have a valid length
+ *
+ * @param password - The password string to be checked.
+ * @returns `true` if the password meets all the criteria, otherwise `false`.
+ */
 export const isPasswordStrong = (password: string) => {
   return (
     hasLowercase(password) &&
     hasUppercase(password) &&
     hasNumber(password) &&
     hasSpecialCharacter(password) &&
-    isValidLength(password)
+    isPasswordLengthValid(password)
   )
 }
-
-export const arePasswordsEqual = (
-  password: string,
-  passwordConfirmation: string
-) => {
-  return password === passwordConfirmation
-}
+export const hasLowercase = (password: string) => /[a-z]/.test(password)
+export const hasUppercase = (password: string) => /[A-Z]/.test(password)
+export const hasNumber = (password: string) => /\d/.test(password)
+export const hasSpecialCharacter = (password: string) =>
+  /[!@#$%^&*]/.test(password)
+export const isPasswordLengthValid = (password: string) =>
+  password.length >= 8 && password.length <= 20
+// -----------------------------------------------------
+// -----------------------------------------------------
 
 export const escapeRegExp = (string: string) => {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -87,6 +96,5 @@ export const isNum = (key: string) => {
 }
 
 export const generateOTP = () => {
-  const otp = Math.floor(100000 + Math.random() * 900000)
-  return otp.toString()
+  return crypto.randomInt(100000, 1000000).toString()
 }

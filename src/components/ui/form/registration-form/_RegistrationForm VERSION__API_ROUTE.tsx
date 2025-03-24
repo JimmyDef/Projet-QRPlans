@@ -61,8 +61,7 @@ const RegistrationForm = () => {
       setErrorMessage('Password is not strong enough.')
       return
     }
-
-    if (!arePasswordsEqual(formData.password, formData.passwordConfirmation)) {
+    if (formData.password !== formData.passwordConfirmation) {
       setIsPasswordsEqual(false)
       return
     }
@@ -105,22 +104,6 @@ const RegistrationForm = () => {
     } finally {
       setIsLoading(false)
     }
-  }
-
-  const validatePasswords = () => {
-    const passwordsMatch = arePasswordsEqual(
-      formData.password,
-      formData.passwordConfirmation
-    )
-
-    if (!passwordsMatch) {
-      setFormData((prev) => ({ ...prev, passwordConfirmation: '' }))
-      setIsPasswordsEqual(false)
-      setErrorMessage('Passwords do not match.')
-      return
-    }
-
-    setIsPasswordsEqual(true)
   }
 
   const handleInputChange =
@@ -190,7 +173,6 @@ const RegistrationForm = () => {
           placeholder="Confirm your password"
           autoComplete="new-password"
           onChange={handleInputChange('passwordConfirmation')}
-          onBlur={validatePasswords}
           isValid={isFormValid && isPasswordsEqual}
         />
 

@@ -2,26 +2,27 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
- 
+
 generator client {
   provider = "prisma-client-js"
 }
- 
+
 model User {
-  id                String                @id @default(cuid())
-  name              String?
-  username          String?               @unique
-  email             String?               @unique
-  emailVerified     DateTime?
-  image             String?
-  Sessions          Session[]
-  Accounts          Account[]             
-  password          String?
-  active            Boolean               @default(false) 
-  Authenticators    Authenticator[]       
-  otps              UserOtp[]              
-  files             File[]
-  folders           Folder[]
+  id                 String              @id @default(cuid())
+  name               String?
+  username           String?             @unique
+  email              String?             @unique
+  emailVerified      DateTime?
+  image              String?
+  Sessions           Session[]
+  Accounts           Account[]
+  password           String?
+  active             Boolean             @default(false)
+  Authenticators     Authenticator[]
+  otps               UserOtp[]
+  files              File[]
+  folders            Folder[]
+  passwordResetToken PasswordResetToken?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -70,26 +71,23 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-
-
 model UserOtp {
-  id          Int       @id @default(autoincrement())
-  otp         String    @db.Char(6)
-  createdAt   DateTime  @default(now())
+  id          Int        @id @default(autoincrement())
+  otp         String     @db.Char(6)
+  createdAt   DateTime   @default(now())
   activatedAt DateTime?
   purpose     OtpPurpose
-  userId      String 
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId])
   @@unique([userId, purpose])
+  @@index([userId])
 }
 
 enum OtpPurpose {
   RESET_PASSWORD
   REGISTRATION
 }
-
 
 model Authenticator {
   credentialID         String  @unique
@@ -107,18 +105,18 @@ model Authenticator {
 }
 
 model File {
-  id          String    @id @default(cuid())
-  name        String
-  url         String    // URL du fichier PDF
-  qrCode      String    // URL du QR code généré
-  status      FileStatus
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String
-  folder      Folder    @relation(fields: [folderId], references: [id], onDelete: Cascade) 
-  folderId    String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
+  id        String     @id @default(cuid())
+  name      String
+  url       String // URL du fichier PDF
+  qrCode    String // URL du QR code généré
+  status    FileStatus
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  folder    Folder     @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId  String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  deletedAt DateTime?
 }
 
 model Folder {
@@ -130,11 +128,21 @@ model Folder {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-  
 
   @@unique([userId, name])
 }
 
+model PasswordResetToken {
+  id         Int       @id @default(autoincrement())
+  token      String    @unique
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime
+  redeemedAt DateTime? @updatedAt
+  userId     String    @unique
+  user       User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
 
 enum FileStatus {
   ACTIVE

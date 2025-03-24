@@ -14,7 +14,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: V.$status-btn-bg-color-hover;
+    background-color: V.$status-btn-bg;
     .folder__menu-icon {
       opacity: 1;
     }
@@ -33,7 +33,7 @@
 }
 
 .folder--active {
-  background-color: V.$status-btn-bg-color-hover;
+  background-color: V.$status-btn-bg;
   // border: 1px solid black;
   .folder__menu-icon {
     opacity: 1;

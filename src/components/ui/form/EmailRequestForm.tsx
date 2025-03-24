@@ -1,126 +1,116 @@
 'use client'
 
-import Image from 'next/image'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './auth-forms.scss'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { sanitizeEmailInput } from '@/src/lib/helpers'
+import { Header } from './components/header/Header'
+import { FormInputField } from './components/input-field/InputField'
+import { Footer } from './components/footer/Footer'
+import { toast } from 'react-toastify'
+import { ErrorMessage } from './components/error-message/ErrorMessage'
+import { SubmitButton } from '../buttons/submit-button/SubmitButton'
+import { emailSchema } from '@/src/lib/zod'
 
-type EmailRequestForm = {
-  title: string
-  api: string
-  redirectUrl: string
-}
-
-const EmailRequestForm = ({ title, api, redirectUrl }: EmailRequestForm) => {
+const EmailRequestForm = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const [errorEmail, setErrorEmail] = useState<string | null>(null)
-  const [isFormValid, setIsFormValid] = useState(true)
-
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const searchParams = useSearchParams()
+  const [email, setEmail] = useState('')
+  const emailInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
-  const [form, setForm] = useState({
-    email: '',
-  })
+  const authEndpoints = {
+    forgotPassword: '/api/auth/send-password-reset-email',
+  }
+  const setError = (message: string) => {
+    setErrorMessage(message)
+    toast.error(message)
+    emailInputRef.current?.focus()
+  }
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = sanitizeEmailInput(e.target.value)
+    setEmail(value)
+  }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-
-    if (Object.values(form).some((value) => value.trim() === ''))
-      return setIsFormValid(false)
-
-    const updatedForm = { email: form.email.trim() }
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
     try {
-      setIsLoading(true)
-      const res = await fetch(api, {
-        method: 'POST',
-        body: JSON.stringify(updatedForm),
-      })
-      if (res.ok) {
-        router.push(redirectUrl)
-      } else {
-        if (!res.ok) {
-          const errorMessage = await res.json()
-          console.error('Error:', errorMessage.error)
-          setErrorEmail(errorMessage.error)
-        } else {
-          setErrorEmail('An unexpected error occurred. Please try again.')
-        }
+      if (!email.trim()) return setError('Please fill Email field.')
+
+      setErrorMessage(null)
+      const validation = emailSchema.safeParse({ email })
+
+      if (validation.error) {
+        setError(validation.error.errors[0].message)
+        return
       }
+
+      setIsLoading(true)
+      const res = await fetch(authEndpoints.forgotPassword, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      if (!res.ok) {
+        const { error } = await res.json()
+        console.log('Error response:', error)
+        setError(error)
+        setIsLoading(false)
+        return
+      }
+
+      router.push('/auth/reset-password/security-email-sent')
     } catch (error) {
-      setErrorEmail('Failed to submit the form. Please try again later.')
+      setError('An unexpected error occurred. Please try again.')
       console.error('Error fetch:', error)
-    } finally {
-      setIsLoading(false)
     }
   }
+  useEffect(() => {
+    const emailParams = searchParams.get('email')
+    const decodedEmail = emailParams ? decodeURIComponent(emailParams) : ''
+    const timer = searchParams.get('timer')
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, email: sanitizeEmailInput(e.target.value) })
-  }
+    if (
+      emailParams &&
+      emailSchema.safeParse({
+        email: decodedEmail,
+      }).success
+    ) {
+      setEmail(decodedEmail)
+    }
+    if (timer === 'expired')
+      setError('Time to reset password has expired, request a new link.')
+  }, [searchParams])
   return (
-    <div className="sign-form-container sign-up-form-container">
-      <div className="header-sign-up">
-        <div className="logo-container"></div>
-        <div className="title-container">
-          <p className="title">{title}</p>
-          <span className="subtitle">
-            Please enter your email address to receive a link.
-          </span>
-        </div>
-      </div>
-
+    <div className="auth-form__container">
+      <Header authContext="resetPassword" />
       <form
-        className="sign-form"
+        className="auth-form"
         onSubmit={(e) => {
           handleSubmit(e)
         }}
       >
-        <div className="input-container">
-          <label className="input-label" htmlFor="email">
-            Email
-          </label>
+        <FormInputField
+          ref={emailInputRef}
+          label="Email"
+          name="email"
+          type="email"
+          value={email}
+          icon="email"
+          placeholder="name@mail.com"
+          autoComplete="email"
+          onChange={handleOnChange}
+          isValid={true}
+        />
 
-          <Image
-            className="icon-credential"
-            width={30}
-            height={30}
-            src="/icons/email.svg"
-            alt="email icon"
-          />
-          <input
-            value={form.email}
-            onChange={handleEmailChange}
-            placeholder="name@mail.com"
-            name="email"
-            type="email"
-            className={`input-field ${
-              !isFormValid && form.email === '' ? 'input-error' : ''
-            } `}
-            id="email_field"
-            autoComplete="email"
-          />
-        </div>
-
-        {!isFormValid && <p className="form-error">Please fill Email field.</p>}
-        {errorEmail && (
-          <p className="form-error">
-            {errorEmail} <br />
-            {errorEmail === 'This email must be activated.' && (
-              <Link
-                href="/auth/registration/token-activation/resend-activation-link"
-                className="unverified-email-link"
-              >
-                Request activation link.
-              </Link>
-            )}
-          </p>
-        )}
-
-        <button type="submit" className="sign-btn" disabled={isLoading}>
-          <span>Send me the link</span>
-        </button>
+        <SubmitButton
+          isLoading={isLoading}
+          text="Send me the link"
+          className="submit-btn submit-btn--auth-form"
+        />
+        <ErrorMessage message={errorMessage} />
       </form>
+      <Footer isRegistration={true} />
     </div>
   )
 }
