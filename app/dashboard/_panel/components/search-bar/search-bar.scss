@@ -10,6 +10,11 @@
   padding: 8px 32px 8px 8px;
   border: 1px solid black;
   border-radius: 4px;
+  &:focus {
+    outline: none;
+    border-color: V.$secondary-color;
+    background-color: white;
+  }
 }
 
 .panel__search-icon {

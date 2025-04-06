@@ -1,43 +1,43 @@
-import React, { useState } from 'react'
+import { updateFolderNameAction } from '@/app/actions/folders/updateFolderName.action'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 import { generateUniqueFolderName, sanitizeFoldersInput } from '../lib/helpers'
 import { useDashboardStore } from '../lib/store'
-import { shallow } from 'zustand/shallow'
-import { createNewFolderAction } from '@/app/actions/folders/createFolder.action'
-import { toast } from 'react-toastify'
-import { updateFolderNameAction } from '@/app/actions/folders/UpdateFolderName.action'
 
 export const useUpdateFolderName = () => {
   const [folderName, setFolderName] = useState('')
-  const { folders, addFolder, updateFolderName, removeFolder } =
-    useDashboardStore(
-      (state) => ({
-        folders: state.folders,
-        addFolder: state.addFolder,
-        updateFolderName: state.updateFolderName,
-        removeFolder: state.removeFolder,
-      }),
-      shallow
-    )
+  const { folders, updateFolderName } = useDashboardStore((state) => ({
+    folders: state.folders,
+    updateFolderName: state.updateFolderName,
+  }))
 
   const handleUpdateFolderName = async (folderId: string, newName: string) => {
-    const trimmedNewName = newName.trim()
-    if (trimmedNewName.length === 0) return
-    const oldFolder = folders.find((folder) => folder.id === folderId)
-    if (!oldFolder) {
-      console.error(`Dossier avec l'ID ${folderId} non trouvé`)
-      return
-    }
-    const oldFolderName = oldFolder?.name
-    const uniqueFolderName = generateUniqueFolderName(trimmedNewName, folders)
-    updateFolderName(folderId, uniqueFolderName)
+    if (!folderId || !newName)
+      throw new Error('Folder ID and new name are required.')
 
+    const formattedNewName = newName.trim()
+    if (formattedNewName.length === 0) return
+
+    const currentFolder = folders.find((folder) => folder.id === folderId)
+
+    if (!currentFolder) {
+      toast.error('Error updating folder.')
+      throw new Error(`Folder with ID ${folderId} not found`)
+    }
+
+    if (currentFolder.name === formattedNewName) return
+    const uniqueFolderName = generateUniqueFolderName(formattedNewName, folders)
     try {
+      updateFolderName(folderId, uniqueFolderName)
+
       await updateFolderNameAction(folderId, uniqueFolderName)
-      toast.success('Dossier créé avec succès')
+      // toast.success('Folder renamed successfully')
     } catch (error) {
-      updateFolderName(folderId, oldFolderName)
-      toast.error('Erreur lors de la création du dossier')
-      console.error('Error creating folderName:', error)
+      const errorMessage =
+        error instanceof Error ? error.message : 'Error updating folder.'
+      updateFolderName(folderId, currentFolder?.name)
+      toast.error(errorMessage)
+      console.error('Error updating folderName:', error)
     }
   }
 

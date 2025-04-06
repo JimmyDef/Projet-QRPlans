@@ -5,8 +5,8 @@ import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import Image from 'next/image'
 import Link from 'next/link'
-
-export const ConnexionButtons = () => {
+import './connexion-links.scss'
+export const ConnexionLinks = () => {
   const t = useTranslations('header')
   const { data: session, status } = useSession()
   const fistName = session?.user?.name?.split(' ')[0]
@@ -17,17 +17,17 @@ export const ConnexionButtons = () => {
   return (
     <>
       {session ? (
-        <>
+        <div className="connexion-links__user-info">
           <Link
             href="/dashboard"
-            className="header__link  header__link--user-name"
+            className="connexion-links__user-name"
+            onClick={(e) => {
+              e.preventDefault()
+            }}
           >
             {formattedFirstName}
           </Link>
-          <Link
-            href="/dashboard"
-            className="header__link header__link--user-img"
-          >
+          <Link href="/dashboard" className="connexion-links__user-img">
             <Image
               width={50}
               height={50}
@@ -37,27 +37,24 @@ export const ConnexionButtons = () => {
             />
           </Link>
 
-          <SignOutButton className="header__link header__link--sign-out" />
-        </>
+          <SignOutButton className="connexion-link connexion-links__sign-out" />
+        </div>
       ) : (
-        <ul className="header__list">
-          <li className="header__item">
-            <Link
-              href="/auth/sign-in"
-              className="header__link header__link--sign-in"
-            >
-              {t('logIn')}
-            </Link>
-          </li>
-          <li className="header__item  header__item--highlight">
-            <Link
-              href="/auth/registration"
-              className="header__link header__link--sign-up"
-            >
-              {t('signUp')}
-            </Link>
-          </li>
-        </ul>
+        <div className="connexion-links__user-info">
+          <Link
+            href="/auth/sign-in"
+            className="connexion-link connexion-links__sign-in"
+          >
+            {t('logIn')}
+          </Link>
+
+          <Link
+            href="/auth/registration"
+            className="connexion-link connexion-links__sign-up"
+          >
+            {t('signUp')}
+          </Link>
+        </div>
       )}
     </>
   )

@@ -1,19 +1,18 @@
 'use client'
-import { Loader } from '@/src/components/ui/loader/Loader'
 import signInWithCredentials from '@/src/services/auth/signInWithCredentials'
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 
-import { memo, useCallback, useState, useRef } from 'react'
-import { AuthProviders } from '../components/auth-providers/AuthProviders'
-import { Footer } from '@/src/components/ui/form/components/footer/Footer'
-import { FormInputField } from '@/src/components/ui/form/components/input-field/InputField'
-import { toast } from 'react-toastify'
-import { Separator } from '../components/separator-line/Separator'
-import { Header } from '@/src/components/ui/form/components/header/Header'
 import '@/src/components/ui/form/auth-forms.scss'
-import { ErrorMessage } from '../components/error-message/ErrorMessage'
+import { Footer } from '@/src/components/ui/form/components/footer/Footer'
+import { Header } from '@/src/components/ui/form/components/header/Header'
+import { FormInputField } from '@/src/components/ui/form/components/input-field/InputField'
+import { memo, useCallback, useRef, useState } from 'react'
+import { toast } from 'react-toastify'
 import { SubmitButton } from '../../buttons/submit-button/SubmitButton'
+import { AuthProviders } from '../components/auth-providers/AuthProviders'
+import { ErrorMessage } from '../components/error-message/ErrorMessage'
+import { Separator } from '../components/separator-line/Separator'
 
 export interface SignInFormFields {
   email: string
@@ -67,18 +66,18 @@ const SignIn = () => {
       // Tentative de connexion
       const res = await signInWithCredentials(formData)
 
-      if (res.status === 'success') {
+      if (res?.status === 'success') {
         await signIn('credentials', {
           email: formData.email,
           password: formData.password,
           callbackUrl: '/dashboard',
         })
       }
-    } catch (err) {
+    } catch (error) {
       const errorMessage =
-        err instanceof Error
-          ? err.message
-          : 'Une erreur est survenue, veuillez réessayer.'
+        error instanceof Error
+          ? error.message
+          : 'An error occurred, please try again.'
 
       setErrorMessage(errorMessage)
       toast.error(errorMessage)

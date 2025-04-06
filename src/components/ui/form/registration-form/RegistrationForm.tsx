@@ -115,7 +115,7 @@ const RegistrationForm = () => {
     try {
       setUiState((prev) => ({ ...prev, isLoading: true }))
       const { message, success } = await createUserAction(updatedForm)
-      console.log('🚀 ~ message00:', message)
+
       if (success) {
         await signIn('credentials', {
           email: formData.email,

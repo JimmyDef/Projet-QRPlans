@@ -1,3 +1,4 @@
+'use server'
 import TokenResult from '@/src/components/token-result/TokenResult'
 import { checkAuthAndRedirect } from '@/src/lib/authRedirectGuard'
 const ResetPasswordFail = async () => {

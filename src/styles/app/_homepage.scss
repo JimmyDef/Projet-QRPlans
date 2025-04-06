@@ -1,4 +1,5 @@
-@use 'abstracts/variables';
+@use 'abstracts/variables' as V;
+@use 'abstracts/mixins' as *;
 
 .hero {
   background-color: #f7f7f7;
@@ -36,16 +37,9 @@
 }
 
 .hero__button {
-  display: inline-block;
-  background-color: variables.$secondary-color;
-  color: black;
-  padding: 15px 30px;
-  border-radius: 5px;
-  font-size: 1.3rem;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
+  @include main-link;
 }
 
 .hero__button:hover {
-  background-color: variables.$secondary-color;
+  background-color: V.$secondary-color;
 }

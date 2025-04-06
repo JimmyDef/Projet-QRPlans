@@ -1,8 +1,7 @@
 'use client'
-import { useEffect } from 'react'
-import { useAuthStore, useDashboardStore } from '@/src/lib/store'
+import { useDashboardStore } from '@/src/lib/store'
 import { DashboardDataProviderProps } from '@/src/types/types'
-import { set } from 'zod'
+import { useEffect } from 'react'
 
 const DashboardDataProvider = ({
   folders,

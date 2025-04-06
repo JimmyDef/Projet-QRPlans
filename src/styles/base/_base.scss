@@ -11,7 +11,10 @@
 *:focus-visible {
   outline: 2px solid black;
 }
-
+html {
+  // scrollbar-gutter: stable;
+  overflow-y: scroll;
+}
 body {
   color: V.$primary-color;
   font-family: 'Montserrat', sans-serif;

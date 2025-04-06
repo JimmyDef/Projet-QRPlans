@@ -15,6 +15,10 @@
   &:focus-visible {
     // transition: none;
   }
+  &:active {
+    transform: scale(0.98);
+    // transition: transform 0.1s;
+  }
 
   &:hover {
     text-decoration: none;

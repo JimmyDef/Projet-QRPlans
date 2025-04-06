@@ -4,17 +4,7 @@ import './folder-list.scss'
 import { Folder } from '@/src/types/types'
 import { FolderListProps } from '@/src/types/types'
 
-const FolderList = ({
-  folders,
-  activeFolderId,
-  setActiveFolderId,
-  scrollContainerRef,
-}: FolderListProps) => {
-  const handleOnClick = (folderId: string) => {
-    if (activeFolderId !== folderId) {
-      setActiveFolderId(folderId)
-    }
-  }
+const FolderList = ({ folders, scrollContainerRef }: FolderListProps) => {
   return (
     <div className="panel__folders-wrapper" ref={scrollContainerRef}>
       <Tooltip id="tooltip-folder-menu-options" offset={13} opacity={1} />
@@ -22,10 +12,10 @@ const FolderList = ({
         <FolderButton
           key={folder.id}
           folder={folder}
-          isActive={activeFolderId === folder.id}
-          onClick={() => {
-            handleOnClick(folder.id)
-          }}
+          // isActive={activeFolderId === folder.id}
+          // onClick={() => {
+          //   handleOnClick(folder.id)
+          // }}
         />
       ))}
     </div>

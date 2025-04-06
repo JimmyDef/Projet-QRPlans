@@ -25,9 +25,9 @@ export interface FolderStore extends Folder {
 
 export interface FolderListProps {
   folders: Folder[]
-  activeFolderId: string | null
-  setActiveFolderId: (id: string) => void
-  scrollContainerRef: React.RefObject<HTMLDivElement>
+  // activeFolderId: string | null
+  // setActiveFolderId: (id: string) => void
+  scrollContainerRef: React.RefObject<HTMLDivElement | null>
 }
 // export interface NewFolderInputProps {
 //   newFolder: string
@@ -37,8 +37,8 @@ export interface FolderListProps {
 // }
 export interface FolderButtonProps {
   folder: Folder
-  isActive: boolean
-  onClick: () => void
+  // isActive: boolean
+  // onClick: () => void
 }
 export interface ScrollArrowsProps {
   showTopArrow: boolean

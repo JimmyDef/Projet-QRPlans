@@ -1,10 +1,10 @@
 'use server'
 import { auth } from '@/src/lib/auth'
+import { handleErrorResponseForActions } from '@/src/lib/customErrors'
 import prisma from '@/src/lib/prisma'
 
-export const removeFolderAction = async (folderId: string) => {
+export const deleteFolderAction = async (folderId: string) => {
   const session = await auth()
-  console.log('🚀 ~ session:', session)
 
   if (!session || !session.user?.id) {
     throw new Error('User not authenticated')
@@ -31,7 +31,7 @@ export const removeFolderAction = async (folderId: string) => {
     })
     return { status: 'success' }
   } catch (error) {
-    console.error('Erreur lors de la suppression du dossier :', error)
-    throw error
+    console.error('Error deleting folder :', error)
+    handleErrorResponseForActions(error, 'Error deleting folder.')
   }
 }

@@ -10,32 +10,44 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/src/components/ui/dropdown-menu'
-import { useRemoveFolder } from '@/src/hooks/useRemoveFolder'
+import { useDeleteFolder } from '@/src/hooks/useDeleteFolder'
 import { useUpdateFolderName } from '@/src/hooks/useUpdateFolderName'
-export const FolderButton = ({
-  folder,
-  isActive,
-  onClick,
-}: FolderButtonProps) => {
-  const { handleRemoveFolder } = useRemoveFolder()
+import { useDashboardStore } from '@/src/lib/store'
+import { shallow } from 'zustand/shallow'
+export const FolderButton = ({ folder }: FolderButtonProps) => {
+  const { handleRemoveFolder } = useDeleteFolder()
   const { handleUpdateFolderName } = useUpdateFolderName()
   const [isRenaming, setIsRenaming] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const [currentFolderName, setCurrentFolderName] = useState(folder.name)
+  const [folderName, setFolderName] = useState(folder.name)
 
+  const { activeFolderId, setActiveFolderId } = useDashboardStore(
+    (state) => ({
+      // folders: state.folders,
+      activeFolderId: state.activeFolderId,
+      setActiveFolderId: state.setActiveFolderId,
+    }),
+    shallow
+  )
+  const isActive = activeFolderId === folder.id
+
+  const handleOnClick = (folderId: string) => {
+    if (activeFolderId !== folderId) {
+      setActiveFolderId(folderId)
+    }
+  }
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault()
-      handleUpdateFolderName(folder.id, currentFolderName)
+      handleUpdateFolderName(folder.id, folderName)
       setIsRenaming(false)
     }
     if (e.key === 'Escape') {
-      setCurrentFolderName(folder.name)
+      setFolderName(folder.name)
       setIsRenaming(false)
     }
   }
   useEffect(() => {
-    console.log('isRenaming:', isRenaming)
     if (isRenaming) {
       inputRef.current?.focus()
     }
@@ -44,18 +56,24 @@ export const FolderButton = ({
   return (
     <div
       tabIndex={0}
-      className={`folder ${isActive ? 'folder--active' : ''}`}
-      onClick={onClick}
+      className={`folder ${isActive ? 'folder--active' : null}`}
+      onClick={() => {
+        handleOnClick(folder.id)
+      }}
     >
       <Folder className="folder__icon" />
       {isRenaming ? (
         <input
+          maxLength={17}
           ref={inputRef}
           type="text"
           className="folder__new-name"
-          onBlur={() => setIsRenaming(false)}
-          value={currentFolderName}
-          onChange={(e) => setCurrentFolderName(e.target.value)}
+          onBlur={() => {
+            handleUpdateFolderName(folder.id, folderName)
+            setIsRenaming(false)
+          }}
+          value={folderName}
+          onChange={(e) => setFolderName(e.target.value)}
           onKeyDown={handleKeyPress}
         />
       ) : (
@@ -81,6 +99,7 @@ export const FolderButton = ({
           }}
         >
           <DropdownMenuItem
+            className="folder__menu-item"
             onSelect={() => {
               setIsRenaming(true)
               console.log('inputRef:', inputRef)
@@ -93,7 +112,7 @@ export const FolderButton = ({
 
           <DropdownMenuItem
             onSelect={() => handleRemoveFolder(folder.id)}
-            className="folder__item--red"
+            className="folder__menu-item folder__menu-item--delete"
           >
             <Trash2 />
             Supprimer

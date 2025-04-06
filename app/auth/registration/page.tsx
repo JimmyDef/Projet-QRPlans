@@ -1,3 +1,4 @@
+'use server'
 import RegistrationForm from '@/src/components/ui/form/registration-form/RegistrationForm'
 
 import { checkAuthAndRedirect } from '@/src/lib/authRedirectGuard'

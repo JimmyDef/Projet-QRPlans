@@ -1,13 +1,15 @@
 'use server'
 import { auth } from '@/src/lib/auth'
-import prisma from '@/src/lib/prisma'
+import { handleErrorResponseForActions } from '@/src/lib/customErrors'
 import { generateUniqueFolderName } from '@/src/lib/helpers'
-import { Folder, File } from '@/src/types/types'
+import prisma from '@/src/lib/prisma'
 
-export const createNewFolderAction = async (
+export const createFolderAction = async (
   folderName: string,
   tempId: string
 ) => {
+  console.log('🚀 ~ folderName:', folderName.length)
+
   const session = await auth()
 
   if (!session) {
@@ -18,6 +20,9 @@ export const createNewFolderAction = async (
   }
   if (!folderName) {
     throw new Error('Folder name is required')
+  }
+  if (folderName.length > 18) {
+    throw new Error('Folder name is too long')
   }
   const userId = session.user.id
   try {
@@ -43,11 +48,10 @@ export const createNewFolderAction = async (
       },
     })
     if (!newFolder) {
-      throw new Error('Folder creation failed')
+      throw new Error('Folder creation failed.')
     }
     return { status: 'success', folder: newFolder, tempId }
   } catch (error) {
-    console.error('Erreur lors de la création du dossier :', error)
-    throw error
+    handleErrorResponseForActions(error)
   }
 }

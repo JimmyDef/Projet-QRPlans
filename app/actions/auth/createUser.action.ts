@@ -1,14 +1,10 @@
 'use server'
+import { isPrismaError } from '@/src/lib/customErrors'
 import { capitalizeFirstLetter, generateOTP } from '@/src/lib/helpers'
 import prisma from '@/src/lib/prisma'
 import { registrationSchema } from '@/src/lib/zod'
 import { sendEmail } from '@/src/services/emailService'
 import { EmailOTPTemplate } from '@/src/templates/EmailOTPTemplate'
-import {
-  PrismaClientInitializationError,
-  PrismaClientKnownRequestError,
-  PrismaClientValidationError,
-} from '@prisma/client/runtime/library'
 import bcrypt from 'bcrypt'
 import { z } from 'zod'
 
@@ -75,18 +71,12 @@ const createUserAction = async (data: RegistrationInput) => {
       success: true,
     }
   } catch (error) {
-    console.log('🚀 ~ error:', error)
-    if (error instanceof PrismaClientInitializationError) {
+    console.log('🚀 ~ error createUserAction:', error)
+    if (isPrismaError(error)) {
       return {
         message: 'Database unreachable. Please try again later.',
         success: false,
       }
-    }
-    if (error instanceof PrismaClientValidationError) {
-      return { message: 'Database validation error.', success: false }
-    }
-    if (error instanceof PrismaClientKnownRequestError) {
-      return { message: 'Database request error.', success: false }
     }
     if (error instanceof z.ZodError) {
       return {

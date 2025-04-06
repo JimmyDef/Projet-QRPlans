@@ -1,42 +1,38 @@
-// src/lib/errors/CustomErrors.ts
+import {
+  PrismaClientInitializationError,
+  PrismaClientKnownRequestError,
+  PrismaClientRustPanicError,
+  PrismaClientUnknownRequestError,
+  PrismaClientValidationError,
+} from '@prisma/client/runtime/library'
 
-export class MissingCredentialsError extends Error {
-  constructor(message: string) {
+export class AppError extends Error {
+  statusCode?: number
+  constructor(message: string, statusCode?: number) {
     super(message)
-    this.name = 'MissingCredentialsError'
+    this.statusCode = statusCode
   }
 }
 
-export class UserNotFoundError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = 'UserNotFoundError'
-  }
+export const isPrismaError = (error: unknown) => {
+  return (
+    error instanceof PrismaClientInitializationError ||
+    error instanceof PrismaClientValidationError ||
+    error instanceof PrismaClientKnownRequestError ||
+    error instanceof PrismaClientRustPanicError ||
+    error instanceof PrismaClientUnknownRequestError
+  )
 }
 
-export class AccountProviderError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = 'AccountProviderError'
+export const handleErrorResponseForActions = (
+  error: unknown,
+  defaultMessage = 'Unexpected error occurred, please try again.'
+) => {
+  if (isPrismaError(error)) {
+    throw new AppError('Database unavailable, try again later.')
   }
-}
-
-export class EmailNotVerifiedError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = 'EmailNotVerifiedError'
+  if (error instanceof AppError) {
+    throw new Error(error.message)
   }
-}
-
-export class InvalidPasswordError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = 'InvalidPasswordError'
-  }
-}
-export class DatabaseUnavailableError extends Error {
-  constructor(message: string) {
-    super(message)
-    this.name = 'DatabaseUnavailableError'
-  }
+  throw new Error(defaultMessage)
 }

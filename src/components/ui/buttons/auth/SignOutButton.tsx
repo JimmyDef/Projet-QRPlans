@@ -14,17 +14,11 @@ const SignOutButton = ({ className }: SignOutButtonProps) => {
       className={className}
       onClick={() => {
         console.log('Signing out')
-        localStorage.setItem('isUserActive', JSON.stringify(false))
+        localStorage.setItem('isUserActive', JSON.stringify(''))
         signOut({ callbackUrl: '/auth/sign-in' })
       }}
     >
-      <Image
-        className="exit-icon"
-        width={20}
-        height={20}
-        src="/icons/exit.svg"
-        alt="exit icon"
-      />
+      <Image width={20} height={20} src="/icons/exit.svg" alt="exit icon" />
       <span>{t('logOut')}</span>
     </button>
   )

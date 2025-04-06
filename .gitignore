@@ -41,3 +41,6 @@ next-env.d.ts
 
 #Base de donnée
 mysql_data/
+#Développement
+/_TERMINAL
+/.cursor

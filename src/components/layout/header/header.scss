@@ -11,17 +11,29 @@
 .header__container {
   margin: 0 auto 20px;
   height: 70px;
-  max-width: V.$breakpoint-desktop;
+  max-width: none;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: V.$primary-color;
-  padding: 10px 20px;
+  padding: 20px;
   font-size: 20px;
   font-weight: bold;
 }
+.header__container--auth {
+  // max-width: none;
+  max-width: V.$breakpoint-desktop;
+}
+
 .header__brand {
   font-size: 2.3rem;
+  text-align: center;
+  min-width: 116px;
+}
+.header__brand--dashboard {
+  width: 250px;
+  transform: translateX(-20px);
 }
 .header__nav {
   display: flex;
@@ -29,78 +41,22 @@
   justify-content: space-between;
   gap: 20px;
 }
-
-.header__list {
-  display: flex;
-  list-style: none;
-  align-items: center;
-  margin: 0;
-  padding: 0;
-}
-
-.header__link {
-  text-decoration: none;
-  &:hover {
-    text-decoration: underline;
-  }
-  &--sign-in,
-  &--sign-out {
-    border: 2px solid V.$secondary-color;
-    background-color: V.$white-color;
-    color: V.$primary-color;
-    font-weight: bold;
-    &:hover {
-      background-color: V.$auth-input-bg-color;
-    }
-    .exit-icon {
-      display: none;
-    }
-    @include main-link;
-  }
-  &--sign-up {
-    @include main-link;
-  }
-  &--user-img {
-    border-radius: 50%;
-    border: 2px solid black;
-    overflow: hidden;
-    // transition: all 0.2s;
-    .user-image {
-      width: 50px;
-      height: 50px;
-      height: auto;
-      object-fit: cover;
-    }
-    &:hover {
-      @include box-shadow-light-black;
-    }
-  }
-}
-
-.header__item {
-  margin-left: 30px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-}
-
-.logo {
-  display: inline-block;
-  margin-right: 10px;
+.header__nav--dashboard {
+  margin-right: 40px;
 }
 
 @media (max-width: V.$breakpoint-notebook) {
   .header__brand {
     // width: 100%;
-    font-size: 1.6rem;
+    // font-size: 1.6rem;
   }
-  .header__item {
-    margin-left: 20px;
+  .header__nav--dashboard {
+    margin-right: 0px;
   }
 }
 @media (max-width: V.$breakpoint-tablet) {
   .header__container {
-    padding: 10px 10px;
+    padding-right: 10px;
   }
   .header__nav {
     gap: 15px;
@@ -108,31 +64,7 @@
   .header__brand {
     // width: 100%;
     font-size: 1.6rem;
-  }
-  .header__item {
-    margin-left: 20px;
-  }
-  .header__link {
-    &--sign-up {
-      display: none;
-    }
-
-    &--sign-out {
-      width: 60px;
-      span {
-        display: none;
-      }
-      .exit-icon {
-        display: inline-block;
-      }
-    }
-    &--user-name {
-      display: none;
-    }
-    &--user-img {
-      width: 40px;
-      height: 40px;
-    }
+    margin-right: 10px;
   }
 }
 // @media (max-width: V.$breakpoint-smartphone) {

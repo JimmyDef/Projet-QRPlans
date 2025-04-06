@@ -1,4 +1,4 @@
 export interface AuthStore {
-  isUserActive: boolean
+  isUserActive: boolean | undefined
   setUserActive: (isUserActive: boolean) => void
 }

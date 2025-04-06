@@ -10,7 +10,7 @@ import { createWithEqualityFn } from 'zustand/traditional'
 import { AuthStore } from '../types/store.types'
 
 export const useAuthStore = create<AuthStore>((set) => ({
-  isUserActive: false,
+  isUserActive: undefined,
   setUserActive: (isUserActive: boolean) => {
     set({ isUserActive })
     localStorage.setItem('isUserActive', JSON.stringify(isUserActive))

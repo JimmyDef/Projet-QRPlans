@@ -26,7 +26,7 @@ export default async function RootLayout({
   const locale = await getLocale()
   const messages = await getMessages()
   const session = await auth()
-  let isUserActive = false
+  let isUserActive: boolean | undefined = undefined
   try {
     if (session) {
       const userDb = await prisma.user.findUnique({
@@ -41,7 +41,7 @@ export default async function RootLayout({
     }
   } catch (error) {
     console.error('Database error:', error)
-    isUserActive = false
+    // throw new Error('Database error')
   }
 
   const ClientProviders = ({ children }: { children: ReactNode }) => (

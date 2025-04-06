@@ -3,6 +3,8 @@ import { useRouter } from 'next/navigation'
 import './app-error.scss'
 
 export const AppError = ({ error }: { error?: string }) => {
+  console.log('🚀 ~ error:', error)
+
   const router = useRouter()
   const isDatabaseError =
     error?.includes('prisma') || error?.includes('database')

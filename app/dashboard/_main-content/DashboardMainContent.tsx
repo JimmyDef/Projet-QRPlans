@@ -2,33 +2,33 @@
 // import { useSession } from 'next-auth/react'
 
 import { ButtonTW } from '@/src/components/ui/buttons/buttonTW'
-import { SquarePlus } from 'lucide-react'
 import { useDashboardStore } from '@/src/lib/store'
+import { SquarePlus } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { shallow } from 'zustand/shallow'
-import { useSearchParams } from 'next/navigation'
 import { toast } from 'react-toastify'
 
 export const DashboardMainContent = () => {
   const searchParams = useSearchParams()
   const search = searchParams.get('search')
-  const toastParams = searchParams.get('toast')
+  const router = useRouter()
   const [files, setFiles] = useState([])
-  const { allFiles } = useDashboardStore(
-    (state) => ({
-      allFiles: state.files,
-    }),
-    shallow
-  )
+  const { allFiles } = useDashboardStore((state) => ({
+    allFiles: state.files,
+  }))
   useEffect(() => {}, [files])
 
   useEffect(() => {
+    const toastParams = searchParams.get('toast')
     if (toastParams) {
       if (toastParams === 'new-password-ok') {
         toast.success('New password set successfully.')
       }
+      const newParams = new URLSearchParams(searchParams)
+      newParams.delete('toast')
+      router.replace('/dashboard', { scroll: false })
     }
-  }, [toastParams])
+  }, [searchParams])
   return (
     <section className="dashboard-content">
       <h1>Dashboard</h1>

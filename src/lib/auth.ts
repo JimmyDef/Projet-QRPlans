@@ -79,6 +79,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return session
     },
     async signIn({ user, account }) {
+      try {
+        await prisma.$queryRaw`SELECT 1`
+      } catch (error) {
+        console.error('Database Error:', error)
+        return (
+          '/auth/sign-in?error=' + encodeURIComponent('DatabaseUnavailable')
+        )
+      }
       const email = user.email
       if (!email) {
         return '/auth/sign-in?error=' + encodeURIComponent('NoEmailFound')

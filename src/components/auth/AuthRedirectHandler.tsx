@@ -3,11 +3,10 @@
 import { useAuthStore } from '@/src/lib/store'
 import { useSession } from 'next-auth/react'
 import { usePathname, useRouter } from 'next/navigation'
-import path from 'path'
 import { useEffect } from 'react'
 
 interface AuthRedirectHandlerProps {
-  isActiveInitial: boolean
+  isActiveInitial: boolean | undefined
 }
 const AuthRedirectHandler = ({ isActiveInitial }: AuthRedirectHandlerProps) => {
   const { status, data: session } = useSession()
@@ -26,6 +25,11 @@ const AuthRedirectHandler = ({ isActiveInitial }: AuthRedirectHandlerProps) => {
 
   useEffect(() => {
     // Au montage, on synchronise la valeur "active"
+
+    if (isActiveInitial === undefined) {
+      return
+    }
+
     setUserActive(isActiveInitial)
   }, [isActiveInitial, setUserActive])
 
@@ -61,9 +65,10 @@ const AuthRedirectHandler = ({ isActiveInitial }: AuthRedirectHandlerProps) => {
       if (
         status === 'authenticated' &&
         session.user.provider === 'credentials' &&
-        !isUserActive
+        isUserActive === false
       ) {
         router.replace('/auth/registration/validate-email-otp')
+        console.log('isUserActive066', isUserActive)
         return
       }
     }

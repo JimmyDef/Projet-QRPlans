@@ -13,20 +13,22 @@ export default async function RootLayout({
 }) {
   const session = await auth()
   if (!session) return redirect('/auth/sign-in')
+  try {
+    const userDb = await prisma.user.findUnique({
+      where: { id: session.user.id },
+    })
+    if (!userDb) {
+      console.log('userDb', userDb)
+    }
 
-  const userDb = await prisma.user.findUnique({
-    where: { id: session.user.id },
-  })
-  if (!userDb) {
-    console.log('userDb', userDb)
+    const isUserActive = !!userDb?.active
+    if (session.user.provider === 'credentials' && isUserActive === false) {
+      redirect('/auth/registration/validate-email-otp')
+    }
+  } catch (error) {
+    console.log('🚀 ~ error:', error)
+    throw new Error('Database error05')
   }
-
-  const isUserActive = !!userDb?.active
-
-  if (session.user.provider === 'credentials' && !isUserActive) {
-    redirect('/auth/registration/validate-email-otp')
-  }
-
   const userId = session?.user?.id
   const folders = await prisma.folder.findMany({
     where: {
@@ -53,7 +55,7 @@ export default async function RootLayout({
   //      updatedAt: file.updatedAt.toISOString(),
   //    })),
   //  }))
-
+  // throw new Error('test')
   return (
     <div className="dashboard-layout">
       <DashboardDataProvider files={files} folders={folders} />

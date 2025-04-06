@@ -2,7 +2,9 @@
 import { FolderPlus } from 'lucide-react'
 import './new-folder-input.scss'
 // import { NewFolderInputProps } from '@/src/types/types'
-import { useAddFolder } from '@/src/hooks/useAddFolder'
+import { useCreateFolder } from '@/src/hooks/useCreateFolder'
+import { set } from 'zod'
+import { use, useEffect, useRef } from 'react'
 
 const NewFolderInput = (
   {
@@ -18,9 +20,22 @@ const NewFolderInput = (
     setNewFolder,
     handleOnChange,
     handleKeyPress,
-  } = useAddFolder()
+  } = useCreateFolder()
+  const newFolderContainerRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    const handleClickOutiside = (e: MouseEvent) => {
+      if (
+        newFolderContainerRef.current &&
+        !newFolderContainerRef.current.contains(e.target as Node)
+      ) {
+        setNewFolder('')
+      }
+    }
+    document.addEventListener('click', handleClickOutiside)
+    return () => document.removeEventListener('click', handleClickOutiside)
+  })
   return (
-    <div className="panel__folder-input-group">
+    <div className="panel__new-folder-container" ref={newFolderContainerRef}>
       <FolderPlus
         className="panel__new-folder-icon"
         onClick={handleAddNewFolder}
@@ -30,7 +45,7 @@ const NewFolderInput = (
         placeholder="Nouveau Dossier"
         className="panel__folder-input"
         minLength={1}
-        maxLength={25}
+        maxLength={17}
         value={newFolder}
         onChange={handleOnChange}
         onKeyDown={handleKeyPress}
